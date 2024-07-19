@@ -48,8 +48,8 @@ dependencies {
     // Swagger
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
 
-    // WebClient
-    implementation 'io.springframework.boot:spring-boot-starter-webflux'
+    // WebFlux (WebClient)
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
     // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
