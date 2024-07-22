@@ -1,3 +1,17 @@
 spring:
   application:
     name: howmeet
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://howmeet-db.cpsmgc8igqnz.ap-northeast-2.rds.amazonaws.com:3306/howmeet
+    username: admin
+    password: howmeet1234!
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
