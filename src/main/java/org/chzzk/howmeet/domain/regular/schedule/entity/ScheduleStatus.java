@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.domain.회원.schedule.entity;
+package org.chzzk.howmeet.domain.regular.schedule.entity;
 
 import lombok.Getter;
 

@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.domain.회원.room.model;
+package org.chzzk.howmeet.domain.regular.room.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

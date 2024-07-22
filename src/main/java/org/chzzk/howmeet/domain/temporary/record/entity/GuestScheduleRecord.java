@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.domain.비회원.record.entity;
+package org.chzzk.howmeet.domain.temporary.record.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.chzzk.howmeet.domain.common.entity.BaseEntity;
 import org.chzzk.howmeet.domain.common.embedded.date.impl.RecordDate;
-import org.chzzk.howmeet.domain.비회원.guest.entity.Guest;
-import org.chzzk.howmeet.domain.비회원.schedule.entity.GuestSchedule;
+import org.chzzk.howmeet.domain.temporary.guest.entity.Guest;
+import org.chzzk.howmeet.domain.temporary.schedule.entity.GuestSchedule;
 
 @Entity
 @Getter

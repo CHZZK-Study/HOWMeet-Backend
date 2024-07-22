@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.domain.비회원.schedule.entity;
+package org.chzzk.howmeet.domain.temporary.schedule.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;

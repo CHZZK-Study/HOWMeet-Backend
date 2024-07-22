@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.domain.비회원.guest.entity;
+package org.chzzk.howmeet.domain.temporary.guest.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -15,7 +15,7 @@ import org.chzzk.howmeet.domain.common.model.Nickname;
 import org.chzzk.howmeet.domain.common.model.Password;
 import org.chzzk.howmeet.domain.common.model.converter.NicknameConverter;
 import org.chzzk.howmeet.domain.common.model.converter.PasswordConverter;
-import org.chzzk.howmeet.domain.비회원.schedule.entity.GuestSchedule;
+import org.chzzk.howmeet.domain.temporary.schedule.entity.GuestSchedule;
 
 @Entity
 @Getter

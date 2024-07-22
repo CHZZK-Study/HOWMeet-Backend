@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.domain.회원.room.entity;
+package org.chzzk.howmeet.domain.regular.room.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -11,10 +11,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.chzzk.howmeet.domain.common.entity.BaseEntity;
-import org.chzzk.howmeet.domain.회원.room.model.RoomDescription;
-import org.chzzk.howmeet.domain.회원.room.model.RoomName;
-import org.chzzk.howmeet.domain.회원.room.model.converter.RoomDescriptionConverter;
-import org.chzzk.howmeet.domain.회원.room.model.converter.RoomNameConverter;
+import org.chzzk.howmeet.domain.regular.room.model.RoomDescription;
+import org.chzzk.howmeet.domain.regular.room.model.RoomName;
+import org.chzzk.howmeet.domain.regular.room.model.converter.RoomDescriptionConverter;
+import org.chzzk.howmeet.domain.regular.room.model.converter.RoomNameConverter;
 
 @Entity
 @Getter

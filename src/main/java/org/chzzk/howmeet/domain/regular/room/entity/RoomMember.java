@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.domain.회원.room.entity;
+package org.chzzk.howmeet.domain.regular.room.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

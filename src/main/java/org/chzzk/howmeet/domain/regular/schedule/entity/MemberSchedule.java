@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.domain.회원.schedule.entity;
+package org.chzzk.howmeet.domain.regular.schedule.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -17,11 +17,11 @@ import org.chzzk.howmeet.domain.common.embedded.date.impl.ScheduleDate;
 import org.chzzk.howmeet.domain.common.entity.BaseEntity;
 import org.chzzk.howmeet.domain.common.model.ScheduleName;
 import org.chzzk.howmeet.domain.common.model.converter.ScheduleNameConverter;
-import org.chzzk.howmeet.domain.회원.room.entity.Room;
-import org.chzzk.howmeet.domain.회원.room.entity.RoomMember;
+import org.chzzk.howmeet.domain.regular.room.entity.Room;
+import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
 
-import static org.chzzk.howmeet.domain.회원.schedule.entity.ScheduleStatus.COMPLETE;
-import static org.chzzk.howmeet.domain.회원.schedule.entity.ScheduleStatus.PROGRESS;
+import static org.chzzk.howmeet.domain.regular.schedule.entity.ScheduleStatus.COMPLETE;
+import static org.chzzk.howmeet.domain.regular.schedule.entity.ScheduleStatus.PROGRESS;
 
 @Entity
 @Getter

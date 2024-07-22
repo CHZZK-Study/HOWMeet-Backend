@@ -1,8 +1,8 @@
-package org.chzzk.howmeet.domain.회원.room.model.converter;
+package org.chzzk.howmeet.domain.regular.room.model.converter;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-import org.chzzk.howmeet.domain.회원.room.model.RoomName;
+import org.chzzk.howmeet.domain.regular.room.model.RoomName;
 
 @Converter
 public class RoomNameConverter implements AttributeConverter<RoomName, String> {
