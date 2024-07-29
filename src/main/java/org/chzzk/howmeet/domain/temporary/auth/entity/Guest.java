@@ -10,6 +10,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.chzzk.howmeet.domain.common.auth.entity.UserDetails;
+import org.chzzk.howmeet.domain.common.auth.model.Role;
 import org.chzzk.howmeet.domain.common.entity.BaseEntity;
 import org.chzzk.howmeet.domain.common.model.EncodedPassword;
 import org.chzzk.howmeet.domain.common.model.Nickname;
@@ -22,7 +24,7 @@ import org.chzzk.howmeet.domain.temporary.schedule.entity.GuestSchedule;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class Guest extends BaseEntity {
+public class Guest extends BaseEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
