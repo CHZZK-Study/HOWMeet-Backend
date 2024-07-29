@@ -38,6 +38,16 @@ public class Member extends BaseEntity implements UserDetails {
     @Column(name = "social_id", nullable = false)
     private String socialId;
 
+    private Member(final Nickname nickname, final Image profileImage, final String socialId) {
+        this.nickname = nickname;
+        this.profileImage = profileImage;
+        this.socialId = socialId;
+    }
+
+    public static Member of(String nickname, String profileImage, String socialId) {
+        return new Member(Nickname.from(nickname), Image.from(profileImage), socialId);
+    }
+
     @Override
     public Role getRole() {
         return Role.REGULAR;
