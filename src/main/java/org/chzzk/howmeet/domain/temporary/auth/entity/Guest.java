@@ -50,4 +50,9 @@ public class Guest extends BaseEntity implements UserDetails {
     public static Guest of(final Long guestScheduleId, final String nickname, final EncodedPassword password) {
         return new Guest(Nickname.from(nickname), password, guestScheduleId);
     }
+
+    @Override
+    public Role getRole() {
+        return Role.TEMPORARY;
+    }
 }
