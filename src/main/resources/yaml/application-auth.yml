@@ -1,6 +1,7 @@
 auth:
   secret-key: 25697af917d5a1af2c3c4394b4e76dc731cd9236129c9b6b50ab38ecd5d404143d6a6103bcdafc8e091ca61fc29f815453b962483e664372677da710e81d48cd
   attribute-key: memberId
+  expiration: 3600000
 spring:
   config:
     activate:
