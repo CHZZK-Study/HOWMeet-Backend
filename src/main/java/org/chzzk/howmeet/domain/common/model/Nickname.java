@@ -8,6 +8,8 @@ import lombok.ToString;
 @Getter
 @ToString
 public class Nickname {
+    private static final String NICKNAME_REGEX = "^[A-Za-zㄱ-ㅎㅏ-ㅣ가-힣0-9]{2,10}$";
+
     private final String value;
 
     private Nickname(final String value) {
@@ -20,6 +22,8 @@ public class Nickname {
     }
 
     private void validateNickname(final String value) {
-        // 닉네임 검증 조건
+        if (!value.matches(NICKNAME_REGEX)) {
+            throw new IllegalArgumentException();
+        }
     }
 }
