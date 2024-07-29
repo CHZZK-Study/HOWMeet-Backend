@@ -17,8 +17,7 @@ import org.chzzk.howmeet.domain.common.model.EncodedPassword;
 import org.chzzk.howmeet.domain.common.model.Nickname;
 import org.chzzk.howmeet.domain.common.model.converter.EncodedPasswordConverter;
 import org.chzzk.howmeet.domain.common.model.converter.NicknameConverter;
-import org.chzzk.howmeet.domain.common.model.converter.PasswordConverter;
-import org.chzzk.howmeet.domain.temporary.schedule.entity.GuestSchedule;
+import org.chzzk.howmeet.domain.temporary.auth.util.PasswordEncoder;
 
 @Entity
 @Getter
@@ -49,6 +48,12 @@ public class Guest extends BaseEntity implements UserDetails {
 
     public static Guest of(final Long guestScheduleId, final String nickname, final EncodedPassword password) {
         return new Guest(Nickname.from(nickname), password, guestScheduleId);
+    }
+
+    public void validatePassword(final String planePassword, final PasswordEncoder passwordEncoder) {
+        if (!password.isMatch(planePassword, passwordEncoder)) {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override
