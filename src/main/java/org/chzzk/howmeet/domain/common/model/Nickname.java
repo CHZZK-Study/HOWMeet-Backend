@@ -8,7 +8,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class Nickname {
-    private static final String NICKNAME_REGEX = "^[A-Za-zㄱ-ㅎㅏ-ㅣ가-힣0-9]{2,10}$";
+    private static final String NICKNAME_REGEX = "[^A-Za-z0-9가-힣_-]+\n";
 
     private final String value;
 
