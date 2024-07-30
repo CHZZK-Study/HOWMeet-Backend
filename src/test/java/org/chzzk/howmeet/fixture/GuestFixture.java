@@ -4,7 +4,7 @@ import org.chzzk.howmeet.domain.common.model.EncodedPassword;
 import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
 
 public enum GuestFixture {
-    KIM("김민우", "qwer1234!");
+    KIM("김민우", "qwer1234");
     private final String nickname;
     private final String password;
 
