@@ -14,9 +14,9 @@ VALUES (1, 1, '김민우', 'password1'),
        (6, 2, '김수현', 'password2'),
        (7, 2, '이채림', 'password3'),
        (8, 2, '구예진', 'password4'),
-       (9, 2, '고세종', 'password4'),
-       (10, 3, '김민우', 'password1'),
-       (11, 3, '김수현', 'password2'),
+       (9, 3, '김민우', 'password1'),
+       (10, 3, '김수현', 'password2'),
+       (11, 3, '이채림', 'password3'),
        (12, 3, '구예진', 'password4');
 
 -- GuestScheduleRecord 데이터 삽입
