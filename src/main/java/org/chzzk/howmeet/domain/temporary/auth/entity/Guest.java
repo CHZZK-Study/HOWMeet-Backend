@@ -17,7 +17,10 @@ import org.chzzk.howmeet.domain.common.model.EncodedPassword;
 import org.chzzk.howmeet.domain.common.model.Nickname;
 import org.chzzk.howmeet.domain.common.model.converter.EncodedPasswordConverter;
 import org.chzzk.howmeet.domain.common.model.converter.NicknameConverter;
+import org.chzzk.howmeet.domain.temporary.auth.exception.GuestException;
 import org.chzzk.howmeet.domain.temporary.auth.util.PasswordEncoder;
+
+import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.INVALID_PASSWORD;
 
 @Entity
 @Getter
@@ -52,7 +55,7 @@ public class Guest extends BaseEntity implements UserDetails {
 
     public void validatePassword(final String planePassword, final PasswordEncoder passwordEncoder) {
         if (!password.isMatch(planePassword, passwordEncoder)) {
-            throw new IllegalArgumentException();
+            throw new GuestException(INVALID_PASSWORD);
         }
     }
 
