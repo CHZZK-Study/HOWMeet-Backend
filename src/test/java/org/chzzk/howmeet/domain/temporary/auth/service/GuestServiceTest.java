@@ -28,7 +28,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
-class TemporaryAuthServiceTest {
+class GuestServiceTest {
     @Mock
     GuestRepository guestRepository;
 
@@ -42,7 +42,7 @@ class TemporaryAuthServiceTest {
     TokenProvider tokenProvider;
 
     @InjectMocks
-    TemporaryAuthService temporaryAuthService;
+    GuestService guestService;
 
     Guest guest = KIM.생성();
     EncodedPassword encodedPassword = guest.getPassword();
@@ -69,7 +69,7 @@ class TemporaryAuthServiceTest {
                 .findByGuestScheduleIdAndNickname(guest.getGuestScheduleId(), guest.getNickname());
         doReturn(accessToken).when(tokenProvider)
                 .createToken(AuthPrincipal.from(guest));
-        final GuestLoginResponse actual = temporaryAuthService.login(guestLoginRequest);
+        final GuestLoginResponse actual = guestService.login(guestLoginRequest);
 
         // then
         assertThat(actual).isEqualTo(expect);
@@ -85,7 +85,7 @@ class TemporaryAuthServiceTest {
                 .findByGuestScheduleIdAndNickname(guest.getGuestScheduleId(), guest.getNickname());
 
         // then
-        assertThatThrownBy(() -> temporaryAuthService.login(guestLoginRequest))
+        assertThatThrownBy(() -> guestService.login(guestLoginRequest))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -97,7 +97,7 @@ class TemporaryAuthServiceTest {
                 .validate(password);
 
         // then
-        assertThatThrownBy(() -> temporaryAuthService.login(guestLoginRequest))
+        assertThatThrownBy(() -> guestService.login(guestLoginRequest))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -113,7 +113,7 @@ class TemporaryAuthServiceTest {
                 .matches(password, encodedPassword.getValue());
 
         // then
-        assertThatThrownBy(() -> temporaryAuthService.login(guestLoginRequest))
+        assertThatThrownBy(() -> guestService.login(guestLoginRequest))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -132,7 +132,7 @@ class TemporaryAuthServiceTest {
                 .encode(password);
         doReturn(guest).when(guestRepository)
                 .save(any());
-        final GuestSignupResponse actual = temporaryAuthService.signup(guestSignupRequest);
+        final GuestSignupResponse actual = guestService.signup(guestSignupRequest);
 
         // then
         assertThat(actual).isEqualTo(expect);
@@ -146,7 +146,7 @@ class TemporaryAuthServiceTest {
                 .existsByGuestScheduleIdAndNickname(guest.getGuestScheduleId(), guest.getNickname());
 
         // then
-        assertThatThrownBy(() -> temporaryAuthService.signup(guestSignupRequest))
+        assertThatThrownBy(() -> guestService.signup(guestSignupRequest))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -158,7 +158,7 @@ class TemporaryAuthServiceTest {
                 .existsByGuestScheduleIdAndNickname(guest.getGuestScheduleId(), guest.getNickname());
 
         // then
-        assertThatThrownBy(() -> temporaryAuthService.signup(guestSignupRequest))
+        assertThatThrownBy(() -> guestService.signup(guestSignupRequest))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -170,7 +170,7 @@ class TemporaryAuthServiceTest {
                 .validate(password);
 
         // then
-        assertThatThrownBy(() -> temporaryAuthService.signup(guestSignupRequest))
+        assertThatThrownBy(() -> guestService.signup(guestSignupRequest))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -182,7 +182,7 @@ class TemporaryAuthServiceTest {
                 .existsByGuestScheduleIdAndNickname(guest.getGuestScheduleId(), guest.getNickname());
 
         // then
-        assertThatThrownBy(() -> temporaryAuthService.signup(guestSignupRequest))
+        assertThatThrownBy(() -> guestService.signup(guestSignupRequest))
                 .isInstanceOf(RuntimeException.class);
     }
 }

@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
-public class TemporaryAuthService {
+public class GuestService {
     private final GuestRepository guestRepository;
     private final PasswordEncoder passwordEncoder;
     private final PasswordValidator passwordValidator;
