@@ -23,7 +23,7 @@ public class Nickname {
 
     private void validateNickname(final String value) {
         if (!value.matches(NICKNAME_REGEX)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException();   // todo 8/1 (목) 김민우 : 닉네임은 Guest, Member 모두에 존재하므로 어떤 예외 클래스를 써야될지?
         }
     }
 }
