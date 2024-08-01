@@ -1,11 +1,3 @@
 spring:
   application:
     name: howmeet
-  config:
-    import:
-      - classpath:/yaml/application-auth.yml
-      - classpath:/yaml/application-db.yml
-  profiles:
-    group:
-      develop: auth, db
-    active: develop
