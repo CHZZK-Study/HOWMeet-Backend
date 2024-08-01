@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.chzzk.howmeet.domain.common.entity.BaseEntity;
 import org.chzzk.howmeet.domain.common.embedded.date.impl.RecordDate;
-import org.chzzk.howmeet.domain.regular.member.entity.Member;
+import org.chzzk.howmeet.domain.regular.auth.entity.Member;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 
 @Entity
