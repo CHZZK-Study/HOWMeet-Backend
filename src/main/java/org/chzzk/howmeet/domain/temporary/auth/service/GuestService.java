@@ -9,11 +9,14 @@ import org.chzzk.howmeet.domain.temporary.auth.dto.login.response.GuestLoginResp
 import org.chzzk.howmeet.domain.temporary.auth.dto.signup.request.GuestSignupRequest;
 import org.chzzk.howmeet.domain.temporary.auth.dto.signup.response.GuestSignupResponse;
 import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
+import org.chzzk.howmeet.domain.temporary.auth.exception.GuestException;
 import org.chzzk.howmeet.domain.temporary.auth.repository.GuestRepository;
 import org.chzzk.howmeet.domain.temporary.auth.util.PasswordEncoder;
 import org.chzzk.howmeet.global.util.TokenProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.GUEST_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
@@ -53,12 +56,12 @@ public class GuestService {
 
     private void validateDuplicateNicknameInScheduleId(final Long guestScheduleId, final String nickname) {
         if (guestRepository.existsByGuestScheduleIdAndNickname(guestScheduleId, Nickname.from(nickname))) {
-            throw new IllegalArgumentException();
+            throw new GuestException(GUEST_NOT_FOUND);
         }
     }
 
     private Guest findGuestByNicknameAndScheduleId(final String nickname, final Long guestScheduleId) {
         return guestRepository.findByGuestScheduleIdAndNickname(guestScheduleId, Nickname.from(nickname))
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new GuestException(GUEST_NOT_FOUND));
     }
 }
