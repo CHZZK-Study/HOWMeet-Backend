@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class GuestScheduleService {
     private final GuestScheduleRepository guestScheduleRepository;
 
+    @Transactional
     public GuestScheduleResponse createGuestSchedule(GuestScheduleRequest guestScheduleRequest) {
         GuestSchedule guestSchedule = GuestSchedule.of(guestScheduleRequest.date(), guestScheduleRequest.name());
         GuestSchedule savedSchedule = guestScheduleRepository.save(guestSchedule);
@@ -28,6 +29,7 @@ public class GuestScheduleService {
         return GuestScheduleResponse.of(guestSchedule, inviteLink);
     }
 
+    @Transactional
     public void deleteGuestSchedule(Long guestScheduleId) {
         guestScheduleRepository.deleteById(guestScheduleId);
     }

@@ -15,7 +15,7 @@ public record GuestScheduleResponse(Long guestScheduleId, String name, LocalDate
                 scheduleDate.getStartDate().toLocalDate(),
                 scheduleDate.getStartDate().toLocalTime(),
                 scheduleDate.getEndDate().toLocalDate(),
-                scheduleDate.getStartDate().toLocalTime(),
+                scheduleDate.getEndDate().toLocalTime(),
                 inviteLink
         );
     }
