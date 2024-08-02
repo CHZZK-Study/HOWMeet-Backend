@@ -1,9 +1,7 @@
 package org.chzzk.howmeet.domain.regular.schedule.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.chzzk.howmeet.domain.temporary.schedule.dto.GuestScheduleRequest;
-import org.chzzk.howmeet.domain.temporary.schedule.dto.GuestScheduleResponse;
-import org.chzzk.howmeet.domain.temporary.schedule.service.GuestScheduleService;
+import org.chzzk.howmeet.domain.regular.schedule.dto.MemberScheduleRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
