@@ -88,7 +88,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         try {
             return objectMapper.readValue(tokenProvider.getPayload(accessToken), AuthPrincipal.class);
         } catch (JsonProcessingException e) {
-            log.info("AuthPrincipal 변환 중 에러가 발생했습니다. accessToken : {}", accessToken);
+            //log.info("AuthPrincipal 변환 중 에러가 발생했습니다. accessToken : {}", accessToken);
             throw new RuntimeException(e);
         }
     }

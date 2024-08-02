@@ -27,4 +27,12 @@ public abstract class BaseDate {
             throw new IllegalArgumentException("start date must be after end date");
         }
     }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public  LocalDateTime getEndDate() {
+        return endDate;
+    }
 }

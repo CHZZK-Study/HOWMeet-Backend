@@ -1,19 +1,21 @@
 package org.chzzk.howmeet.domain.temporary.schedule.dto;
 
+import org.chzzk.howmeet.domain.common.embedded.date.impl.ScheduleDate;
 import org.chzzk.howmeet.domain.temporary.schedule.entity.GuestSchedule;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public record GuestScheduleResponse(Long guestScheduleId, String name, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, String inviteLink) {
+public record GuestScheduleResponse(Long guestScheduleId, String name, LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime, String inviteLink) {
     public static GuestScheduleResponse of(final GuestSchedule guestSchedule, final String inviteLink) {
+        ScheduleDate scheduleDate = guestSchedule.getDate();
         return new GuestScheduleResponse(
                 guestSchedule.getId(),
                 guestSchedule.getName().getValue(),
-                guestSchedule.getDate().getStartDate().toLocalDate(),
-                guestSchedule.getDate().getEndDate().toLocalDate(),
-                guestSchedule.getDate().getStartDate().toLocalTime(),
-                guestSchedule.getDate().getEndDate().toLocalTime(),
+                scheduleDate.getStartDate().toLocalDate(),
+                scheduleDate.getStartDate().toLocalTime(),
+                scheduleDate.getEndDate().toLocalDate(),
+                scheduleDate.getStartDate().toLocalTime(),
                 inviteLink
         );
     }
