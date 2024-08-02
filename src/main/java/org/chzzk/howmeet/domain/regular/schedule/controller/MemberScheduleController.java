@@ -2,6 +2,7 @@ package org.chzzk.howmeet.domain.regular.schedule.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.regular.schedule.dto.MemberScheduleRequest;
+import org.chzzk.howmeet.domain.regular.schedule.dto.MemberScheduleResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,7 @@ public class MemberScheduleController {
 
     @PostMapping
     public ResponseEntity<?> createMemberSchedule(@RequestBody final MemberScheduleRequest memberScheduleRequest) {
-        final MemberScheduleResponse memberScheduleResponse = memberScheduleService.createMemeberSchedule(guestScheduleRequest);
+        final MemberScheduleResponse memberScheduleResponse = memberScheduleService.createMemeberSchedule(memberScheduleRequest);
         return ResponseEntity.ok(memberScheduleResponse);
     }
 
