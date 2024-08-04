@@ -37,4 +37,12 @@ public class Room extends BaseEntity {
         this.description = description;
         this.name = name;
     }
+
+    public void updateDescription(RoomDescription description) {
+        this.description = description;
+    }
+
+    public void updateName(RoomName name) {
+        this.name = name;
+    }
 }
