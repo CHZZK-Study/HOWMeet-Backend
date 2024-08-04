@@ -3,6 +3,7 @@ package org.chzzk.howmeet.domain.regular.room.controller;
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.regular.room.RoomService;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomMemberRequest;
+import org.chzzk.howmeet.domain.regular.room.dto.RoomMemberResponse;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomResponse;
 import org.springframework.http.ResponseEntity;
