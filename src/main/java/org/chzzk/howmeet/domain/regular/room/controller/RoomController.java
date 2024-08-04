@@ -1,7 +1,7 @@
 package org.chzzk.howmeet.domain.regular.room.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.chzzk.howmeet.domain.regular.schedule.dto.MemberScheduleResponse;
+import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
