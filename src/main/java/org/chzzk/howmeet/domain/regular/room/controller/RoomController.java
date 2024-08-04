@@ -2,6 +2,7 @@ package org.chzzk.howmeet.domain.regular.room.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
+import org.chzzk.howmeet.domain.regular.room.dto.RoomResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
