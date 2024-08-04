@@ -28,13 +28,13 @@ public class RoomController {
     }
 
     @GetMapping("/{roomId}")
-    public ResponseEntity<?> getMemberRoom(@PathVariable Long roomId) {
+    public ResponseEntity<?> getRoom(@PathVariable Long roomId) {
         final RoomResponse roomResponse = roomService.getRoom(roomId);
         return ResponseEntity.ok(roomResponse);
     }
 
     @DeleteMapping("/{roomId}")
-    public ResponseEntity<?> deleteMemberRoom(@PathVariable Long roomId) {
+    public ResponseEntity<?> deleteRoom(@PathVariable Long roomId) {
         roomService.deleteRoom(roomId);
         return ResponseEntity.noContent().build();
     }
