@@ -1,11 +1,14 @@
 package org.chzzk.howmeet.domain.common.model;
 
+import org.chzzk.howmeet.domain.common.exception.NicknameException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.chzzk.howmeet.common.util.DisplayFormat.DISPLAY_NAME_FORMAT;
+import static org.chzzk.howmeet.domain.common.exception.NicknameErrorCode.INVALID_NICKNAME;
 
 class NicknameTest {
     @ParameterizedTest(name = DISPLAY_NAME_FORMAT)
@@ -16,7 +19,8 @@ class NicknameTest {
     })
     public void invalidLength(final String displayName, final String value) throws Exception {
         assertThatThrownBy(() -> Nickname.from(value))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(NicknameException.class)
+                .hasMessageContaining(INVALID_NICKNAME.getMessage());
     }
 
     @ParameterizedTest(name = DISPLAY_NAME_FORMAT)
@@ -32,7 +36,8 @@ class NicknameTest {
     })
     public void invalidCharacters(final String displayName, final String value) throws Exception {
         assertThatThrownBy(() -> Nickname.from(value))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(NicknameException.class)
+                .hasMessageContaining(INVALID_NICKNAME.getMessage());
     }
 
     @ParameterizedTest(name = DISPLAY_NAME_FORMAT)
@@ -43,6 +48,16 @@ class NicknameTest {
     })
     public void invalidHyphenOrUnderscore(final String displayName, final String value) throws Exception {
         assertThatThrownBy(() -> Nickname.from(value))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(NicknameException.class)
+                .hasMessageContaining(INVALID_NICKNAME.getMessage());
+    }
+    
+    @ParameterizedTest
+    @DisplayName("비속어 필터링")
+    @ValueSource(strings = { "씨발", "개새끼"})
+    public void badWordFiltering(final String value) throws Exception {
+        assertThatThrownBy(() -> Nickname.from(value))
+                .isInstanceOf(NicknameException.class)
+                .hasMessageContaining(INVALID_NICKNAME.getMessage());
     }
 }
