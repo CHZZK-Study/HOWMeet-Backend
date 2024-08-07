@@ -3,6 +3,10 @@ package org.chzzk.howmeet.domain.common.model;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.chzzk.howmeet.domain.common.auth.model.BadWordFilteringSingleton;
+import org.chzzk.howmeet.domain.common.exception.NicknameException;
+
+import static org.chzzk.howmeet.domain.common.exception.NicknameErrorCode.INVALID_NICKNAME;
 
 @EqualsAndHashCode
 @Getter
@@ -22,8 +26,8 @@ public class Nickname {
     }
 
     private void validateNickname(final String value) {
-        if (!value.matches(NICKNAME_REGEX)) {
-            throw new IllegalArgumentException();   // todo 8/1 (목) 김민우 : 닉네임은 Guest, Member 모두에 존재하므로 어떤 예외 클래스를 써야될지?
+        if (!value.matches(NICKNAME_REGEX) || BadWordFilteringSingleton.containsBadWord(value)) {
+            throw new NicknameException(INVALID_NICKNAME);
         }
     }
 }
