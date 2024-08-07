@@ -2,6 +2,7 @@ package org.chzzk.howmeet.global.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.chzzk.howmeet.domain.common.auth.exception.AuthException;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.temporary.auth.annotation.TemporaryUser;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,8 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.Objects;
+
+import static org.chzzk.howmeet.domain.common.auth.exception.AuthErrorCode.JWT_FORBIDDEN;
 
 @Component
 public class GuestAuthorityInterceptor implements HandlerInterceptor {
@@ -38,7 +41,7 @@ public class GuestAuthorityInterceptor implements HandlerInterceptor {
     private void validateGuestAuthorization(final HttpServletRequest request) {
         final AuthPrincipal authPrincipal = (AuthPrincipal) request.getAttribute(authAttributeKey);
         if (!authPrincipal.isGuest()) {
-            throw new IllegalArgumentException();
+            throw new AuthException(JWT_FORBIDDEN);
         }
     }
 }
