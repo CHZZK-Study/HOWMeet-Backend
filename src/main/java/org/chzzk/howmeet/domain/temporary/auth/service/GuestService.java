@@ -16,6 +16,7 @@ import org.chzzk.howmeet.global.util.TokenProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.GUEST_ALREADY_EXIST;
 import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.GUEST_NOT_FOUND;
 
 @RequiredArgsConstructor
@@ -56,7 +57,7 @@ public class GuestService {
 
     private void validateDuplicateNicknameInScheduleId(final Long guestScheduleId, final String nickname) {
         if (guestRepository.existsByGuestScheduleIdAndNickname(guestScheduleId, Nickname.from(nickname))) {
-            throw new GuestException(GUEST_NOT_FOUND);
+            throw new GuestException(GUEST_ALREADY_EXIST);
         }
     }
 
