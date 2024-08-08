@@ -12,7 +12,7 @@ import static org.chzzk.howmeet.domain.common.exception.NicknameErrorCode.INVALI
 @Getter
 @ToString
 public class Nickname {
-    private static final String NICKNAME_REGEX = "^(?![-_]{2,10}$)[A-Za-z0-9가-힣]{2,10}$";
+    private static final String NICKNAME_REGEX = "^(?![-_]{2,10}$)[가-힣ㄱ-ㅎㅏ-ㅣA-Za-z0-9_-]{2,10}$";
 
     private final String value;
 
