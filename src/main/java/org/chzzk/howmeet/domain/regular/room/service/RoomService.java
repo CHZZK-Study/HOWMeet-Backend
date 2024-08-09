@@ -73,6 +73,9 @@ public class RoomService {
 
     @Transactional
     public void deleteRoom(Long roomId) {
+        if (!roomRepository.existsById(roomId)) {
+            throw new RuntimeException("Invalid room ID");
+        }
         roomRepository.deleteById(roomId);
     }
 

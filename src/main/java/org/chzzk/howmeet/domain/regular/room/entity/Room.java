@@ -49,4 +49,12 @@ public class Room extends BaseEntity {
     public void updateName(RoomName name) {
         this.name = name;
     }
+
+    public void setSchedules(List<MemberSchedule> schedules) {
+        this.schedules = schedules;
+    }
+
+    public void setMembers(List<RoomMember> members) {
+        this.members = members;
+    }
 }

@@ -56,15 +56,11 @@ public class MemberSchedule extends BaseEntity {
         return new MemberSchedule(dates, time, name, room);
     }
 
-//    public static MemberSchedule of(final List<String> dates, final ScheduleTime time, final ScheduleName name, final RoomMember roomMember) {
-//        return new MemberSchedule(dates, time, name, roomMember);
-//    }
+    public void complete() {
+        this.status = COMPLETE;
+    }
 
     public void setRoom(Room room) {
         this.room = room;
-    }
-
-    public void complete() {
-        this.status = COMPLETE;
     }
 }
