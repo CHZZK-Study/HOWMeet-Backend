@@ -1,24 +1,17 @@
 package org.chzzk.howmeet.domain.regular.schedule.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.chzzk.howmeet.domain.common.embedded.date.impl.ScheduleDate;
+import org.chzzk.howmeet.domain.common.embedded.date.impl.ScheduleTime;
 import org.chzzk.howmeet.domain.common.entity.BaseEntity;
 import org.chzzk.howmeet.domain.common.model.ScheduleName;
 import org.chzzk.howmeet.domain.common.model.converter.ScheduleNameConverter;
 import org.chzzk.howmeet.domain.regular.room.entity.Room;
-import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
+
+import java.util.List;
 
 import static org.chzzk.howmeet.domain.regular.schedule.entity.ScheduleStatus.COMPLETE;
 import static org.chzzk.howmeet.domain.regular.schedule.entity.ScheduleStatus.PROGRESS;
@@ -32,8 +25,12 @@ public class MemberSchedule extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ElementCollection
+    @Column(name = "date", nullable = false)
+    private List<String> dates;
+
     @Embedded
-    private ScheduleDate date;
+    private ScheduleTime time;
 
     @Convert(converter = ScheduleNameConverter.class)
     @Column(name = "name", nullable = false)
@@ -43,22 +40,28 @@ public class MemberSchedule extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ScheduleStatus status;
 
-    @Column(name = "room_id", nullable = false)
-    private Long roomId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id", nullable = false)
+    private Room room;
 
-    private MemberSchedule(final ScheduleDate date, final ScheduleName name, final Long roomId) {
-        this.date = date;
+    private MemberSchedule(final List<String> dates, final ScheduleTime time, final ScheduleName name, final Room room) {
+        this.dates = dates;
+        this.time = time;
         this.name = name;
         this.status = PROGRESS;
-        this.roomId = roomId;
+        this.room = room;
     }
 
-    public static MemberSchedule of(final ScheduleDate date, final ScheduleName name, final Room room) {
-        return new MemberSchedule(date, name, room.getId());
+    public static MemberSchedule of(final List<String> dates, final ScheduleTime time, final ScheduleName name, final Room room) {
+        return new MemberSchedule(dates, time, name, room);
     }
 
-    public static MemberSchedule of(final ScheduleDate date, final ScheduleName name, final RoomMember roomMember) {
-        return new MemberSchedule(date, name, roomMember.getRoomId());
+//    public static MemberSchedule of(final List<String> dates, final ScheduleTime time, final ScheduleName name, final RoomMember roomMember) {
+//        return new MemberSchedule(dates, time, name, roomMember);
+//    }
+
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
     public void complete() {
