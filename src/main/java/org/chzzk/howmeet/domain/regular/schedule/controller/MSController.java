@@ -28,6 +28,6 @@ public class MSController {
     @DeleteMapping("/{memberScheduleId}")
     public ResponseEntity<?> deleteGuestSchedule(@PathVariable Long memberScheduleId) {
         msService.deleteMemberSchedule(memberScheduleId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Member schedule successfully deleted");
     }
 }
