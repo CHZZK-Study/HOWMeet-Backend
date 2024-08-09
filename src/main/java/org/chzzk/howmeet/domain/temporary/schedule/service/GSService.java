@@ -15,8 +15,8 @@ public class GSService {
     private final GSRepository gsRepository;
 
     @Transactional
-    public GSResponse createGuestSchedule(GSRequest GSRequest) {
-        GuestSchedule guestSchedule = GuestSchedule.of(GSRequest.date(), GSRequest.name());
+    public GSResponse createGuestSchedule(GSRequest gsRequest) {
+        GuestSchedule guestSchedule = GuestSchedule.of(gsRequest.dates(), gsRequest.time(), gsRequest.name());
         GuestSchedule savedSchedule = gsRepository.save(guestSchedule);
         String inviteLink = "http://localhost:8080/guest-schedule/invite/" + savedSchedule.getId();
         return GSResponse.of(savedSchedule, inviteLink);

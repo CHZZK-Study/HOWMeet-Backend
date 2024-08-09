@@ -1,11 +1,14 @@
 package org.chzzk.howmeet.domain.regular.room.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.chzzk.howmeet.domain.regular.room.RoomService;
+import org.chzzk.howmeet.domain.regular.room.dto.RoomMemberRequest;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomResponse;
+import org.chzzk.howmeet.domain.regular.room.service.RoomService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/room")
@@ -27,6 +30,14 @@ public class RoomController {
         return ResponseEntity.ok(roomResponse);
     }
 
+    @PatchMapping("/{roomId}/members")
+    public ResponseEntity<RoomResponse> updateRoomMembers(
+            @PathVariable Long roomId,
+            @RequestBody final List<RoomMemberRequest> roomMemberRequests) {
+        final RoomResponse roomResponse = roomService.updateRoomMembers(roomId, roomMemberRequests);
+        return ResponseEntity.ok(roomResponse);
+    }
+
     @GetMapping("/{roomId}")
     public ResponseEntity<?> getRoom(@PathVariable Long roomId) {
         final RoomResponse roomResponse = roomService.getRoom(roomId);
@@ -36,6 +47,12 @@ public class RoomController {
     @DeleteMapping("/{roomId}")
     public ResponseEntity<?> deleteRoom(@PathVariable Long roomId) {
         roomService.deleteRoom(roomId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{roomId}/members/{roomMemberId}")
+    public ResponseEntity<?> deleteRoomMember(@PathVariable Long roomId, @PathVariable Long roomMemberId) {
+        roomService.deleteRoomMember(roomId, roomMemberId);
         return ResponseEntity.noContent().build();
     }
 }

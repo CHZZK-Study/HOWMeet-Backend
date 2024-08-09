@@ -15,8 +15,8 @@ public class MSService {
     private final MSRepository msRepository;
 
     @Transactional
-    public MSResponse createMemberSchedule(MSRequest memberScheduleRequest) {
-        MemberSchedule memberSchedule = MemberSchedule.of(memberScheduleRequest.date(), memberScheduleRequest.name(), memberScheduleRequest.room());
+    public MSResponse createMemberSchedule(MSRequest msRequest) {
+        MemberSchedule memberSchedule = MemberSchedule.of(msRequest.dates(), msRequest.time(), msRequest.name(), msRequest.room());
         MemberSchedule savedSchedule = msRepository.save(memberSchedule);
         String inviteLink = "http://localhost:8080/member-schedule/invite/" + savedSchedule.getId();
         return MSResponse.of(savedSchedule, inviteLink);
