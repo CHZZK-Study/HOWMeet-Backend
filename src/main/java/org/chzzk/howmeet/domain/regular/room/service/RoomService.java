@@ -35,14 +35,15 @@ public class RoomService {
         memberSchedule.setRoom(savedRoom);
         msRepository.save(memberSchedule);
 
-        return RoomResponse.of(savedRoom, List.of(leader));
+        return RoomResponse.of(savedRoom, List.of(leader), List.of(memberSchedule));
     }
 
     public RoomResponse getRoom(Long roomId) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid room ID"));
         List<RoomMember> roomMembers = roomMemberRepository.findByRoomId(roomId);
-        return RoomResponse.of(room, roomMembers);
+        List<MemberSchedule> memberSchedules = room.getSchedules();
+        return RoomResponse.of(room, roomMembers, memberSchedules);
     }
 
     @Transactional
@@ -54,7 +55,8 @@ public class RoomService {
         roomRepository.save(room);
 
         List<RoomMember> roomMembers = roomMemberRepository.findByRoomId(roomId);
-        return RoomResponse.of(room, roomMembers);
+        List<MemberSchedule> memberSchedules = room.getSchedules();
+        return RoomResponse.of(room, roomMembers, memberSchedules);
     }
 
     @Transactional
@@ -68,7 +70,8 @@ public class RoomService {
         roomMemberRepository.saveAll(newRoomMembers);
 
         List<RoomMember> allRoomMembers = roomMemberRepository.findByRoomId(roomId);
-        return RoomResponse.of(room, allRoomMembers);
+        List<MemberSchedule> memberSchedules = room.getSchedules();
+        return RoomResponse.of(room, allRoomMembers, memberSchedules);
     }
 
     @Transactional

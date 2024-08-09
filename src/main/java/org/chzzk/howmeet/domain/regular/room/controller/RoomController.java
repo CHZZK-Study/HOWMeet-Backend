@@ -47,12 +47,12 @@ public class RoomController {
     @DeleteMapping("/{roomId}")
     public ResponseEntity<?> deleteRoom(@PathVariable Long roomId) {
         roomService.deleteRoom(roomId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Room successfully deleted");
     }
 
     @DeleteMapping("/{roomId}/members/{roomMemberId}")
     public ResponseEntity<?> deleteRoomMember(@PathVariable Long roomId, @PathVariable Long roomMemberId) {
         roomService.deleteRoomMember(roomId, roomMemberId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("RoomMember successfully deleted");
     }
 }
