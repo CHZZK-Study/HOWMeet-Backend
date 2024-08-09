@@ -3,6 +3,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.0'
     id 'io.spring.dependency-management' version '1.1.4'
+    id 'com.epages.restdocs-api-spec' version '0.18.4'
 }
 
 // group, version
@@ -57,6 +58,8 @@ dependencies {
 
     // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.18.4'
 }
 // Querydsl 빌드 옵션 (옵셔널)
 def generated = 'src/main/generated'
@@ -74,4 +77,19 @@ sourceSets {
 // gradle clean 시에 QClass 디렉토리 삭제
 clean {
     delete file(generated)
+}
+
+test {
+    useJUnitPlatform()
+}
+
+openapi3 {
+    servers = [
+            { url = 'http://localhost:8080' },
+            { url = 'http://production-api-server-url.com' }
+    ]
+    title = 'Post Service API'
+    description = 'Post Service API description'
+    version = '1.0.0'
+    format = 'json'
 }
