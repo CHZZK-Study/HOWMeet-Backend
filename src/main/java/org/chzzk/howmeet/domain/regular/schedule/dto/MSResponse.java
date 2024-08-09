@@ -6,10 +6,10 @@ import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public record MemberScheduleResponse(Long memberScheduleId, String name, LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime, String inviteLink) {
-    public static MemberScheduleResponse of(final MemberSchedule memberSchedule, final String inviteLink) {
+public record MSResponse(Long memberScheduleId, String name, LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime, String inviteLink) {
+    public static MSResponse of(final MemberSchedule memberSchedule, final String inviteLink) {
         ScheduleDate scheduleDate = memberSchedule.getDate();
-        return new MemberScheduleResponse(
+        return new MSResponse(
                 memberSchedule.getId(),
                 memberSchedule.getName().getValue(),
                 scheduleDate.getStartDate().toLocalDate(),
