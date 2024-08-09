@@ -2,9 +2,8 @@ package org.chzzk.howmeet.global.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.chzzk.howmeet.domain.common.auth.exception.AuthException;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
-import org.chzzk.howmeet.domain.temporary.auth.annotation.TemporaryUser;
+import org.chzzk.howmeet.domain.regular.auth.annotation.RegularUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -12,13 +11,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.Objects;
 
-import static org.chzzk.howmeet.domain.common.auth.exception.AuthErrorCode.JWT_FORBIDDEN;
-
 @Component
-public class GuestAuthorityInterceptor implements HandlerInterceptor {
+public class MemberAuthorityInterceptor implements HandlerInterceptor {
     private final String authAttributeKey;
 
-    public GuestAuthorityInterceptor(@Value("${auth.attribute-key}") final String authAttributeKey) {
+    public MemberAuthorityInterceptor(@Value("${auth.attribute-key}") final String authAttributeKey) {
         this.authAttributeKey = authAttributeKey;
     }
 
@@ -30,18 +27,18 @@ public class GuestAuthorityInterceptor implements HandlerInterceptor {
             return true;
         }
         final HandlerMethod handlerMethod = (HandlerMethod) handler;
-        final TemporaryUser temporaryUser = handlerMethod.getMethodAnnotation(TemporaryUser.class);
-        if (!Objects.isNull(temporaryUser)) {
-            validateGuestAuthorization(request);
+        final RegularUser regularUser = handlerMethod.getMethodAnnotation(RegularUser.class);
+        if (!Objects.isNull(regularUser)) {
+            validateUserAuthorization(request);
         }
 
         return true;
     }
 
-    private void validateGuestAuthorization(final HttpServletRequest request) {
+    private void validateUserAuthorization(final HttpServletRequest request) {
         final AuthPrincipal authPrincipal = (AuthPrincipal) request.getAttribute(authAttributeKey);
-        if (!authPrincipal.isGuest()) {
-            throw new AuthException(JWT_FORBIDDEN);
+        if (!authPrincipal.isMember()) {
+            throw new IllegalArgumentException();
         }
     }
 }

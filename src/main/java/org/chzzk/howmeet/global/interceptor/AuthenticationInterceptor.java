@@ -6,6 +6,7 @@ import com.querydsl.core.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.chzzk.howmeet.domain.common.auth.exception.AuthException;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.regular.auth.repository.MemberRepository;
 import org.chzzk.howmeet.domain.temporary.auth.repository.GuestRepository;
@@ -14,6 +15,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import static org.chzzk.howmeet.domain.common.auth.exception.AuthErrorCode.JWT_EXPIRED;
+import static org.chzzk.howmeet.domain.common.auth.exception.AuthErrorCode.JWT_INVALID;
+import static org.chzzk.howmeet.domain.common.auth.exception.AuthErrorCode.JWT_NOT_FOUND;
+import static org.chzzk.howmeet.domain.common.auth.exception.AuthErrorCode.JWT_INVALID_SUBJECT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Component
@@ -63,8 +68,12 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     private String getAccessToken(final HttpServletRequest request) {
         final String value = request.getHeader(AUTHORIZATION);
-        if (StringUtils.isNullOrEmpty(value) || !value.startsWith(BEARER_TYPE)) {
-            throw new IllegalArgumentException();
+        if (StringUtils.isNullOrEmpty(value)) {
+            throw new AuthException(JWT_NOT_FOUND);
+        }
+
+        if (!value.startsWith(BEARER_TYPE)) {
+            throw new AuthException(JWT_INVALID);
         }
 
         return value.substring(BEARER_TYPE.length())
@@ -73,14 +82,14 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     private void validateToken(final String accessToken) {
         if (!tokenProvider.validateToken(accessToken)) {
-            throw new IllegalArgumentException();
+            throw new AuthException(JWT_EXPIRED);
         }
     }
 
     private void validateMember(final AuthPrincipal authPrincipal) {
         final Long id = authPrincipal.id();
         if (!guestRepository.existsById(id) && !memberRepository.existsById(id)) {
-            throw new IllegalArgumentException();
+            throw new AuthException(JWT_INVALID_SUBJECT);
         }
     }
 
@@ -88,8 +97,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         try {
             return objectMapper.readValue(tokenProvider.getPayload(accessToken), AuthPrincipal.class);
         } catch (JsonProcessingException e) {
-            //log.info("AuthPrincipal 변환 중 에러가 발생했습니다. accessToken : {}", accessToken);
-            throw new RuntimeException(e);
+            log.info("AuthPrincipal 변환 중 에러가 발생했습니다. accessToken : {}", accessToken);
+            throw new AuthException(JWT_INVALID_SUBJECT);
         }
     }
 }

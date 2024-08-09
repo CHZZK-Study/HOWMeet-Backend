@@ -5,5 +5,5 @@ public final class DisplayFormat {
 
     }
 
-    public static final String DISPLAY_NAME_FORMAT = "경우의 수 = {0}, 값 = {1}";
+    public static final String DISPLAY_NAME_FORMAT = "경우 = {0}, 값 = {1}";
 }
