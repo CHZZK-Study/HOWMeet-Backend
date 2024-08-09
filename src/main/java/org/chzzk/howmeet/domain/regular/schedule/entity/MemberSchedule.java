@@ -1,5 +1,6 @@
 package org.chzzk.howmeet.domain.regular.schedule.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -42,6 +43,7 @@ public class MemberSchedule extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id", nullable = false)
+    @JsonIgnore
     private Room room;
 
     private MemberSchedule(final List<String> dates, final ScheduleTime time, final ScheduleName name, final Room room) {
