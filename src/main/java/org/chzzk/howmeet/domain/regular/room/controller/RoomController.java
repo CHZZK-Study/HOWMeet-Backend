@@ -22,7 +22,7 @@ public class RoomController {
         return ResponseEntity.ok(roomResponse);
     }
 
-    @PatchMapping("/{roomId}/edit")
+    @PatchMapping("/{roomId}")
     public ResponseEntity<?> updateRoom(
             @PathVariable Long roomId,
             @RequestBody final RoomRequest roomRequest) {
