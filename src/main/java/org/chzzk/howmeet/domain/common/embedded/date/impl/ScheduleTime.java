@@ -22,7 +22,7 @@ public class ScheduleTime {
         this.endTime = endTime;
     }
 
-    public static ScheduleTime of(LocalTime startTime, LocalTime endTime) {
+    public static ScheduleTime of(final LocalTime startTime, final LocalTime endTime) {
         return new ScheduleTime(startTime, endTime);
     }
 
