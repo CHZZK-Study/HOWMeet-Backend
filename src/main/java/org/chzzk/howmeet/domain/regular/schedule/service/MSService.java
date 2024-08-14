@@ -1,6 +1,7 @@
 package org.chzzk.howmeet.domain.regular.schedule.service;
 
 import lombok.RequiredArgsConstructor;
+import org.chzzk.howmeet.domain.common.util.InviteUrlProvider;
 import org.chzzk.howmeet.domain.regular.room.entity.Room;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomRepository;
 import org.chzzk.howmeet.domain.regular.schedule.dto.MSRequest;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MSService {
     private final MSRepository msRepository;
     private final RoomRepository roomRepository;
+    private final InviteUrlProvider inviteUrlProvider = new InviteUrlProvider("member-schedule");
 
     @Transactional
     public MSResponse createMemberSchedule(final MSRequest msRequest) {
@@ -26,7 +28,7 @@ public class MSService {
 
         MemberSchedule savedSchedule = msRepository.save(memberSchedule);
 
-        String inviteLink = "http://localhost:8080/member-schedule/invite/" + savedSchedule.getId();
+        String inviteLink = inviteUrlProvider.generateInviteUrl(savedSchedule.getId());
 
         return MSResponse.of(savedSchedule, inviteLink);
     }
@@ -35,7 +37,7 @@ public class MSService {
         MemberSchedule memberSchedule = msRepository.findById(memberScheduleId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid schedule ID"));
 
-        String inviteLink = "http://localhost:8080/member-schedule/invite/" + memberSchedule.getId();
+        String inviteLink = inviteUrlProvider.generateInviteUrl(memberSchedule.getId());
 
         return MSResponse.of(memberSchedule, inviteLink);
     }

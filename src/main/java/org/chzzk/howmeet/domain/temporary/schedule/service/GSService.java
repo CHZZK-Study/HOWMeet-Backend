@@ -1,6 +1,7 @@
 package org.chzzk.howmeet.domain.temporary.schedule.service;
 
 import lombok.RequiredArgsConstructor;
+import org.chzzk.howmeet.domain.common.util.InviteUrlProvider;
 import org.chzzk.howmeet.domain.temporary.schedule.dto.GSRequest;
 import org.chzzk.howmeet.domain.temporary.schedule.dto.GSResponse;
 import org.chzzk.howmeet.domain.temporary.schedule.entity.GuestSchedule;
@@ -13,19 +14,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class GSService {
     private final GSRepository gsRepository;
+    private final InviteUrlProvider inviteUrlProvider = new InviteUrlProvider("guest-schedule");
 
     @Transactional
     public GSResponse createGuestSchedule(final GSRequest gsRequest) {
         GuestSchedule guestSchedule = GuestSchedule.of(gsRequest.dates(), gsRequest.time(), gsRequest.name());
         GuestSchedule savedSchedule = gsRepository.save(guestSchedule);
-        String inviteLink = "http://localhost:8080/guest-schedule/invite/" + savedSchedule.getId();
+        String inviteLink = inviteUrlProvider.generateInviteUrl(savedSchedule.getId());
         return GSResponse.of(savedSchedule, inviteLink);
     }
 
     public GSResponse getGuestSchedule(final Long guestScheduleId) {
         GuestSchedule guestSchedule = gsRepository.findById(guestScheduleId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid schedule ID"));
-        String inviteLink = "http://localhost:8080/guest-schedule/invite/" + guestSchedule.getId();
+        String inviteLink = inviteUrlProvider.generateInviteUrl(guestSchedule.getId());
         return GSResponse.of(guestSchedule, inviteLink);
     }
 
