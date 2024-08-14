@@ -62,7 +62,9 @@ public class MemberSchedule extends BaseEntity {
         this.status = COMPLETE;
     }
 
-    public void setRoom(Room room) {
-        this.room = room;
+    public void updateRoom(final Room room) {
+        if (room != null) {
+            this.room = room;
+        }
     }
 }

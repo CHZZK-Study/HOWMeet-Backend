@@ -15,14 +15,14 @@ public class GSService {
     private final GSRepository gsRepository;
 
     @Transactional
-    public GSResponse createGuestSchedule(GSRequest gsRequest) {
+    public GSResponse createGuestSchedule(final GSRequest gsRequest) {
         GuestSchedule guestSchedule = GuestSchedule.of(gsRequest.dates(), gsRequest.time(), gsRequest.name());
         GuestSchedule savedSchedule = gsRepository.save(guestSchedule);
         String inviteLink = "http://localhost:8080/guest-schedule/invite/" + savedSchedule.getId();
         return GSResponse.of(savedSchedule, inviteLink);
     }
 
-    public GSResponse getGuestSchedule(Long guestScheduleId) {
+    public GSResponse getGuestSchedule(final Long guestScheduleId) {
         GuestSchedule guestSchedule = gsRepository.findById(guestScheduleId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid schedule ID"));
         String inviteLink = "http://localhost:8080/guest-schedule/invite/" + guestSchedule.getId();
@@ -30,10 +30,10 @@ public class GSService {
     }
 
     @Transactional
-    public void deleteGuestSchedule(Long id) {
-        if (!gsRepository.existsById(id)) {
+    public void deleteGuestSchedule(final Long guestScheduleId) {
+        if (!gsRepository.existsById(guestScheduleId)) {
             throw new RuntimeException("Invalid schedule ID");
         }
-        gsRepository.deleteById(id);
+        gsRepository.deleteById(guestScheduleId);
     }
 }

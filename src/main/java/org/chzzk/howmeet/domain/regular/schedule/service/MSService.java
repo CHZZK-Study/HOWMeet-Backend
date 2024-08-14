@@ -18,7 +18,7 @@ public class MSService {
     private final RoomRepository roomRepository;
 
     @Transactional
-    public MSResponse createMemberSchedule(MSRequest msRequest) {
+    public MSResponse createMemberSchedule(final MSRequest msRequest) {
         Room room = roomRepository.findById(msRequest.roomId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid room ID"));
 
@@ -31,7 +31,7 @@ public class MSService {
         return MSResponse.of(savedSchedule, inviteLink);
     }
 
-    public MSResponse getMemberSchedule(Long memberScheduleId) {
+    public MSResponse getMemberSchedule(final Long memberScheduleId) {
         MemberSchedule memberSchedule = msRepository.findById(memberScheduleId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid schedule ID"));
 
@@ -41,7 +41,10 @@ public class MSService {
     }
 
     @Transactional
-    public void deleteMemberSchedule(Long memberScheduleId) {
+    public void deleteMemberSchedule(final Long memberScheduleId) {
+        if (!msRepository.existsById(memberScheduleId)) {
+            throw new RuntimeException("Invalid schedule ID");
+        }
         msRepository.deleteById(memberScheduleId);
     }
 }

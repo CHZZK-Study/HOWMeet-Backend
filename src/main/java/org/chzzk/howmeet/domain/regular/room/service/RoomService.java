@@ -25,20 +25,20 @@ public class RoomService {
     private final MSRepository msRepository;
 
     @Transactional
-    public RoomResponse createRoom(RoomRequest roomRequest) {
+    public RoomResponse createRoom(final RoomRequest roomRequest) {
         Room room = new Room(roomRequest.description(), roomRequest.name());
         Room savedRoom = roomRepository.save(room);
         RoomMember leader = RoomMember.of(roomRequest.leaderMemberId(), savedRoom, true);
         roomMemberRepository.save(leader);
 
         MemberSchedule memberSchedule = roomRequest.memberSchedule();
-        memberSchedule.setRoom(savedRoom);
+        memberSchedule.updateRoom(savedRoom);
         msRepository.save(memberSchedule);
 
         return RoomResponse.of(savedRoom, List.of(leader), List.of(memberSchedule));
     }
 
-    public RoomResponse getRoom(Long roomId) {
+    public RoomResponse getRoom(final Long roomId) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid room ID"));
         List<RoomMember> roomMembers = roomMemberRepository.findByRoomId(roomId);
@@ -47,7 +47,7 @@ public class RoomService {
     }
 
     @Transactional
-    public RoomResponse updateRoom(Long roomId, RoomRequest roomRequest) {
+    public RoomResponse updateRoom(final Long roomId, final RoomRequest roomRequest) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid room ID"));
         room.updateDescription(roomRequest.description());
@@ -60,7 +60,7 @@ public class RoomService {
     }
 
     @Transactional
-    public RoomResponse updateRoomMembers(Long roomId, List<RoomMemberRequest> roomMemberRequests) {
+    public RoomResponse updateRoomMembers(final Long roomId, final List<RoomMemberRequest> roomMemberRequests) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid room ID"));
 
@@ -83,7 +83,7 @@ public class RoomService {
     }
 
     @Transactional
-    public void deleteRoomMember(Long roomId, Long roomMemberId) {
+    public void deleteRoomMember(final Long roomId, final Long roomMemberId) {
         RoomMember roomMember = roomMemberRepository.findById(roomMemberId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid room member ID"));
         if (!roomMember.getRoom().getId().equals(roomId)) {

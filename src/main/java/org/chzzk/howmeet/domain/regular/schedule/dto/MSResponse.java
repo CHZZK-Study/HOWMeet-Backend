@@ -8,7 +8,7 @@ import java.util.List;
 
 public record MSResponse(Long id, List<String> dates, ScheduleTime time, ScheduleName name, String inviteLink) {
 
-    public static MSResponse of(MemberSchedule memberSchedule, String inviteLink) {
+    public static MSResponse of(final MemberSchedule memberSchedule, final String inviteLink) {
         return new MSResponse(
                 memberSchedule.getId(),
                 memberSchedule.getDates(),
