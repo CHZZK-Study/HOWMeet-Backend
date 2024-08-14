@@ -27,7 +27,7 @@ public class RoomService {
 
     @Transactional
     public RoomResponse createRoom(final RoomRequest roomRequest) {
-        Room room = new Room(roomRequest.description(), roomRequest.name());
+        Room room = roomRequest.toEntity();
         Room savedRoom = roomRepository.save(room);
         RoomMember leader = RoomMember.of(roomRequest.leaderMemberId(), savedRoom, true);
         roomMemberRepository.save(leader);
