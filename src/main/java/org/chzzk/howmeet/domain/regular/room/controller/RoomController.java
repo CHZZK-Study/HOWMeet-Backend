@@ -2,8 +2,10 @@ package org.chzzk.howmeet.domain.regular.room.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomMemberRequest;
+import org.chzzk.howmeet.domain.regular.room.dto.RoomMemberResponse;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomResponse;
+import org.chzzk.howmeet.domain.regular.room.service.RoomMemberService;
 import org.chzzk.howmeet.domain.regular.room.service.RoomService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,7 @@ import java.util.List;
 @RestController
 public class RoomController {
     private final RoomService roomService;
+    private final RoomMemberService roomMemberService;
 
     @PostMapping
     public ResponseEntity<?> createRoom(@RequestBody final RoomRequest roomRequest) {
@@ -33,11 +36,11 @@ public class RoomController {
     }
 
     @PatchMapping("/{roomId}/members")
-    public ResponseEntity<RoomResponse> updateRoomMembers(
+    public ResponseEntity<List<RoomMemberResponse>> updateRoomMembers(
             @PathVariable Long roomId,
             @RequestBody final List<RoomMemberRequest> roomMemberRequests) {
-        final RoomResponse roomResponse = roomService.updateRoomMembers(roomId, roomMemberRequests);
-        return ResponseEntity.ok(roomResponse);
+        List<RoomMemberResponse> roomMemberResponses = roomMemberService.updateRoomMembers(roomId, roomMemberRequests);
+        return ResponseEntity.ok(roomMemberResponses);
     }
 
     @GetMapping("/{roomId}")

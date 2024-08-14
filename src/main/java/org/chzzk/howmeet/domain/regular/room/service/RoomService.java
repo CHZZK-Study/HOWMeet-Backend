@@ -1,7 +1,6 @@
 package org.chzzk.howmeet.domain.regular.room.service;
 
 import lombok.RequiredArgsConstructor;
-import org.chzzk.howmeet.domain.regular.room.dto.RoomMemberRequest;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomResponse;
 import org.chzzk.howmeet.domain.regular.room.entity.Room;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -63,21 +61,6 @@ public class RoomService {
         List<RoomMember> roomMembers = roomMemberRepository.findByRoomId(roomId);
         List<MemberSchedule> memberSchedules = room.getSchedules();
         return RoomResponse.of(room, roomMembers, memberSchedules);
-    }
-
-    @Transactional
-    public RoomResponse updateRoomMembers(final Long roomId, final List<RoomMemberRequest> roomMemberRequests) {
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid room ID"));
-
-        List<RoomMember> newRoomMembers = roomMemberRequests.stream()
-                .map(request -> RoomMember.of(request.memberId(), room, request.isLeader()))
-                .collect(Collectors.toList());
-        roomMemberRepository.saveAll(newRoomMembers);
-
-        List<RoomMember> allRoomMembers = roomMemberRepository.findByRoomId(roomId);
-        List<MemberSchedule> memberSchedules = room.getSchedules();
-        return RoomResponse.of(room, allRoomMembers, memberSchedules);
     }
 
     @Transactional
