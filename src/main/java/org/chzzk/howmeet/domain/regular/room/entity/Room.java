@@ -42,19 +42,15 @@ public class Room extends BaseEntity {
         this.name = name;
     }
 
-    public void updateDescription(RoomDescription description) {
-        this.description = description;
+    public void updateDescription(final RoomDescription description) {
+        if (!description.isNullOrEmpty()) {
+            this.description = description;
+        }
     }
 
-    public void updateName(RoomName name) {
-        this.name = name;
-    }
-
-    public void setSchedules(List<MemberSchedule> schedules) {
-        this.schedules = schedules;
-    }
-
-    public void setMembers(List<RoomMember> members) {
-        this.members = members;
+    public void updateName(final RoomName name) {
+        if (!name.isNullOrEmpty()) {
+            this.name = name;
+        }
     }
 }
