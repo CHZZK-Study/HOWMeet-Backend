@@ -8,8 +8,10 @@ import org.chzzk.howmeet.domain.regular.room.model.RoomDescription;
 import org.chzzk.howmeet.domain.regular.room.model.RoomName;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomMemberRepository;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomRepository;
+import org.chzzk.howmeet.domain.regular.schedule.dto.MSRequest;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 import org.chzzk.howmeet.domain.regular.schedule.repository.MSRepository;
+import org.chzzk.howmeet.fixture.MSFixture;
 import org.chzzk.howmeet.fixture.RoomFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,6 +44,8 @@ public class RoomServiceTest {
     private RoomService roomService;
 
     Room room = RoomFixture.ROOM_1.create();
+    MemberSchedule memberSchedule = MSFixture.MEETING_A.create(room);
+    MSRequest msRequest = new MSRequest(memberSchedule.getDates(), memberSchedule.getTime(), memberSchedule.getName(), room.getId());
 
     @Test
     @DisplayName("방 생성 테스트")
@@ -50,7 +54,7 @@ public class RoomServiceTest {
         RoomRequest roomRequest = new RoomRequest(
                 room.getName(),
                 room.getDescription(),
-                room.getSchedules().get(0),
+                msRequest,
                 room.getMembers().get(0).getMemberId()
         );
 
@@ -137,7 +141,7 @@ public class RoomServiceTest {
         RoomRequest updateRequest = new RoomRequest(
                 RoomName.from("Updated Room Name"),
                 RoomDescription.from("Updated Room Description"),
-                room.getSchedules().get(0),
+                msRequest,
                 room.getMembers().get(0).getMemberId()
         );
 

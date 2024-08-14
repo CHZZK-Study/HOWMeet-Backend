@@ -1,6 +1,7 @@
 package org.chzzk.howmeet.domain.regular.schedule.service;
 
 import org.chzzk.howmeet.domain.regular.room.entity.Room;
+import org.chzzk.howmeet.domain.regular.room.repository.RoomRepository;
 import org.chzzk.howmeet.domain.regular.schedule.dto.MSRequest;
 import org.chzzk.howmeet.domain.regular.schedule.dto.MSResponse;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
@@ -26,12 +27,15 @@ class MSServiceTest {
     @Mock
     MSRepository msRepository;
 
+    @Mock
+    RoomRepository roomRepository;
+
     @InjectMocks
     MSService msService;
-
+    
     Room room = RoomFixture.ROOM_1.create();
     MemberSchedule memberSchedule = MSFixture.MEETING_A.create(room);
-    MSRequest msRequest = new MSRequest(memberSchedule.getDates(), memberSchedule.getTime(), memberSchedule.getName(), room);
+    MSRequest msRequest = new MSRequest(memberSchedule.getDates(), memberSchedule.getTime(), memberSchedule.getName(), room.getId());
     MSResponse msResponse = MSResponse.of(memberSchedule, "http://localhost:8080/member-schedule/invite/" + memberSchedule.getId());
 
     @Test
@@ -39,6 +43,8 @@ class MSServiceTest {
     public void createMemberSchedule() throws Exception {
         // given
         final MSResponse expected = msResponse;
+
+        doReturn(Optional.of(room)).when(roomRepository).findById(room.getId());
 
         // when
         doReturn(memberSchedule).when(msRepository).save(any(MemberSchedule.class));
@@ -83,6 +89,8 @@ class MSServiceTest {
         // given
         Long validId = memberSchedule.getId();
 
+        doReturn(true).when(msRepository).existsById(validId);
+
         // when
         doNothing().when(msRepository).deleteById(validId);
         msService.deleteMemberSchedule(validId);
@@ -98,11 +106,11 @@ class MSServiceTest {
         Long invalidId = 999L;
 
         // when
-        doThrow(new IllegalArgumentException("Invalid schedule ID")).when(msRepository).deleteById(invalidId);
+        doReturn(false).when(msRepository).existsById(invalidId);
 
         // then
         assertThatThrownBy(() -> msService.deleteMemberSchedule(invalidId))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(RuntimeException.class)
                 .hasMessage("Invalid schedule ID");
     }
 }

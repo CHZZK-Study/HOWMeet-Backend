@@ -43,7 +43,7 @@ public class MSService {
     @Transactional
     public void deleteMemberSchedule(final Long memberScheduleId) {
         if (!msRepository.existsById(memberScheduleId)) {
-            throw new RuntimeException("Invalid schedule ID");
+            throw new IllegalArgumentException("Invalid schedule ID");
         }
         msRepository.deleteById(memberScheduleId);
     }

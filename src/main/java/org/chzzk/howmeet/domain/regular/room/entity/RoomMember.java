@@ -1,6 +1,5 @@
 package org.chzzk.howmeet.domain.regular.room.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,8 +21,8 @@ public class RoomMember extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id", nullable = false)
-    @JsonIgnore
     private Room room;
+
 
     @Column(name = "is_leader", nullable = false)
     private Boolean isLeader;

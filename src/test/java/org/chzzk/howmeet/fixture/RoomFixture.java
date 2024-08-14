@@ -32,9 +32,8 @@ public enum RoomFixture {
         Room room = new Room(description, name);
 
         RoomMember roomMember = roomMemberFixture.create(room);
-        room.setMembers(Collections.singletonList(roomMember));
-
-        room.setSchedules(Collections.singletonList(msFixture.create(room)));
+        room.updateMembers(Collections.singletonList(roomMember));
+        room.updateSchedules(Collections.singletonList(msFixture.create(room)));
 
         return room;
     }
