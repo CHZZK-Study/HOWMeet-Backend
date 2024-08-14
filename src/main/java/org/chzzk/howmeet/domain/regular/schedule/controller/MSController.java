@@ -7,6 +7,8 @@ import org.chzzk.howmeet.domain.regular.schedule.service.MSService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
 @RequiredArgsConstructor
 @RequestMapping("/member-schedule")
 @RestController
@@ -14,9 +16,10 @@ public class MSController {
     private final MSService msService;
 
     @PostMapping
-    public ResponseEntity<?> createMemberSchedule(@RequestBody final MSRequest msRequest) {
+    public ResponseEntity<MSResponse> createMemberSchedule(@RequestBody final MSRequest msRequest) {
         final MSResponse msResponse = msService.createMemberSchedule(msRequest);
-        return ResponseEntity.ok(msResponse);
+        return ResponseEntity.created(URI.create("/member-schedule/" + msResponse.id()))
+                .body(msResponse);
     }
 
     @GetMapping("/{memberScheduleId}")

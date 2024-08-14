@@ -8,6 +8,7 @@ import org.chzzk.howmeet.domain.regular.room.service.RoomService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -19,7 +20,8 @@ public class RoomController {
     @PostMapping
     public ResponseEntity<?> createRoom(@RequestBody final RoomRequest roomRequest) {
         final RoomResponse roomResponse = roomService.createRoom(roomRequest);
-        return ResponseEntity.ok(roomResponse);
+        return ResponseEntity.created(URI.create("/room/" + roomResponse.roomId()))
+                .body(roomResponse);
     }
 
     @PatchMapping("/{roomId}")

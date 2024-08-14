@@ -7,6 +7,8 @@ import org.chzzk.howmeet.domain.temporary.schedule.service.GSService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
 @RequiredArgsConstructor
 @RequestMapping("/guest-schedule")
 @RestController
@@ -16,7 +18,8 @@ public class GSController {
     @PostMapping
     public ResponseEntity<?> createGuestSchedule(@RequestBody final GSRequest gsRequest) {
         final GSResponse gsResponse = gsService.createGuestSchedule(gsRequest);
-        return ResponseEntity.ok(gsResponse);
+        return ResponseEntity.created(URI.create("/guest-schedule/" + gsResponse.guestScheduleId()))
+                .body(gsResponse);
     }
 
     @GetMapping("/{guestScheduleId}")
