@@ -36,4 +36,8 @@ public class RoomMember extends BaseEntity {
     public static RoomMember of(final Long memberId, final Room room, final Boolean isLeader) {
         return new RoomMember(memberId, room, isLeader);
     }
+
+    public static RoomMember createLeaderRoomMember(final Long memberId, final Room room) {
+        return new RoomMember(memberId, room, true);
+    }
 }

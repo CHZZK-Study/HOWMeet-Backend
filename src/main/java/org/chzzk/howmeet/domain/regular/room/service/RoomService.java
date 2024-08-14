@@ -29,7 +29,7 @@ public class RoomService {
     public RoomResponse createRoom(final RoomRequest roomRequest) {
         Room room = roomRequest.toEntity();
         Room savedRoom = roomRepository.save(room);
-        RoomMember leader = RoomMember.of(roomRequest.leaderMemberId(), savedRoom, true);
+        RoomMember leader = RoomMember.createLeaderRoomMember(roomRequest.leaderMemberId(), savedRoom);
         roomMemberRepository.save(leader);
 
         MSRequest msRequest = roomRequest.msRequest();
