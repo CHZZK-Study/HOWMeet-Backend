@@ -132,7 +132,7 @@ public class RoomServiceTest {
     void updateRoomTest() throws Exception {
         // given
         MemberSchedule memberSchedule = mock(MemberSchedule.class);
-        room.setSchedules(List.of(memberSchedule));
+        room.updateSchedules(List.of(memberSchedule));
 
         RoomRequest updateRequest = new RoomRequest(
                 RoomName.from("Updated Room Name"),

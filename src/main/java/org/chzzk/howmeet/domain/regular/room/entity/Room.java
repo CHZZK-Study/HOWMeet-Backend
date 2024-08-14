@@ -53,4 +53,8 @@ public class Room extends BaseEntity {
             this.name = name;
         }
     }
+
+    public void updateSchedules(final List<MemberSchedule> schedules) {
+        this.schedules = schedules;
+    }
 }

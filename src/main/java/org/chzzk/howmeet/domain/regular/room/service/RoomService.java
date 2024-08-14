@@ -8,6 +8,7 @@ import org.chzzk.howmeet.domain.regular.room.entity.Room;
 import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomMemberRepository;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomRepository;
+import org.chzzk.howmeet.domain.regular.schedule.dto.MSRequest;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 import org.chzzk.howmeet.domain.regular.schedule.repository.MSRepository;
 import org.springframework.stereotype.Service;
@@ -31,10 +32,15 @@ public class RoomService {
         RoomMember leader = RoomMember.of(roomRequest.leaderMemberId(), savedRoom, true);
         roomMemberRepository.save(leader);
 
-        MemberSchedule memberSchedule = roomRequest.memberSchedule();
-        memberSchedule.updateRoom(savedRoom);
-        msRepository.save(memberSchedule);
+        MSRequest msRequest = roomRequest.msRequest();
+        MemberSchedule memberSchedule = MemberSchedule.of(
+                msRequest.dates(),
+                msRequest.time(),
+                msRequest.name(),
+                savedRoom
+        );
 
+        msRepository.save(memberSchedule);
         return RoomResponse.of(savedRoom, List.of(leader), List.of(memberSchedule));
     }
 
