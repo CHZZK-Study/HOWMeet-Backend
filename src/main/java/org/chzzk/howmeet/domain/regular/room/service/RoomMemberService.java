@@ -22,8 +22,7 @@ public class RoomMemberService {
 
     @Transactional
     public List<RoomMemberResponse> updateRoomMembers(final Long roomId, final List<RoomMemberRequest> roomMemberRequests) {
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid room ID"));
+        Room room = findRoomById(roomId);
 
         List<RoomMember> newRoomMembers = roomMemberRequests.stream()
                 .map(request -> RoomMember.of(request.memberId(), room, request.isLeader()))
@@ -35,5 +34,10 @@ public class RoomMemberService {
         return allRoomMembers.stream()
                 .map(RoomMemberResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    private Room findRoomById(final Long roomId) {
+        return roomRepository.findById(roomId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid room ID"));
     }
 }
