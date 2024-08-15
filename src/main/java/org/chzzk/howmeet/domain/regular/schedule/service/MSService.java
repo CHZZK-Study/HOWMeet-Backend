@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MSService {
     private final MSRepository msRepository;
     private final RoomRepository roomRepository;
-    private final InviteUrlProvider inviteUrlProvider = new InviteUrlProvider("member-schedule");
+    private final InviteUrlProvider inviteUrlProvider;
 
     @Transactional
     public MSResponse createMemberSchedule(final MSRequest msRequest) {
@@ -28,7 +28,7 @@ public class MSService {
 
         MemberSchedule savedSchedule = msRepository.save(memberSchedule);
 
-        String inviteLink = inviteUrlProvider.generateInviteUrl(savedSchedule.getId());
+        String inviteLink = inviteUrlProvider.generateInviteUrl("member-schedule", savedSchedule.getId());
 
         return MSResponse.of(savedSchedule, inviteLink);
     }
@@ -37,7 +37,7 @@ public class MSService {
         MemberSchedule memberSchedule = msRepository.findById(memberScheduleId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid schedule ID"));
 
-        String inviteLink = inviteUrlProvider.generateInviteUrl(memberSchedule.getId());
+        String inviteLink = inviteUrlProvider.generateInviteUrl("member-schedule", memberScheduleId);
 
         return MSResponse.of(memberSchedule, inviteLink);
     }

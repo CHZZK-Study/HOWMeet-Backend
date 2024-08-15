@@ -1,14 +1,18 @@
 package org.chzzk.howmeet.domain.common.util;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
 public class InviteUrlProvider {
 
     private final String baseUrl;
 
-    public InviteUrlProvider(final String basePath) {
-        this.baseUrl = "http://localhost:8080/" + basePath + "/invite/";
+    public InviteUrlProvider(@Value("${invite.url.base-url}") String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 
-    public String generateInviteUrl(final Long memberScheduleId) {
-        return baseUrl + memberScheduleId;
+    public String generateInviteUrl(final String scheduleType, final Long scheduleId) {
+        return baseUrl + "/" + scheduleType + "/invite/" + scheduleId;
     }
 }

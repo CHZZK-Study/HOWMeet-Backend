@@ -14,20 +14,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class GSService {
     private final GSRepository gsRepository;
-    private final InviteUrlProvider inviteUrlProvider = new InviteUrlProvider("guest-schedule");
+    private final InviteUrlProvider inviteUrlProvider;
 
     @Transactional
     public GSResponse createGuestSchedule(final GSRequest gsRequest) {
         GuestSchedule guestSchedule = GuestSchedule.of(gsRequest.dates(), gsRequest.time(), gsRequest.name());
         GuestSchedule savedSchedule = gsRepository.save(guestSchedule);
-        String inviteLink = inviteUrlProvider.generateInviteUrl(savedSchedule.getId());
+        String inviteLink = inviteUrlProvider.generateInviteUrl("guest-schedule", savedSchedule.getId());
         return GSResponse.of(savedSchedule, inviteLink);
     }
 
     public GSResponse getGuestSchedule(final Long guestScheduleId) {
         GuestSchedule guestSchedule = gsRepository.findById(guestScheduleId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid schedule ID"));
-        String inviteLink = inviteUrlProvider.generateInviteUrl(guestSchedule.getId());
+        String inviteLink = inviteUrlProvider.generateInviteUrl("guest-schedule", guestScheduleId);
         return GSResponse.of(guestSchedule, inviteLink);
     }
 
