@@ -1,30 +1,27 @@
 package org.chzzk.howmeet.domain.common.embedded.date.impl;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.chzzk.howmeet.domain.common.embedded.date.BaseDate;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDate;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ScheduleDate extends BaseDate {
-    private static final int MAX_PERIOD = 7;
+public class ScheduleDate {
+    @Column(name = "date")
+    private LocalDate date;
 
-    private ScheduleDate(final LocalDateTime startDate, final LocalDateTime endDate) {
-        super(startDate, endDate);
-        validateDateRange(startDate, endDate);
+    private ScheduleDate(final LocalDate date) {
+        this.date = date;
     }
 
-    public static ScheduleDate of(LocalDateTime startDate, LocalDateTime endDate) {
-        return new ScheduleDate(startDate, endDate);
+    public static ScheduleDate of(LocalDate date) {
+        return new ScheduleDate(date);
     }
 
-    private void validateDateRange(final LocalDateTime startDate, final LocalDateTime endDate) {
-        if (ChronoUnit.DAYS.between(startDate, endDate) > MAX_PERIOD) {
-            throw new IllegalArgumentException("start date must be less than 7 days");
-        }
+    public LocalDate getDate() {
+        return date;
     }
 }
