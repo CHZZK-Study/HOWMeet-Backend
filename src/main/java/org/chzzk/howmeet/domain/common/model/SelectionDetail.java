@@ -1,0 +1,25 @@
+package org.chzzk.howmeet.domain.common.model;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public class SelectionDetail {
+    private final LocalDateTime selectTime;
+    private final ParticipantDetails participantDetails;
+
+    public static List<SelectionDetail> convertMapToSelectionDetailsList(HashMap<LocalDateTime, ? extends NicknameList> selectTimeMap) {
+        List<SelectionDetail> selectTimeList = new ArrayList<>();
+
+        for (Map.Entry<LocalDateTime, ? extends NicknameList> entry : selectTimeMap.entrySet()) {
+            selectTimeList.add(new SelectionDetail(entry.getKey(), new ParticipantDetails(entry.getValue())));
+        }
+        return selectTimeList;
+    }
+}
