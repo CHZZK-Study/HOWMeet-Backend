@@ -15,6 +15,7 @@ import org.chzzk.howmeet.domain.common.auth.model.Role;
 import org.chzzk.howmeet.domain.common.entity.BaseEntity;
 import org.chzzk.howmeet.domain.common.model.EncodedPassword;
 import org.chzzk.howmeet.domain.common.model.Nickname;
+import org.chzzk.howmeet.domain.common.model.NicknameProvider;
 import org.chzzk.howmeet.domain.common.model.converter.EncodedPasswordConverter;
 import org.chzzk.howmeet.domain.common.model.converter.NicknameConverter;
 import org.chzzk.howmeet.domain.temporary.auth.exception.GuestException;
@@ -26,7 +27,7 @@ import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.I
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class Guest extends BaseEntity implements UserDetails {
+public class Guest extends BaseEntity implements UserDetails, NicknameProvider {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
