@@ -5,6 +5,7 @@ import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomResponse;
 import org.chzzk.howmeet.domain.regular.room.entity.Room;
 import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
+import org.chzzk.howmeet.domain.regular.room.exception.RoomException;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomMemberRepository;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomRepository;
 import org.chzzk.howmeet.domain.regular.schedule.dto.MSRequest;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static org.chzzk.howmeet.domain.regular.room.exception.RoomErrorCode.*;
 
 @RequiredArgsConstructor
 @Service
@@ -44,7 +47,7 @@ public class RoomService {
 
     public RoomResponse getRoom(final Long roomId) {
         Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid room ID"));
+                .orElseThrow(() -> new RoomException(ROOM_NOT_FOUND));
         List<RoomMember> roomMembers = roomMemberRepository.findByRoomId(roomId);
         List<MemberSchedule> memberSchedules = room.getSchedules();
         return RoomResponse.of(room, roomMembers, memberSchedules);
@@ -53,7 +56,7 @@ public class RoomService {
     @Transactional
     public RoomResponse updateRoom(final Long roomId, final RoomRequest roomRequest) {
         Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid room ID"));
+                .orElseThrow(() -> new RoomException(ROOM_NOT_FOUND));
         room.updateDescription(roomRequest.description());
         room.updateName(roomRequest.name());
         roomRepository.save(room);
@@ -66,7 +69,7 @@ public class RoomService {
     @Transactional
     public void deleteRoom(Long roomId) {
         if (!roomRepository.existsById(roomId)) {
-            throw new RuntimeException("Invalid room ID");
+            throw new RoomException(ROOM_NOT_FOUND);
         }
         roomRepository.deleteById(roomId);
     }
@@ -74,9 +77,9 @@ public class RoomService {
     @Transactional
     public void deleteRoomMember(final Long roomId, final Long roomMemberId) {
         RoomMember roomMember = roomMemberRepository.findById(roomMemberId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid room member ID"));
+                .orElseThrow(() -> new RoomException(ROOM_MEMBER_NOT_FOUND));
         if (!roomMember.getRoom().getId().equals(roomId)) {
-            throw new IllegalArgumentException("Room member does not belong to the specified room");
+            throw new RoomException(INVALID_ROOM_MEMBER);
         }
         roomMemberRepository.deleteById(roomMemberId);
     }
