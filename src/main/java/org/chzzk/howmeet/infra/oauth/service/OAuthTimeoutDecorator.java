@@ -7,22 +7,20 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.concurrent.TimeoutException;
-import java.util.function.Supplier;
 
 @Component
-public class OAuthTimeoutHandler {
+public class OAuthTimeoutDecorator {
     private final int timeout;
     private final int maxRetry;
 
-    public OAuthTimeoutHandler(@Value("${oauth.timeout}") final int timeout,
-                               @Value("${oauth.max-retry}") final int maxRetry) {
+    public OAuthTimeoutDecorator(@Value("${oauth.timeout}") final int timeout,
+                                 @Value("${oauth.max-retry}") final int maxRetry) {
         this.timeout = timeout;
         this.maxRetry = maxRetry;
     }
 
-    public <T> Mono<T> handle(final Supplier<Mono<T>> request) {
-        return request.get()
-                .timeout(Duration.ofMillis(timeout))
+    public <T> Mono<T> decorate(final Mono<T> mono) {
+        return mono.timeout(Duration.ofMillis(timeout))
                 .retryWhen(Retry.max(maxRetry).filter(this::isRetryable))
                 .onErrorMap(TimeoutException.class, e -> new IllegalStateException("요청 시간이 초과되었습니다.", e));
     }

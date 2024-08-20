@@ -23,19 +23,19 @@ import java.util.Objects;
 @Service
 public class OAuthClient {
     private final MultiValueMapConverter multiValueMapConverter;
-    private final OAuthTimeoutHandler oAuthTimeoutHandler;
+    private final OAuthTimeoutDecorator oAuthTimeoutDecorator;
     private final ProfileFailHandler profileFailHandler;
     private final TokenIssueFailHandler tokenIssueFailHandler;
     private final WebClient webClient;
 
     public Mono<Map<String, Object>> getProfile(final OAuthProvider provider, final String code) {
-        return getTokenApplyRetryAndTimeout(provider, code)
+        return oAuthTimeoutDecorator.decorate(issueToken(provider, code))
                 .flatMap(response -> {
                     if (failedTokenIssue(response)) {
                         return Mono.error(OAuthTokenIssueException.createWhenResponseIsNullOrEmpty());
                     }
 
-                    return getProfileApplyRetryAndTimeout(provider, response);
+                    return oAuthTimeoutDecorator.decorate(getProfileFromToken(provider, response.access_token()));
                 });
     }
 
@@ -64,14 +64,6 @@ public class OAuthClient {
 
     private boolean failedTokenIssue(final OAuthTokenResponse oAuthTokenResponse) {
         return Objects.isNull(oAuthTokenResponse) || StringUtils.isNullOrEmpty(oAuthTokenResponse.access_token());
-    }
-
-    private Mono<OAuthTokenResponse> getTokenApplyRetryAndTimeout(final OAuthProvider provider, final String code) {
-        return oAuthTimeoutHandler.handle(() -> issueToken(provider, code));
-    }
-
-    private Mono<Map<String, Object>> getProfileApplyRetryAndTimeout(final OAuthProvider provider, final OAuthTokenResponse response) {
-        return oAuthTimeoutHandler.handle(() -> getProfileFromToken(provider, response.access_token()));
     }
 
     private MultiValueMap<String, String> getIssueTokenParams(final OAuthProvider provider, final String code) {
