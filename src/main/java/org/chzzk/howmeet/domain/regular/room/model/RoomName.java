@@ -22,4 +22,8 @@ public class RoomName {
     private void validateName(final String value) {
 
     }
+
+    public boolean isNullOrEmpty() {
+        return value == null || value.trim().isEmpty();
+    }
 }

@@ -1,8 +1,18 @@
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
+buildscript {
+    ext {
+        restdocsApiSpecVersion = '0.16.2'
+    }
+}
+
 // spring boot 버전
 plugins {
-    id 'java'
     id 'org.springframework.boot' version '3.2.0'
     id 'io.spring.dependency-management' version '1.1.4'
+    id 'com.epages.restdocs-api-spec' version '0.18.4'
+    id 'org.hidetake.swagger.generator' version '2.18.2'
+    id 'java'
 }
 
 // group, version
@@ -16,6 +26,23 @@ java {
 
 repositories {
     mavenCentral()
+}
+
+openapi3 {
+    servers = [
+            { url = 'http://localhost:8080' },
+            { url = 'http://production-api-server-url.com' }
+    ]
+    title = 'Post Service API'
+    description = 'Post Service API description'
+    version = '1.0.0'
+    format = 'yaml'
+}
+
+swaggerSources {
+    sample {
+        setInputFile(file("${project.buildDir}/api-spec/openapi3.yaml"))
+    }
 }
 
 // 의존성
@@ -60,10 +87,14 @@ dependencies {
 
     // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.18.4'
+    swaggerUI 'org.webjars:swagger-ui:4.11.1'
 
     // Bean Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
+
 // Querydsl 빌드 옵션 (옵셔널)
 def generated = 'src/main/generated'
 
@@ -80,4 +111,26 @@ sourceSets {
 // gradle clean 시에 QClass 디렉토리 삭제
 clean {
     delete file(generated)
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+    exclude '**/GuestRepositoryTest.*'
+}
+
+tasks.withType(GenerateSwaggerUI) {
+    dependsOn 'openapi3'
+}
+
+tasks.register('copySwaggerUI', Copy) {
+    dependsOn 'generateSwaggerUISample'
+
+    def generateSwaggerUISampleTask = tasks.named('generateSwaggerUISample', GenerateSwaggerUI).get()
+
+    from("${generateSwaggerUISampleTask.outputDir}")
+    into("${project.buildDir}/resources/main/static/docs")
+}
+
+tasks.withType(BootJar) {
+    dependsOn 'copySwaggerUI'
 }

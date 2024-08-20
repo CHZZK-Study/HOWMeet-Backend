@@ -3,12 +3,14 @@ package org.chzzk.howmeet.domain.common.embedded.date;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public abstract class BaseDate {
     @Column(name = "start_date", nullable = false)
     private LocalDateTime startDate;
