@@ -29,7 +29,7 @@ class GSServiceTest {
 
     GuestSchedule guestSchedule = GSFixture.MEETING_A.create(1L);
     GSRequest gsRequest = new GSRequest(guestSchedule.getDates(), guestSchedule.getTime(), guestSchedule.getName());
-    GSResponse gsResponse = GSResponse.of(guestSchedule, "http://localhost:8080/guest-schedule/invite/" + guestSchedule.getId());
+    GSResponse gsResponse = GSResponse.of(guestSchedule);
 
     @Test
     @DisplayName("게스트 일정 생성")
