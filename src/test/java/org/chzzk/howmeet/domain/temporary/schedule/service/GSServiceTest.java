@@ -3,6 +3,7 @@ package org.chzzk.howmeet.domain.temporary.schedule.service;
 import org.chzzk.howmeet.domain.temporary.schedule.dto.GSRequest;
 import org.chzzk.howmeet.domain.temporary.schedule.dto.GSResponse;
 import org.chzzk.howmeet.domain.temporary.schedule.entity.GuestSchedule;
+import org.chzzk.howmeet.domain.temporary.schedule.exception.GSException;
 import org.chzzk.howmeet.domain.temporary.schedule.repository.GSRepository;
 import org.chzzk.howmeet.fixture.GSFixture;
 import org.junit.jupiter.api.DisplayName;
@@ -66,8 +67,8 @@ class GSServiceTest {
 
         // then
         assertThatThrownBy(() -> gsService.getGuestSchedule(guestSchedule.getId()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Invalid schedule ID");
+                .isInstanceOf(GSException.class)
+                .hasMessage("스케줄을 찾을 수 없습니다.");
     }
 
     @Test
@@ -93,7 +94,7 @@ class GSServiceTest {
 
         // then
         assertThatThrownBy(() -> gsService.deleteGuestSchedule(guestSchedule.getId()))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Invalid schedule ID");
+                .isInstanceOf(GSException.class)
+                .hasMessage("스케줄을 찾을 수 없습니다.");
     }
 }
