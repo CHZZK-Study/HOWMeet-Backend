@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.chzzk.howmeet.domain.temporary.schedule.exception.GSErrorCode.SCHEDULE_NOT_FOUND;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -68,7 +69,7 @@ class GSServiceTest {
         // then
         assertThatThrownBy(() -> gsService.getGuestSchedule(guestSchedule.getId()))
                 .isInstanceOf(GSException.class)
-                .hasMessage("스케줄을 찾을 수 없습니다.");
+                .hasMessage(SCHEDULE_NOT_FOUND.getMessage());
     }
 
     @Test
@@ -95,6 +96,6 @@ class GSServiceTest {
         // then
         assertThatThrownBy(() -> gsService.deleteGuestSchedule(guestSchedule.getId()))
                 .isInstanceOf(GSException.class)
-                .hasMessage("스케줄을 찾을 수 없습니다.");
+                .hasMessage(SCHEDULE_NOT_FOUND.getMessage());
     }
 }
