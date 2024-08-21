@@ -110,14 +110,16 @@ public class RoomServiceTest {
     @DisplayName("방 삭제 테스트")
     void deleteRoomTest() throws Exception {
         // given
-        when(roomRepository.existsById(room.getId())).thenReturn(true);
-        doNothing().when(roomRepository).deleteById(room.getId());
+        Long validId = room.getId();
+
+        doReturn(Optional.of(room)).when(roomRepository).findById(validId);
 
         // when
-        roomService.deleteRoom(room.getId());
+        doNothing().when(roomRepository).delete(room);
+        roomService.deleteRoom(validId);
 
         // then
-        verify(roomRepository, times(1)).deleteById(room.getId());
+        verify(roomRepository, times(1)).delete(room);
     }
 
     @Test
@@ -125,7 +127,6 @@ public class RoomServiceTest {
     void deleteRoomInvalidTest() throws Exception {
         // given
         Long invalidId = 999L;
-        when(roomRepository.existsById(invalidId)).thenReturn(false);
 
         // when & then
         assertThatThrownBy(() -> roomService.deleteRoom(invalidId))
