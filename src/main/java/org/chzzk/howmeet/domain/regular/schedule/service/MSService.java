@@ -27,7 +27,7 @@ public class MSService {
         Room room = roomRepository.findById(msRequest.roomId())
                 .orElseThrow(() -> new MSException(ROOM_NOT_FOUND));
 
-        MemberSchedule memberSchedule = MemberSchedule.of(msRequest.dates(), msRequest.time(), msRequest.name(), room);
+        MemberSchedule memberSchedule = msRequest.toEntity(room);
 
         MemberSchedule savedSchedule = msRepository.save(memberSchedule);
 
@@ -37,9 +37,7 @@ public class MSService {
     }
 
     public MSResponse getMemberSchedule(final Long memberScheduleId) {
-        MemberSchedule memberSchedule = msRepository.findById(memberScheduleId)
-                .orElseThrow(() -> new MSException(SCHEDULE_NOT_FOUND));
-
+        MemberSchedule memberSchedule = findMemberScheduleById(memberScheduleId);
         // String inviteLink = inviteUrlProvider.generateInviteUrl("member-schedule", memberScheduleId);
 
         return MSResponse.of(memberSchedule);
@@ -47,9 +45,12 @@ public class MSService {
 
     @Transactional
     public void deleteMemberSchedule(final Long memberScheduleId) {
-        if (!msRepository.existsById(memberScheduleId)) {
-            throw new MSException(SCHEDULE_NOT_FOUND);
-        }
-        msRepository.deleteById(memberScheduleId);
+        MemberSchedule memberSchedule = findMemberScheduleById(memberScheduleId);
+        msRepository.delete(memberSchedule);
+    }
+
+    private MemberSchedule findMemberScheduleById(Long memberScheduleId) {
+        return msRepository.findById(memberScheduleId)
+                .orElseThrow(() -> new MSException(SCHEDULE_NOT_FOUND));
     }
 }
