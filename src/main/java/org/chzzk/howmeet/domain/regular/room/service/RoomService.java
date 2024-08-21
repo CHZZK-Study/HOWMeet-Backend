@@ -46,8 +46,7 @@ public class RoomService {
     }
 
     public RoomResponse getRoom(final Long roomId) {
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new RoomException(ROOM_NOT_FOUND));
+        Room room = getRoomById(roomId);
         List<RoomMember> roomMembers = roomMemberRepository.findByRoomId(roomId);
         List<MemberSchedule> memberSchedules = room.getSchedules();
         return RoomResponse.of(room, roomMembers, memberSchedules);
@@ -55,8 +54,7 @@ public class RoomService {
 
     @Transactional
     public RoomResponse updateRoom(final Long roomId, final RoomRequest roomRequest) {
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new RoomException(ROOM_NOT_FOUND));
+        Room room = getRoomById(roomId);
         room.updateDescription(roomRequest.description());
         room.updateName(roomRequest.name());
         roomRepository.save(room);
@@ -68,10 +66,8 @@ public class RoomService {
 
     @Transactional
     public void deleteRoom(Long roomId) {
-        if (!roomRepository.existsById(roomId)) {
-            throw new RoomException(ROOM_NOT_FOUND);
-        }
-        roomRepository.deleteById(roomId);
+        Room room = getRoomById(roomId);
+        roomRepository.delete(room);
     }
 
     @Transactional
@@ -82,5 +78,10 @@ public class RoomService {
             throw new RoomException(INVALID_ROOM_MEMBER);
         }
         roomMemberRepository.deleteById(roomMemberId);
+    }
+
+    private Room getRoomById(Long roomId) {
+        return roomRepository.findById(roomId)
+                .orElseThrow(() -> new RoomException(ROOM_NOT_FOUND));
     }
 }
