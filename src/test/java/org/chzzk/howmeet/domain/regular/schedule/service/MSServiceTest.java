@@ -38,7 +38,7 @@ class MSServiceTest {
     Room room = RoomFixture.ROOM_1.create();
     MemberSchedule memberSchedule = MSFixture.MEETING_A.create(room);
     MSRequest msRequest = new MSRequest(memberSchedule.getDates(), memberSchedule.getTime(), memberSchedule.getName(), room.getId());
-    MSResponse msResponse = MSResponse.of(memberSchedule);
+    MSResponse msResponse = MSResponse.from(memberSchedule);
 
     @Test
     @DisplayName("멤버 일정 생성")
@@ -91,14 +91,14 @@ class MSServiceTest {
         // given
         Long validId = memberSchedule.getId();
 
-        doReturn(true).when(msRepository).existsById(validId);
+        doReturn(Optional.of(memberSchedule)).when(msRepository).findById(validId);
 
         // when
-        doNothing().when(msRepository).deleteById(validId);
+        doNothing().when(msRepository).delete(memberSchedule);
         msService.deleteMemberSchedule(validId);
 
         // then
-        verify(msRepository, times(1)).deleteById(validId);
+        verify(msRepository, times(1)).delete(memberSchedule);
     }
 
     @Test
@@ -108,7 +108,7 @@ class MSServiceTest {
         Long invalidId = 999L;
 
         // when
-        doReturn(false).when(msRepository).existsById(invalidId);
+        doReturn(Optional.empty()).when(msRepository).findById(invalidId);
 
         // then
         assertThatThrownBy(() -> msService.deleteMemberSchedule(invalidId))

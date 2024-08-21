@@ -3,12 +3,9 @@ package org.chzzk.howmeet.fixture;
 import org.chzzk.howmeet.domain.common.embedded.date.impl.ScheduleTime;
 import org.chzzk.howmeet.domain.common.model.ScheduleName;
 import org.chzzk.howmeet.domain.temporary.schedule.entity.GuestSchedule;
-import org.chzzk.howmeet.domain.temporary.schedule.exception.GSException;
 
 import java.time.LocalTime;
 import java.util.List;
-
-import static org.chzzk.howmeet.domain.temporary.schedule.exception.GSErrorCode.SCHEDULE_CREATION_FAILED;
 
 public enum GSFixture {
     MEETING_A("Meeting A", List.of("2023-01-01", "2023-01-02"), LocalTime.of(9, 0), LocalTime.of(17, 0)),
@@ -31,17 +28,7 @@ public enum GSFixture {
     public GuestSchedule create(Long id) {
         ScheduleTime scheduleTime = ScheduleTime.of(startTime, endTime);
         ScheduleName scheduleName = ScheduleName.from(name);
-        GuestSchedule guestSchedule = GuestSchedule.of(dates, scheduleTime, scheduleName);
-
-        try {
-            java.lang.reflect.Field idField = GuestSchedule.class.getDeclaredField("id");
-            idField.setAccessible(true);
-            idField.set(guestSchedule, id);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new GSException(SCHEDULE_CREATION_FAILED);
-        }
-
-        return guestSchedule;
+        return GuestSchedule.of(dates, scheduleTime, scheduleName);
     }
 
     public String getName() {

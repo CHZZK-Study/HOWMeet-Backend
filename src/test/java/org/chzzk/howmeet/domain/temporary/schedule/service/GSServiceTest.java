@@ -63,11 +63,13 @@ class GSServiceTest {
     @Test
     @DisplayName("게스트 일정 조회 시 잘못된 ID로 예외 발생")
     public void getGuestScheduleWhenInvalidId() throws Exception {
+        Long invalidId = 999L;
+
         // when
-        doReturn(Optional.empty()).when(gsRepository).findById(anyLong());
+        doReturn(Optional.empty()).when(gsRepository).findById(invalidId);
 
         // then
-        assertThatThrownBy(() -> gsService.getGuestSchedule(guestSchedule.getId()))
+        assertThatThrownBy(() -> gsService.getGuestSchedule(invalidId))
                 .isInstanceOf(GSException.class)
                 .hasMessage(SCHEDULE_NOT_FOUND.getMessage());
     }
@@ -90,11 +92,14 @@ class GSServiceTest {
     @Test
     @DisplayName("게스트 일정 삭제 시 잘못된 ID로 예외 발생")
     public void deleteGuestScheduleWhenInvalidId() throws Exception {
+        // given
+        Long invalidId = 999L;
+
         // when
-        doReturn(false).when(gsRepository).existsById(anyLong());
+        doReturn(false).when(gsRepository).existsById(invalidId);
 
         // then
-        assertThatThrownBy(() -> gsService.deleteGuestSchedule(guestSchedule.getId()))
+        assertThatThrownBy(() -> gsService.deleteGuestSchedule(invalidId))
                 .isInstanceOf(GSException.class)
                 .hasMessage(SCHEDULE_NOT_FOUND.getMessage());
     }
