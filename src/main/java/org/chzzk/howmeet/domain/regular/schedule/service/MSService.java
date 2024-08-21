@@ -33,14 +33,14 @@ public class MSService {
 
         // String inviteLink = inviteUrlProvider.generateInviteUrl("member-schedule", savedSchedule.getId());
 
-        return MSResponse.of(savedSchedule);
+        return MSResponse.from(savedSchedule);
     }
 
     public MSResponse getMemberSchedule(final Long memberScheduleId) {
         MemberSchedule memberSchedule = findMemberScheduleById(memberScheduleId);
         // String inviteLink = inviteUrlProvider.generateInviteUrl("member-schedule", memberScheduleId);
 
-        return MSResponse.of(memberSchedule);
+        return MSResponse.from(memberSchedule);
     }
 
     @Transactional
