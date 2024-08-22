@@ -131,3 +131,7 @@ tasks.register('copySwaggerUI', Copy) {
 tasks.withType(BootJar) {
     dependsOn 'copySwaggerUI'
 }
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

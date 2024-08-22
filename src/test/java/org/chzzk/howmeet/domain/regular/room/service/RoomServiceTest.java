@@ -4,6 +4,7 @@ import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomResponse;
 import org.chzzk.howmeet.domain.regular.room.entity.Room;
 import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
+import org.chzzk.howmeet.domain.regular.room.exception.RoomException;
 import org.chzzk.howmeet.domain.regular.room.model.RoomDescription;
 import org.chzzk.howmeet.domain.regular.room.model.RoomName;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomMemberRepository;
@@ -25,6 +26,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.chzzk.howmeet.domain.regular.room.exception.RoomErrorCode.ROOM_NOT_FOUND;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -100,22 +102,24 @@ public class RoomServiceTest {
 
         // then
         assertThatThrownBy(() -> roomService.getRoom(invalidId))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Invalid room ID");
+                .isInstanceOf(RoomException.class)  // 여기 수정: 예외를 RoomException으로 수정
+                .hasMessage(ROOM_NOT_FOUND.getMessage());
     }
 
     @Test
     @DisplayName("방 삭제 테스트")
     void deleteRoomTest() throws Exception {
         // given
-        when(roomRepository.existsById(room.getId())).thenReturn(true);
-        doNothing().when(roomRepository).deleteById(room.getId());
+        Long validId = room.getId();
+
+        doReturn(Optional.of(room)).when(roomRepository).findById(validId);
 
         // when
-        roomService.deleteRoom(room.getId());
+        doNothing().when(roomRepository).delete(room);
+        roomService.deleteRoom(validId);
 
         // then
-        verify(roomRepository, times(1)).deleteById(room.getId());
+        verify(roomRepository, times(1)).delete(room);
     }
 
     @Test
@@ -123,12 +127,11 @@ public class RoomServiceTest {
     void deleteRoomInvalidTest() throws Exception {
         // given
         Long invalidId = 999L;
-        when(roomRepository.existsById(invalidId)).thenReturn(false);
 
         // when & then
         assertThatThrownBy(() -> roomService.deleteRoom(invalidId))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Invalid room ID");
+                .isInstanceOf(RoomException.class)
+                .hasMessage(ROOM_NOT_FOUND.getMessage());
     }
 
     @Test
