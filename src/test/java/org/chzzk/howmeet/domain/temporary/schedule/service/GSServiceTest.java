@@ -3,6 +3,7 @@ package org.chzzk.howmeet.domain.temporary.schedule.service;
 import org.chzzk.howmeet.domain.temporary.schedule.dto.GSRequest;
 import org.chzzk.howmeet.domain.temporary.schedule.dto.GSResponse;
 import org.chzzk.howmeet.domain.temporary.schedule.entity.GuestSchedule;
+import org.chzzk.howmeet.domain.temporary.schedule.exception.GSException;
 import org.chzzk.howmeet.domain.temporary.schedule.repository.GSRepository;
 import org.chzzk.howmeet.fixture.GSFixture;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.chzzk.howmeet.domain.temporary.schedule.exception.GSErrorCode.SCHEDULE_NOT_FOUND;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,7 +30,7 @@ class GSServiceTest {
 
     GuestSchedule guestSchedule = GSFixture.MEETING_A.create(1L);
     GSRequest gsRequest = new GSRequest(guestSchedule.getDates(), guestSchedule.getTime(), guestSchedule.getName());
-    GSResponse gsResponse = GSResponse.of(guestSchedule, "http://localhost:8080/guest-schedule/invite/" + guestSchedule.getId());
+    GSResponse gsResponse = GSResponse.of(guestSchedule);
 
     @Test
     @DisplayName("게스트 일정 생성")
@@ -61,13 +63,15 @@ class GSServiceTest {
     @Test
     @DisplayName("게스트 일정 조회 시 잘못된 ID로 예외 발생")
     public void getGuestScheduleWhenInvalidId() throws Exception {
+        Long invalidId = 999L;
+
         // when
-        doReturn(Optional.empty()).when(gsRepository).findById(anyLong());
+        doReturn(Optional.empty()).when(gsRepository).findById(invalidId);
 
         // then
-        assertThatThrownBy(() -> gsService.getGuestSchedule(guestSchedule.getId()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Invalid schedule ID");
+        assertThatThrownBy(() -> gsService.getGuestSchedule(invalidId))
+                .isInstanceOf(GSException.class)
+                .hasMessage(SCHEDULE_NOT_FOUND.getMessage());
     }
 
     @Test
@@ -88,12 +92,15 @@ class GSServiceTest {
     @Test
     @DisplayName("게스트 일정 삭제 시 잘못된 ID로 예외 발생")
     public void deleteGuestScheduleWhenInvalidId() throws Exception {
+        // given
+        Long invalidId = 999L;
+
         // when
-        doReturn(false).when(gsRepository).existsById(anyLong());
+        doReturn(false).when(gsRepository).existsById(invalidId);
 
         // then
-        assertThatThrownBy(() -> gsService.deleteGuestSchedule(guestSchedule.getId()))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Invalid schedule ID");
+        assertThatThrownBy(() -> gsService.deleteGuestSchedule(invalidId))
+                .isInstanceOf(GSException.class)
+                .hasMessage(SCHEDULE_NOT_FOUND.getMessage());
     }
 }
