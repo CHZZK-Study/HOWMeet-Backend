@@ -28,17 +28,7 @@ public enum GSFixture {
     public GuestSchedule create(Long id) {
         ScheduleTime scheduleTime = ScheduleTime.of(startTime, endTime);
         ScheduleName scheduleName = ScheduleName.from(name);
-        GuestSchedule guestSchedule = GuestSchedule.of(dates, scheduleTime, scheduleName);
-
-        try {
-            java.lang.reflect.Field idField = GuestSchedule.class.getDeclaredField("id");
-            idField.setAccessible(true);
-            idField.set(guestSchedule, id);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException("Failed to set ID on GuestSchedule", e);
-        }
-
-        return guestSchedule;
+        return GuestSchedule.of(dates, scheduleTime, scheduleName);
     }
 
     public String getName() {
