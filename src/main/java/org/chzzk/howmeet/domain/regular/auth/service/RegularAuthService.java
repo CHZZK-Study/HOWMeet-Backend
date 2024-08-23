@@ -22,7 +22,6 @@ public class RegularAuthService {
     private final OAuthResultHandler oauthResultHandler;
     private final TokenProvider tokenProvider;
 
-    @Transactional
     public MemberLoginResponse login(final MemberLoginRequest memberLoginRequest) {
         final OAuthProvider oAuthProvider = inMemoryOAuthProviderRepository.findByProviderName(memberLoginRequest.providerName());
         final Member member = oAuthClient.getProfile(oAuthProvider, memberLoginRequest.code())
