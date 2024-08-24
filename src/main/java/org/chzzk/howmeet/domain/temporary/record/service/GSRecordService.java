@@ -1,6 +1,8 @@
 package org.chzzk.howmeet.domain.temporary.record.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,15 +36,40 @@ public class GSRecordService {
         List<LocalDateTime> selectTimes = gsRecordPostRequest.selectTime();
         GuestSchedule gs = findGSByGSId(gsRecordPostRequest.gsId());
 
-        GuestScheduleRecord gsRecord;
+        List<GuestScheduleRecord> gsRecords = convertSeletTimesToGSRecords(selectTimes, gs, guest);
+        gsRecordRepository.saveAll(gsRecords);
+    }
 
-        for (LocalDateTime selectTime : selectTimes) {
-            gsRecord = GuestScheduleRecord.of(guest, gs, selectTime);
-            gsRecordRepository.save(gsRecord);
+    private List<GuestScheduleRecord> convertSeletTimesToGSRecords(final List<LocalDateTime> selectTimes,
+            final GuestSchedule gs, final Guest guest) {
+
+        LocalDateTime startTime = gs.getDate().getStartDate();
+        LocalDateTime endTime = gs.getDate().getEndDate();
+
+        List<GuestScheduleRecord> gsRecords = selectTimes.stream().map(selectTime -> {
+            validateSelectTime(selectTime, startTime, endTime);
+            return GuestScheduleRecord.of(guest, gs, selectTime);
+        }).collect(Collectors.toList());
+        return gsRecords;
+    }
+
+    private void validateSelectTime(final LocalDateTime selectTime, final LocalDateTime startTime,
+            final LocalDateTime endTime) {
+
+        LocalDate selectDate = selectTime.toLocalDate();
+        LocalTime selectHour = selectTime.toLocalTime();
+
+        if (selectDate.isBefore(startTime.toLocalDate()) || selectDate.isAfter(endTime.toLocalDate())) {
+            throw new IllegalArgumentException("유효하지 않은 시간을 선택하셨습니다.");
+        }
+
+        if (selectHour.isBefore(startTime.toLocalTime()) || selectHour.isAfter(
+                endTime.toLocalTime().minusMinutes(30))) {
+            throw new IllegalArgumentException("유효하지 않은 시간을 선택하셨습니다.");
         }
     }
 
-    public GSRecordGetResponse getGSRecord(Long gsId){
+    public GSRecordGetResponse getGSRecord(final Long gsId) {
 
         GuestSchedule gs = findGSByGSId(gsId);
         List<Guest> guestList = tmpGuestRepository.findByGuestScheduleId(gsId); //note
