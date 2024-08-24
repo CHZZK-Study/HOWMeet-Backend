@@ -8,7 +8,9 @@ import org.chzzk.howmeet.domain.common.model.NicknameList;
 import org.chzzk.howmeet.domain.temporary.record.entity.GuestScheduleRecord;
 
 public class GSRecordNicknameList extends NicknameList {
-    public static NicknameList convertMapToNickNameList(List<GuestScheduleRecord> gsRecords, Map<Long, Nickname> nickNameMap){
+
+    public static NicknameList convertMapToNickNameList(final List<GuestScheduleRecord> gsRecords,
+            final Map<Long, Nickname> nickNameMap) {
         NicknameList nicknameList = new NicknameList();
         HashSet<Nickname> nickNameSet = new HashSet<>();
 

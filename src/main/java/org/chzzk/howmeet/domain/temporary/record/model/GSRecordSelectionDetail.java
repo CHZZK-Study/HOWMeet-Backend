@@ -9,14 +9,15 @@ import org.chzzk.howmeet.domain.common.model.ParticipantDetails;
 import org.chzzk.howmeet.domain.common.model.SelectionDetail;
 import org.chzzk.howmeet.domain.temporary.record.entity.GuestScheduleRecord;
 
-public class GSRecordSelectionDetail extends SelectionDetail{
+public class GSRecordSelectionDetail extends SelectionDetail {
 
-    public GSRecordSelectionDetail(LocalDateTime selectTime,
-            ParticipantDetails participantDetails) {
+    public GSRecordSelectionDetail(final LocalDateTime selectTime,
+            final ParticipantDetails participantDetails) {
         super(selectTime, participantDetails);
     }
 
-    public static List<SelectionDetail> convertMapToSelectionDetail(List<GuestScheduleRecord> gsRecords, Map<Long, Nickname> nickNameMap){
+    public static List<SelectionDetail> convertMapToSelectionDetail(final List<GuestScheduleRecord> gsRecords,
+            final Map<Long, Nickname> nickNameMap) {
         HashMap<LocalDateTime, GSRecordNicknameList> selectTimeMap = new HashMap<>();
 
         Nickname nickname;

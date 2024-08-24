@@ -73,8 +73,7 @@ public class GSRecordService {
 
     public GSRecordGetResponse getGSRecord(final Long gsId) {
 
-        GuestSchedule gs = findGSByGSId(gsId);
-        List<Guest> guestList = tmpGuestRepository.findByGuestScheduleId(gsId); //note
+        List<Guest> guestList = tmpGuestRepository.findByGuestScheduleId(gsId);
         Map<Long, Nickname> nickNameMap = guestList.stream()
                 .collect(Collectors.toMap(Guest::getId, Guest::getNickname));
 
@@ -82,14 +81,14 @@ public class GSRecordService {
 
         NicknameList allNickname = GSRecordNicknameList.convertNicknameProvidersList(guestList);
 
-
         NicknameList participants = GSRecordNicknameList.convertMapToNickNameList(gsRecords, nickNameMap);
-        List<SelectionDetail> selectedInfoList = GSRecordSelectionDetail.convertMapToSelectionDetail(gsRecords, nickNameMap);
+        List<SelectionDetail> selectedInfoList = GSRecordSelectionDetail.convertMapToSelectionDetail(gsRecords,
+                nickNameMap);
 
         return new GSRecordGetResponse(gsId, allNickname, participants, selectedInfoList);
-    };
+    }
 
-    // comment: gsId를 이용하여 GSRecord리스트 찾는 메소드
+
     private List<GuestScheduleRecord> findGSRecordByGSId(final Long gsId) {
         List<GuestScheduleRecord> gsRecords = gsRecordRepository.findByGuestScheduleId(gsId);
         if (gsRecords == null) {
