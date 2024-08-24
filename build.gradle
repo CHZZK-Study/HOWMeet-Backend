@@ -128,7 +128,7 @@ tasks.register('copySwaggerUI', Copy) {
     def generateSwaggerUISampleTask = tasks.named('generateSwaggerUISample', GenerateSwaggerUI).get()
 
     from("${generateSwaggerUISampleTask.outputDir}")
-    into("${project.buildDir}/resources/main/static/docs")
+    into("${project.buildDir}/main/resources/static/docs")
 }
 
 tasks.withType(BootJar) {
