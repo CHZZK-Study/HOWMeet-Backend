@@ -1,11 +1,11 @@
 package org.chzzk.howmeet.domain.temporary.record.service;
 
-import static org.chzzk.howmeet.domain.temporary.record.exception.GSRecordErrorCode.GS_NOT_FOUND;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.common.model.Nickname;
 import org.chzzk.howmeet.domain.common.model.NicknameList;
 import org.chzzk.howmeet.domain.common.model.SelectionDetail;
@@ -13,7 +13,6 @@ import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
 import org.chzzk.howmeet.domain.temporary.record.dto.get.response.GSRecordGetResponse;
 import org.chzzk.howmeet.domain.temporary.record.dto.post.request.GSRecordPostRequest;
 import org.chzzk.howmeet.domain.temporary.record.entity.GuestScheduleRecord;
-import org.chzzk.howmeet.domain.temporary.record.exception.GSRecordException;
 import org.chzzk.howmeet.domain.temporary.record.model.GSRecordNicknameList;
 import org.chzzk.howmeet.domain.temporary.record.model.GSRecordSelectionDetail;
 import org.chzzk.howmeet.domain.temporary.record.repository.GSRecordRepository;
@@ -33,7 +32,8 @@ public class GSRecordService {
     public void postGSRecord(final GSRecordPostRequest gsRecordPostRequest, final AuthPrincipal authPrincipal) {
         Guest guest = findGuestByGuestId(authPrincipal.id());
         List<LocalDateTime> selectTimes = gsRecordPostRequest.selectTime();
-        GuestSchedule gs = validateGS(gsRecordPostRequest.gsId());
+        GuestSchedule gs = findGSByGSId(gsRecordPostRequest.gsId());
+
         GuestScheduleRecord gsRecord;
 
         for (LocalDateTime selectTime : selectTimes) {
@@ -44,11 +44,12 @@ public class GSRecordService {
 
     public GSRecordGetResponse getGSRecord(Long gsId){
 
-        GuestSchedule gs = validateGS(gsId);
-        List<Guest> guestList = tmpGuestRepository.findByGuestScheduleId(gsId);
-        Map<Long, Nickname> nickNameMap = guestList.stream().collect(Collectors.toMap(Guest::getId, Guest::getNickname));
+        GuestSchedule gs = findGSByGSId(gsId);
+        List<Guest> guestList = tmpGuestRepository.findByGuestScheduleId(gsId); //note
+        Map<Long, Nickname> nickNameMap = guestList.stream()
+                .collect(Collectors.toMap(Guest::getId, Guest::getNickname));
 
-        List<GuestScheduleRecord> gsRecords = validateGSRecord(gsId);
+        List<GuestScheduleRecord> gsRecords = findGSRecordByGSId(gsId);
 
         NicknameList allNickname = GSRecordNicknameList.convertNicknameProvidersList(guestList);
 
