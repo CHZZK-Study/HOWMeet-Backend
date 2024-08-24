@@ -98,10 +98,11 @@ public class GSRecordService {
     }
 
     private GuestSchedule findGSByGSId(final Long gsId) {
-        return tmpGSRepository.findById(gsId).orElseThrow(() -> new IllegalArgumentException());
+        return tmpGSRepository.findById(gsId).orElseThrow(() -> new IllegalArgumentException("일치하는 일정을 찾을 수 없습니다."));
     }
 
     private Guest findGuestByGuestId(final Long guestId) {
-        return tmpGuestRepository.findById(guestId).orElseThrow(() -> new IllegalArgumentException());
+        return tmpGuestRepository.findById(guestId)
+                .orElseThrow(() -> new IllegalArgumentException("일치하는 회원 id를 찾을 수 없습니다."));
     }
 }
