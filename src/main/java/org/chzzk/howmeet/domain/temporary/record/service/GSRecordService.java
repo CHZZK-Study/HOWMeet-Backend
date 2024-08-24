@@ -30,7 +30,8 @@ public class GSRecordService {
     private final TmpGuestRepository tmpGuestRepository;
     private final GSRecordRepository gsRecordRepository;
 
-    public void postGSRecord(final GSRecordPostRequest gsRecordPostRequest, final Guest guest){
+    public void postGSRecord(final GSRecordPostRequest gsRecordPostRequest, final AuthPrincipal authPrincipal) {
+        Guest guest = findGuestByGuestId(authPrincipal.id());
         List<LocalDateTime> selectTimes = gsRecordPostRequest.selectTime();
         GuestSchedule gs = validateGS(gsRecordPostRequest.gsId());
         GuestScheduleRecord gsRecord;
@@ -58,13 +59,30 @@ public class GSRecordService {
         return new GSRecordGetResponse(gsId, allNickname, participants, selectedInfoList);
     };
 
-    private List<GuestScheduleRecord> validateGSRecord(Long id){
-        List<GuestScheduleRecord> gsRecords = gsRecordRepository.findByGsId(id);
-        if(gsRecords == null) throw new GSRecordException(GS_NOT_FOUND);
+    // comment: gsId를 이용하여 GSRecord리스트 찾는 메소드
+    private List<GuestScheduleRecord> findGSRecordByGSId(final Long gsId) {
+        List<GuestScheduleRecord> gsRecords = gsRecordRepository.findByGuestScheduleId(gsId);
+        if (gsRecords == null) {
+            throw new IllegalArgumentException();
+        }
         return gsRecords;
-    };
+    }
 
-    private GuestSchedule validateGS(Long id) throws GSRecordException {
-        return tmpGSRepository.findById(id).orElseThrow(() -> new GSRecordException(GS_NOT_FOUND));
-    };
+    // comment: guestId를 이용하여 gsRecord 찾는 메소드
+    private List<GuestScheduleRecord> findByGSRecordByGuestId(final Long guestId) {
+        List<GuestScheduleRecord> gsRecords = gsRecordRepository.findByGuestId(guestId);
+        if (gsRecords == null) {
+            throw new IllegalArgumentException();
+        } else {
+            return gsRecords;
+        }
+    }
+
+    private GuestSchedule findGSByGSId(final Long gsId) {
+        return tmpGSRepository.findById(gsId).orElseThrow(() -> new IllegalArgumentException());
+    }
+
+    private Guest findGuestByGuestId(final Long guestId) {
+        return tmpGuestRepository.findById(guestId).orElseThrow(() -> new IllegalArgumentException());
+    }
 }
