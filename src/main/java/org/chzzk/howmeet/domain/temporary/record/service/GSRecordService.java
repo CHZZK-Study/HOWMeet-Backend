@@ -33,6 +33,8 @@ public class GSRecordService {
 
     public void postGSRecord(final GSRecordPostRequest gsRecordPostRequest, final AuthPrincipal authPrincipal) {
         Guest guest = findGuestByGuestId(authPrincipal.id());
+        gsRecordRepository.deleteByGuestId(guest.getId());
+
         List<LocalDateTime> selectTimes = gsRecordPostRequest.selectTime();
         GuestSchedule gs = findGSByGSId(gsRecordPostRequest.gsId());
 
@@ -94,16 +96,6 @@ public class GSRecordService {
             throw new IllegalArgumentException();
         }
         return gsRecords;
-    }
-
-    // comment: guestId를 이용하여 gsRecord 찾는 메소드
-    private List<GuestScheduleRecord> findByGSRecordByGuestId(final Long guestId) {
-        List<GuestScheduleRecord> gsRecords = gsRecordRepository.findByGuestId(guestId);
-        if (gsRecords == null) {
-            throw new IllegalArgumentException();
-        } else {
-            return gsRecords;
-        }
     }
 
     private GuestSchedule findGSByGSId(final Long gsId) {
