@@ -31,6 +31,6 @@ public enum OAuthProfileFactory {
                 .filter(value -> value.socialName.equals(oAuthProvider.name().toLowerCase()))
                 .findAny()
                 .map(value -> value.mapper.apply(attributes))
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new UnsupportedProviderException(oAuthProvider));
     }
 }
