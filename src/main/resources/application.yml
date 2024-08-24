@@ -5,9 +5,10 @@ spring:
     import:
       - classpath:/yaml/application-auth.yml
       - classpath:/yaml/application-db.yml
+      - classpath:/yaml/application-oauth.yml
   profiles:
     group:
-      develop: auth, db
+      develop: auth, db, oauth
     active: develop
 springdoc:
   swagger-ui:
