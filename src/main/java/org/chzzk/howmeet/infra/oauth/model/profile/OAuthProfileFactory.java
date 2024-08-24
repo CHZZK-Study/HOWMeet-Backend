@@ -1,6 +1,8 @@
 package org.chzzk.howmeet.infra.oauth.model.profile;
 
 
+import org.chzzk.howmeet.infra.oauth.exception.UnsupportedProviderException;
+import org.chzzk.howmeet.infra.oauth.model.OAuthProvider;
 import org.chzzk.howmeet.infra.oauth.model.profile.detail.GoogleProfile;
 import org.chzzk.howmeet.infra.oauth.model.profile.detail.KakaoProfile;
 import org.chzzk.howmeet.infra.oauth.model.profile.detail.NaverProfile;
@@ -24,9 +26,9 @@ public enum OAuthProfileFactory {
     }
 
     public static OAuthProfile of(final Map<String, Object> attributes,
-                                  final String providerName) {
+                                  final OAuthProvider oAuthProvider) {
         return Arrays.stream(values())
-                .filter(value -> value.socialName.equals(providerName.toLowerCase()))
+                .filter(value -> value.socialName.equals(oAuthProvider.name().toLowerCase()))
                 .findAny()
                 .map(value -> value.mapper.apply(attributes))
                 .orElseThrow(() -> new IllegalArgumentException());
