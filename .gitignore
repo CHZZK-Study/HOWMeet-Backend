@@ -1,5 +1,4 @@
 HELP.md
-.gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !gradle/wrapper/gradle-wrapper.properties
@@ -36,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Yaml ###
+/src/main/resources/yaml

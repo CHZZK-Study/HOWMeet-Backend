@@ -22,4 +22,8 @@ public class RoomDescription {
     private void validateDescription(final String value) {
 
     }
+
+    public boolean isNullOrEmpty() {
+        return value == null || value.trim().isEmpty();
+    }
 }
