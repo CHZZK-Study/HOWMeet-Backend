@@ -6,6 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 
 public interface GSRecordRepository extends JpaRepository<GuestScheduleRecord, Long> {
-    List<GuestScheduleRecord> findByGsId(@Param("guestScheduleId") final Long gsId);
+
+    List<GuestScheduleRecord> findByGuestScheduleId(@Param("guestScheduleId") final Long gsId);
+
+    List<GuestScheduleRecord> findByGuestId(@Param("guestId") final Long guestId);
+
+    void deleteByGuestId(@Param("guestId") final Long guestId);
+
 }
 
