@@ -19,18 +19,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/gs-record")
 @RestController
 public class GSRecordController {
+
     final GSRecordService gsRecordService;
 
     @GetMapping("/{gsId}")
-    public ResponseEntity<?> getGSRecord(@PathVariable(value = "gsId") Long gsId){
-
+    public ResponseEntity<?> getGSRecord(@PathVariable(value = "gsId") final Long gsId) {
         return ResponseEntity.ok(gsRecordService.getGSRecord(gsId));
     }
 
-
-    @PostMapping("/post")
-    public ResponseEntity<?> postGSRecord(@RequestBody final GSRecordPostRequest gsRecordPostRequest, @Authenticated Guest guest){
-        gsRecordService.postGSRecord(gsRecordPostRequest,  guest);
+    @PostMapping
+    public ResponseEntity<?> postGSRecord(@RequestBody final GSRecordPostRequest gsRecordPostRequest,
+            @Authenticated final AuthPrincipal authPrincipal) {
+        gsRecordService.postGSRecord(gsRecordPostRequest, authPrincipal);
         return ResponseEntity.ok(CREATED);
     }
 }
