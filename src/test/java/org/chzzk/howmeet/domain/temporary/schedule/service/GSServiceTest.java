@@ -24,7 +24,6 @@ class GSServiceTest {
     @Mock
     private GSRepository gsRepository;
 
-
     @Test
     @DisplayName("비회원 일정 조회 시 잘못된 ID로 예외 발생")
     public void getGuestScheduleWhenInvalidId() {

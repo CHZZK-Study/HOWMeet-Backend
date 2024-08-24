@@ -37,7 +37,7 @@ public class RoomMemberServiceTest {
     @InjectMocks
     private RoomMemberService roomMemberService;
 
-    Room room = RoomFixture.ROOM_1.create();
+    Room room = RoomFixture.createRoomA();
 
     @Test
     @DisplayName("방 멤버 업데이트 테스트")

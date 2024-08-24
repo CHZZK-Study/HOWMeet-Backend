@@ -28,11 +28,6 @@ public enum GSFixture {
         this.endTime = endTime;
     }
 
-    public GuestSchedule create(Long id) {
-        ScheduleTime scheduleTime = ScheduleTime.of(startTime, endTime);
-        return GuestSchedule.of(dates, scheduleTime, name);
-    }
-
     public static GuestSchedule createGuestScheduleA() {
         ScheduleTime scheduleTime = ScheduleTime.of(MEETING_A.startTime, MEETING_A.endTime);
         GuestSchedule guestSchedule = GuestSchedule.of(MEETING_A.dates, scheduleTime, MEETING_A.name);
