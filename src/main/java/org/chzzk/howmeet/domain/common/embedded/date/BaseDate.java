@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
 public abstract class BaseDate {
 
     @Column(name = "start_date", nullable = false)
