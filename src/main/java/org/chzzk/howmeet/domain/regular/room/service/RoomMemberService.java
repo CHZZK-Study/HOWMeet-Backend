@@ -5,6 +5,7 @@ import org.chzzk.howmeet.domain.regular.room.dto.RoomMemberRequest;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomMemberResponse;
 import org.chzzk.howmeet.domain.regular.room.entity.Room;
 import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
+import org.chzzk.howmeet.domain.regular.room.exception.RoomMemberException;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomMemberRepository;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomRepository;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.chzzk.howmeet.domain.regular.room.exception.RoomMemberErrorCode.ROOM_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
@@ -38,6 +41,6 @@ public class RoomMemberService {
 
     private Room findRoomById(final Long roomId) {
         return roomRepository.findById(roomId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid room ID"));
+                .orElseThrow(() -> new RoomMemberException(ROOM_NOT_FOUND));
     }
 }

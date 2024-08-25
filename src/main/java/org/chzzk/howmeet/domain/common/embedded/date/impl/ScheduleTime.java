@@ -16,7 +16,7 @@ public class ScheduleTime {
     @Column(name = "end_time")
     private LocalTime endTime;
 
-    private ScheduleTime(final LocalTime startTime, final LocalTime endTime) {
+    public ScheduleTime(final LocalTime startTime, final LocalTime endTime) {
         validateTimeRange(startTime, endTime);
         this.startTime = startTime;
         this.endTime = endTime;
