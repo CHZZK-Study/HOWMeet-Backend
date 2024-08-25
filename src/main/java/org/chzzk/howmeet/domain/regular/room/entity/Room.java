@@ -1,11 +1,6 @@
 package org.chzzk.howmeet.domain.regular.room.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +10,9 @@ import org.chzzk.howmeet.domain.regular.room.model.RoomDescription;
 import org.chzzk.howmeet.domain.regular.room.model.RoomName;
 import org.chzzk.howmeet.domain.regular.room.model.converter.RoomDescriptionConverter;
 import org.chzzk.howmeet.domain.regular.room.model.converter.RoomNameConverter;
+import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,8 +31,34 @@ public class Room extends BaseEntity {
     @Column(name = "description", nullable = false)
     private RoomDescription description;
 
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberSchedule> schedules;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RoomMember> members;
+
     public Room(final RoomDescription description, final RoomName name) {
         this.description = description;
         this.name = name;
+    }
+
+    public void updateDescription(final RoomDescription description) {
+        if (!description.isNullOrEmpty()) {
+            this.description = description;
+        }
+    }
+
+    public void updateName(final RoomName name) {
+        if (!name.isNullOrEmpty()) {
+            this.name = name;
+        }
+    }
+
+    public void updateSchedules(final List<MemberSchedule> schedules) {
+        this.schedules = schedules;
+    }
+
+    public void updateMembers(final List<RoomMember> members) {
+        this.members = members;
     }
 }

@@ -10,6 +10,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.chzzk.howmeet.domain.common.auth.entity.UserDetails;
+import org.chzzk.howmeet.domain.common.auth.model.Role;
 import org.chzzk.howmeet.domain.common.entity.BaseEntity;
 import org.chzzk.howmeet.domain.common.model.Image;
 import org.chzzk.howmeet.domain.common.model.Nickname;
@@ -21,8 +23,7 @@ import org.chzzk.howmeet.domain.common.model.converter.NicknameConverter;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class Member extends BaseEntity implements NicknameProvider {
-
+public class Member extends BaseEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,4 +38,19 @@ public class Member extends BaseEntity implements NicknameProvider {
 
     @Column(name = "social_id", nullable = false)
     private String socialId;
+
+    private Member(final Nickname nickname, final Image profileImage, final String socialId) {
+        this.nickname = nickname;
+        this.profileImage = profileImage;
+        this.socialId = socialId;
+    }
+
+    public static Member of(String nickname, String profileImage, String socialId) {
+        return new Member(Nickname.from(nickname), Image.from(profileImage), socialId);
+    }
+
+    @Override
+    public Role getRole() {
+        return Role.REGULAR;
+    }
 }
