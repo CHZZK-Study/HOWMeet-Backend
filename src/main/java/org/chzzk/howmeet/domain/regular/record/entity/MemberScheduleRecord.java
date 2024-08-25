@@ -1,7 +1,6 @@
 package org.chzzk.howmeet.domain.regular.record.entity;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,7 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.chzzk.howmeet.domain.common.entity.BaseEntity;
-import org.chzzk.howmeet.domain.regular.auth.entity.Member;
+import org.chzzk.howmeet.domain.regular.member.entity.Member;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 
 @Entity
