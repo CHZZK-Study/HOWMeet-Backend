@@ -1,7 +1,6 @@
 package org.chzzk.howmeet.domain.temporary.record.controller;
 
-import static org.springframework.http.HttpStatus.CREATED;
-
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.auth.annotation.Authenticated;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
@@ -31,6 +30,7 @@ public class GSRecordController {
     public ResponseEntity<?> postGSRecord(@RequestBody final GSRecordPostRequest gsRecordPostRequest,
             @Authenticated final AuthPrincipal authPrincipal) {
         gsRecordService.postGSRecord(gsRecordPostRequest, authPrincipal);
-        return ResponseEntity.ok(CREATED);
+        return ResponseEntity.created(URI.create("/gs-record/" + gsRecordPostRequest.gsId()))
+                .body("일정내역이 성공적으로 추가되었습니다.");
     }
 }
