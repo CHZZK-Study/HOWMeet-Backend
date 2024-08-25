@@ -23,7 +23,8 @@ import org.chzzk.howmeet.domain.common.model.converter.NicknameConverter;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class Member extends BaseEntity implements UserDetails {
+public class Member extends BaseEntity implements UserDetails, NicknameProvider {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
