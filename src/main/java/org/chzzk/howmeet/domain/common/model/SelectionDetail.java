@@ -15,12 +15,17 @@ public class SelectionDetail {
     private final LocalDateTime selectTime;
     private final ParticipantDetails participantDetails;
 
+    public static SelectionDetail of(final LocalDateTime selectTime,
+            final ParticipantDetails participantDetails) {
+        return new SelectionDetail(selectTime, participantDetails);
+    }
+
     public static List<SelectionDetail> convertMapToSelectionDetailsList(
             final HashMap<LocalDateTime, ? extends NicknameList> selectTimeMap) {
         List<SelectionDetail> selectTimeList = new ArrayList<>();
 
         for (Map.Entry<LocalDateTime, ? extends NicknameList> entry : selectTimeMap.entrySet()) {
-            selectTimeList.add(new SelectionDetail(entry.getKey(), new ParticipantDetails(entry.getValue())));
+            selectTimeList.add(of(entry.getKey(), ParticipantDetails.of(entry.getValue())));
         }
         return selectTimeList;
     }

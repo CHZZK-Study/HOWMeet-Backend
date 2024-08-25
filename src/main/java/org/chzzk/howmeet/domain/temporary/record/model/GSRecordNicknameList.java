@@ -3,15 +3,21 @@ package org.chzzk.howmeet.domain.temporary.record.model;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import lombok.NoArgsConstructor;
 import org.chzzk.howmeet.domain.common.model.Nickname;
 import org.chzzk.howmeet.domain.common.model.NicknameList;
 import org.chzzk.howmeet.domain.temporary.record.entity.GuestScheduleRecord;
 
+@NoArgsConstructor
 public class GSRecordNicknameList extends NicknameList {
 
-    public static NicknameList convertMapToNickNameList(final List<GuestScheduleRecord> gsRecords,
+    public static GSRecordNicknameList create() {
+        return new GSRecordNicknameList();
+    }
+
+    public static GSRecordNicknameList convertMapToNickNameList(final List<GuestScheduleRecord> gsRecords,
             final Map<Long, Nickname> nickNameMap) {
-        NicknameList nicknameList = new NicknameList();
+        GSRecordNicknameList nicknameList = create();
         HashSet<Nickname> nickNameSet = new HashSet<>();
 
         Nickname nickname;

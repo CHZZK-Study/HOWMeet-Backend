@@ -11,7 +11,7 @@ import org.chzzk.howmeet.domain.temporary.record.entity.GuestScheduleRecord;
 
 public class GSRecordSelectionDetail extends SelectionDetail {
 
-    public GSRecordSelectionDetail(final LocalDateTime selectTime,
+    private GSRecordSelectionDetail(final LocalDateTime selectTime,
             final ParticipantDetails participantDetails) {
         super(selectTime, participantDetails);
     }
@@ -26,7 +26,7 @@ public class GSRecordSelectionDetail extends SelectionDetail {
             nickname = nickNameMap.get(gsRecord.getGuestId());
             selectTime = gsRecord.getSelectTime();
 
-            selectTimeMap.computeIfAbsent(selectTime, k -> new GSRecordNicknameList()).add(nickname);
+            selectTimeMap.computeIfAbsent(selectTime, k -> GSRecordNicknameList.create()).add(nickname);
         }
         return convertMapToSelectionDetailsList(selectTimeMap);
     }

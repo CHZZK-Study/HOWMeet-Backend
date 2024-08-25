@@ -12,6 +12,10 @@ public class NicknameList {
 
     private final List<String> nicknames = new ArrayList<>();
 
+    public static NicknameList create() {
+        return new NicknameList();
+    }
+
     @JsonValue
     public List<String> getNicknames() {
         return nicknames;
@@ -32,7 +36,7 @@ public class NicknameList {
     }
 
     public static NicknameList convertNicknameProvidersList(final List<? extends NicknameProvider> nicknameProviders) {
-        NicknameList nicknameList = new NicknameList();
+        NicknameList nicknameList = NicknameList.create();
 
         for (NicknameProvider provider : nicknameProviders) {
             nicknameList.add(provider.getNickname());
