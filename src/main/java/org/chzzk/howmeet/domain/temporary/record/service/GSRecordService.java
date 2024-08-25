@@ -3,6 +3,7 @@ package org.chzzk.howmeet.domain.temporary.record.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,15 +23,18 @@ import org.chzzk.howmeet.domain.temporary.record.repository.TmpGSRepository;
 import org.chzzk.howmeet.domain.temporary.record.repository.TmpGuestRepository;
 import org.chzzk.howmeet.domain.temporary.schedule.entity.GuestSchedule;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class GSRecordService {
 
     private final TmpGSRepository tmpGSRepository;
     private final TmpGuestRepository tmpGuestRepository;
     private final GSRecordRepository gsRecordRepository;
 
+    @Transactional
     public void postGSRecord(final GSRecordPostRequest gsRecordPostRequest, final AuthPrincipal authPrincipal) {
         Guest guest = findGuestByGuestId(authPrincipal.id());
         gsRecordRepository.deleteByGuestId(guest.getId());
@@ -85,14 +89,14 @@ public class GSRecordService {
         List<SelectionDetail> selectedInfoList = GSRecordSelectionDetail.convertMapToSelectionDetail(gsRecords,
                 nickNameMap);
 
-        return new GSRecordGetResponse(gsId, allNickname, participants, selectedInfoList);
+        return GSRecordGetResponse.of(gsId, allNickname, participants, selectedInfoList);
     }
 
 
     private List<GuestScheduleRecord> findGSRecordByGSId(final Long gsId) {
         List<GuestScheduleRecord> gsRecords = gsRecordRepository.findByGuestScheduleId(gsId);
         if (gsRecords == null) {
-            throw new IllegalArgumentException();
+            return Collections.emptyList();
         }
         return gsRecords;
     }
@@ -103,6 +107,6 @@ public class GSRecordService {
 
     private Guest findGuestByGuestId(final Long guestId) {
         return tmpGuestRepository.findById(guestId)
-                .orElseThrow(() -> new IllegalArgumentException("일치하는 회원 id를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("일치하는 비회원 id를 찾을 수 없습니다."));
     }
 }
