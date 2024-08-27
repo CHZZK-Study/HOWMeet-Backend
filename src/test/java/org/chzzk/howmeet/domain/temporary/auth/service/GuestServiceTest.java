@@ -2,6 +2,7 @@ package org.chzzk.howmeet.domain.temporary.auth.service;
 
 import org.chzzk.howmeet.RestDocsTest;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
+import org.chzzk.howmeet.domain.common.exception.NicknameException;
 import org.chzzk.howmeet.domain.common.model.EncodedPassword;
 import org.chzzk.howmeet.domain.temporary.auth.controller.GuestController;
 import org.chzzk.howmeet.domain.temporary.auth.dto.login.request.GuestLoginRequest;
