@@ -24,6 +24,9 @@ public class MemberScheduleRecord extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "room_id")
+    private Long RoomId;
+
     @Column(name = "select_time")
     private LocalDateTime selectTime;
 
