@@ -25,7 +25,7 @@ public class MemberScheduleRecord extends BaseEntity {
     private Long id;
 
     @Column(name = "room_id")
-    private Long RoomId;
+    private Long roomId;
 
     @Column(name = "select_time")
     private LocalDateTime selectTime;
@@ -36,14 +36,15 @@ public class MemberScheduleRecord extends BaseEntity {
     @Column(name = "member_schedule_id", nullable = false)
     private Long memberScheduleId;
 
-    private MemberScheduleRecord(final Long memberId, final Long memberScheduleId, final LocalDateTime selectTime) {
+    private MemberScheduleRecord(final Long memberId, final MemberSchedule ms, final LocalDateTime selectTime) {
         this.selectTime = selectTime;
         this.memberId = memberId;
-        this.memberScheduleId = memberScheduleId;
+        this.memberScheduleId = ms.getId();
+        this.roomId = ms.getRoom().getId();
     }
 
     public static MemberScheduleRecord of(final Member member,
             final MemberSchedule memberSchedule, final LocalDateTime selectTime) {
-        return new MemberScheduleRecord(member.getId(), memberSchedule.getId(), selectTime);
+        return new MemberScheduleRecord(member.getId(), memberSchedule, selectTime);
     }
 }
