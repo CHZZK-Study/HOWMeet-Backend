@@ -9,3 +9,7 @@ spring:
     group:
       develop: auth, db
     active: develop
+springdoc:
+  swagger-ui:
+    url: /docs/SAMPLE - 0.0.1.json
+    path: /docs/swagger

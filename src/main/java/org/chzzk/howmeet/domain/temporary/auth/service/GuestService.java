@@ -12,6 +12,7 @@ import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
 import org.chzzk.howmeet.domain.temporary.auth.exception.GuestException;
 import org.chzzk.howmeet.domain.temporary.auth.repository.GuestRepository;
 import org.chzzk.howmeet.domain.temporary.auth.util.PasswordEncoder;
+import org.chzzk.howmeet.domain.temporary.schedule.repository.GSRepository;
 import org.chzzk.howmeet.global.util.TokenProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.G
 @Transactional(readOnly = true)
 public class GuestService {
     private final GuestRepository guestRepository;
+    private final GSRepository gsRepository;
     private final PasswordEncoder passwordEncoder;
     private final PasswordValidator passwordValidator;
     private final TokenProvider tokenProvider;
@@ -45,6 +47,7 @@ public class GuestService {
         final Long guestScheduleId = guestSignupRequest.guestScheduleId();
         final String nickname = guestSignupRequest.nickname();
         validateDuplicateNicknameInScheduleId(guestScheduleId, nickname);
+        validateGuestScheduleId(guestScheduleId);   // TODO 8/24 김민우 : SQL을 2개로 나눠서 Phantom Read 발생할까?
 
         final Guest guest = Guest.of(
                 guestScheduleId,
@@ -53,6 +56,12 @@ public class GuestService {
         );
 
         return GuestSignupResponse.of(guestRepository.save(guest));
+    }
+
+    private void validateGuestScheduleId(final Long guestScheduleId) {
+        if (!gsRepository.existsByGuestScheduleId(guestScheduleId)) {
+            throw new IllegalArgumentException();   // TODO 8/24 김민우 : 비회원 일정 예외 처리 구현 후 수정 예정
+        }
     }
 
     private void validateDuplicateNicknameInScheduleId(final Long guestScheduleId, final String nickname) {
