@@ -6,15 +6,14 @@ import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 
 import java.util.List;
 
-public record MSResponse(Long id, List<String> dates, ScheduleTime time, ScheduleName name, String inviteLink) {
+public record MSResponse(Long id, List<String> dates, ScheduleTime time, ScheduleName name) {
 
-    public static MSResponse of(final MemberSchedule memberSchedule, final String inviteLink) {
+    public static MSResponse from(final MemberSchedule memberSchedule) {
         return new MSResponse(
                 memberSchedule.getId(),
                 memberSchedule.getDates(),
                 memberSchedule.getTime(),
-                memberSchedule.getName(),
-                inviteLink
+                memberSchedule.getName()
         );
     }
 }

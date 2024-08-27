@@ -1,6 +1,6 @@
 package org.chzzk.howmeet.infra.oauth.model.profile;
 
-import org.chzzk.howmeet.domain.regular.auth.entity.Member;
+import org.chzzk.howmeet.domain.regular.member.entity.Member;
 
 import java.util.Map;
 

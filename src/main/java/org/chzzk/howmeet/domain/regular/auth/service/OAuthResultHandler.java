@@ -1,8 +1,8 @@
 package org.chzzk.howmeet.domain.regular.auth.service;
 
 import lombok.RequiredArgsConstructor;
-import org.chzzk.howmeet.domain.regular.auth.entity.Member;
-import org.chzzk.howmeet.domain.regular.auth.repository.MemberRepository;
+import org.chzzk.howmeet.domain.regular.member.entity.Member;
+import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
 import org.chzzk.howmeet.infra.oauth.model.profile.OAuthProfile;
 import org.chzzk.howmeet.infra.oauth.model.profile.OAuthProfileFactory;
 import org.springframework.stereotype.Service;
