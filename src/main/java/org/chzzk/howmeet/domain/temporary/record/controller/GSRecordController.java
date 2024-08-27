@@ -31,6 +31,6 @@ public class GSRecordController {
             @Authenticated final AuthPrincipal authPrincipal) {
         gsRecordService.postGSRecord(gsRecordPostRequest, authPrincipal);
         return ResponseEntity.created(URI.create("/gs-record/" + gsRecordPostRequest.gsId()))
-                .body("일정내역이 성공적으로 추가되었습니다.");
+                .build();
     }
 }

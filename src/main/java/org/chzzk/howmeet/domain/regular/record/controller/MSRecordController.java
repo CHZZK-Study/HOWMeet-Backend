@@ -26,7 +26,7 @@ public class MSRecordController {
             @Authenticated final AuthPrincipal authPrincipal) {
         msRecordService.postMSRecord(msRecordPostRequest, authPrincipal);
         return ResponseEntity.created(URI.create("/ms-record/" + msRecordPostRequest.msId()))
-                .body("일정내역이 성공적으로 추가되었습니다.");
+                .build();
     }
 
     @GetMapping
