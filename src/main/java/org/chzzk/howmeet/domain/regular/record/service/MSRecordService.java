@@ -21,8 +21,10 @@ import org.chzzk.howmeet.domain.regular.record.entity.MemberScheduleRecord;
 import org.chzzk.howmeet.domain.regular.record.model.MSRecordNicknameList;
 import org.chzzk.howmeet.domain.regular.record.model.MSRecordSelectionDetail;
 import org.chzzk.howmeet.domain.regular.record.repository.MSRecordRepository;
+import org.chzzk.howmeet.domain.regular.room.entity.Room;
 import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomMemberRepository;
+import org.chzzk.howmeet.domain.regular.room.repository.RoomRepository;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 import org.chzzk.howmeet.domain.regular.schedule.repository.MSRepository;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,7 @@ public class MSRecordService {
     final MSRecordRepository msRecordRepository;
     final MSRepository msRepository;
     final RoomMemberRepository roomMemberRepository;
+    final RoomRepository roomRepository;
 
 
     @Transactional
@@ -95,6 +98,7 @@ public class MSRecordService {
         checkLeaderAuthority(authPrincipal.id(), msRecordGetRequest.roomId());
 
         List<Member> memberList = findMemberByRoomId(msRecordGetRequest.roomId());
+        Room room = findRoomByRoomId(msRecordGetRequest.roomId());
         Map<Long, Nickname> nickNameMap = memberList.stream()
                 .collect(Collectors.toMap(Member::getId, Member::getNickname));
 
@@ -106,7 +110,14 @@ public class MSRecordService {
         List<SelectionDetail> selectedInfoList = MSRecordSelectionDetail.convertMapToSelectionDetail(msRecords,
                 nickNameMap);
 
-        return MSRecordGetResponse.of(msRecordGetRequest.msId(), allNickname, participants, selectedInfoList);
+        return MSRecordGetResponse.of(msRecordGetRequest.msId(), room.getName(), allNickname, participants,
+                selectedInfoList);
+    }
+
+    private Room findRoomByRoomId(Long roomId) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new IllegalArgumentException("일치하는 방 정보를 확인할 수 없습니다."));
+        return room;
     }
 
     private void checkLeaderAuthority(final Long memberId, final Long roomId) {
