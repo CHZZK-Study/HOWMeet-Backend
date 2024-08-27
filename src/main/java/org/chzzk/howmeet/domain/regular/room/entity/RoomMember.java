@@ -1,10 +1,6 @@
 package org.chzzk.howmeet.domain.regular.room.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,15 +19,25 @@ public class RoomMember extends BaseEntity {
     @Column(name = "member_id", nullable = false)
     private Long memberId;
 
-    @Column(name = "room_id", nullable = false)
-    private Long roomId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id", nullable = false)
+    private Room room;
+
 
     @Column(name = "is_leader", nullable = false)
     private Boolean isLeader;
 
-    private RoomMember(final Long memberId, final Long roomId, final Boolean isLeader) {
+    private RoomMember(final Long memberId, final Room room, final Boolean isLeader) {
         this.memberId = memberId;
-        this.roomId = roomId;
+        this.room = room;
         this.isLeader = isLeader;
+    }
+
+    public static RoomMember of(final Long memberId, final Room room, final Boolean isLeader) {
+        return new RoomMember(memberId, room, isLeader);
+    }
+
+    public static RoomMember createLeaderRoomMember(final Long memberId, final Room room) {
+        return new RoomMember(memberId, room, true);
     }
 }

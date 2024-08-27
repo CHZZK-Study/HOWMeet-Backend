@@ -1,15 +1,15 @@
 -- Member 데이터 삽입
 INSERT INTO member (`id`, `nickname`, `profile_image`, `social_id`)
-VALUES (1, 'member1', 'image1.png', 'member1@gmail.com'),
-       (2, 'member2', 'image2.png', 'member2@gmail.com'),
-       (3, 'member3', 'image3.png', 'member3@gmail.com'),
-       (4, 'member4', 'image4.png', 'member4@gmail.com'),
-       (5, 'member5', 'image5.png', 'member5@gmail.com'),
-       (6, 'member6', 'image6.png', 'member6@gmail.com'),
-       (7, 'member7', 'image7.png', 'member7@gmail.com'),
-       (8, 'member8', 'image8.png', 'member8@gmail.com'),
-       (9, 'member9', 'image9.png', 'member9@gmail.com'),
-       (10, 'member10', 'image10.png', 'member10@gmail.com');
+VALUES (1, 'member1', 'image1.png', '1'),
+       (2, 'member2', 'image2.png', '2'),
+       (3, 'member3', 'image3.png', '3'),
+       (4, 'member4', 'image4.png', '4'),
+       (5, 'member5', 'image5.png', '5'),
+       (6, 'member6', 'image6.png', '6'),
+       (7, 'member7', 'image7.png', '7'),
+       (8, 'member8', 'image8.png', '8'),
+       (9, 'member9', 'image9.png', '9'),
+       (10, 'member10', 'image10.png', '10');
 
 -- Room 데이터 삽입
 INSERT INTO room (`id`, `name`, `description`)
