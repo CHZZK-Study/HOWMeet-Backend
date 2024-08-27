@@ -1,5 +1,3 @@
-import org.springframework.boot.gradle.tasks.bundling.BootJar
-
 buildscript {
     ext {
         restdocsApiSpecVersion = '0.16.2'
@@ -8,11 +6,11 @@ buildscript {
 
 // spring boot 버전
 plugins {
+    id 'java'
     id 'org.springframework.boot' version '3.2.0'
     id 'io.spring.dependency-management' version '1.1.4'
     id 'com.epages.restdocs-api-spec' version '0.18.4'
     id 'org.hidetake.swagger.generator' version '2.18.2'
-    id 'java'
 }
 
 // group, version
@@ -26,23 +24,6 @@ java {
 
 repositories {
     mavenCentral()
-}
-
-openapi3 {
-    servers = [
-            { url = 'http://localhost:8080' },
-            { url = 'http://production-api-server-url.com' }
-    ]
-    title = 'Post Service API'
-    description = 'Post Service API description'
-    version = '1.0.0'
-    format = 'yaml'
-}
-
-swaggerSources {
-    sample {
-        setInputFile(file("${project.buildDir}/api-spec/openapi3.yaml"))
-    }
 }
 
 // 의존성
@@ -78,6 +59,8 @@ dependencies {
 
     // Swagger
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    swaggerUI 'org.webjars:swagger-ui:4.11.1'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
     // WebFlux (WebClient)
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -89,11 +72,12 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.18.4'
-    swaggerUI 'org.webjars:swagger-ui:4.11.1'
+    testImplementation 'org.mockito:mockito-core:4.0.0'
 
     // Bean Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
+
 
 // Querydsl 빌드 옵션 (옵셔널)
 def generated = 'src/main/generated'
@@ -113,24 +97,36 @@ clean {
     delete file(generated)
 }
 
+ext {
+    snippetsDir = file('build/generated-snippets')
+}
+
 tasks.named('test') {
     useJUnitPlatform()
     exclude '**/GuestRepositoryTest.*'
 }
 
+
 tasks.withType(GenerateSwaggerUI) {
     dependsOn 'openapi3'
+
+    delete file('src/main/resources/static/docs/')
+    copy {
+        from "build/resources/main/static/docs"
+        into "src/main/resources/static/docs/"
+    }
 }
 
-tasks.register('copySwaggerUI', Copy) {
-    dependsOn 'generateSwaggerUISample'
+openapi3 {
+    server = "http://localhost:8080"
+    title = "HOWMeet API 문서"
+    description = "Spring REST Docs with SwaggerUI."
+    version = "0.0.1"
+    outputFileNamePrefix = 'SAMPLE - 0.0.1'
+    format = 'json'
 
-    def generateSwaggerUISampleTask = tasks.named('generateSwaggerUISample', GenerateSwaggerUI).get()
-
-    from("${generateSwaggerUISampleTask.outputDir}")
-    into("${project.buildDir}/resources/main/static/docs")
+    outputDirectory = 'build/resources/main/static/docs'
 }
 
-tasks.withType(BootJar) {
-    dependsOn 'copySwaggerUI'
-}
+bootJar {
+    dependsOn(':openapi3')

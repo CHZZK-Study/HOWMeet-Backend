@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.chzzk.howmeet.domain.common.auth.exception.AuthException;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
-import org.chzzk.howmeet.domain.regular.auth.repository.MemberRepository;
+import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
 import org.chzzk.howmeet.domain.temporary.auth.repository.GuestRepository;
 import org.chzzk.howmeet.global.util.TokenProvider;
 import org.springframework.beans.factory.annotation.Value;

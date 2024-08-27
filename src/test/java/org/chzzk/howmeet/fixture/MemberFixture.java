@@ -1,6 +1,6 @@
 package org.chzzk.howmeet.fixture;
 
-import org.chzzk.howmeet.domain.regular.auth.entity.Member;
+import org.chzzk.howmeet.domain.regular.member.entity.Member;
 
 public enum MemberFixture {
     KIM("김민우", "프로필 사진 URL", "123");
