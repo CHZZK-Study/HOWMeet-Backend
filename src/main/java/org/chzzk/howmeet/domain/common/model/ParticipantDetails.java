@@ -6,13 +6,13 @@ import lombok.Getter;
 public class ParticipantDetails {
 
     private final int count;
-    private final NicknameList nicknames;
+    private final Nicknames nicknames;
 
-    public static ParticipantDetails of(final NicknameList nicknames) {
+    public static ParticipantDetails of(final Nicknames nicknames) {
         return new ParticipantDetails(nicknames);
     }
 
-    private ParticipantDetails(final NicknameList nicknames) {
+    private ParticipantDetails(final Nicknames nicknames) {
         this.nicknames = nicknames;
         this.count = nicknames.size();
     }

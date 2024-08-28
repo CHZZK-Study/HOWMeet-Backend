@@ -18,7 +18,7 @@ public class GSRecordSelectionDetail extends SelectionDetail {
 
     public static List<SelectionDetail> convertMapToSelectionDetail(final List<GuestScheduleRecord> gsRecords,
             final Map<Long, Nickname> nickNameMap) {
-        HashMap<LocalDateTime, GSRecordNicknameList> selectTimeMap = new HashMap<>();
+        HashMap<LocalDateTime, GSRecordNicknames> selectTimeMap = new HashMap<>();
 
         Nickname nickname;
         LocalDateTime selectTime;
@@ -26,7 +26,7 @@ public class GSRecordSelectionDetail extends SelectionDetail {
             nickname = nickNameMap.get(gsRecord.getGuestId());
             selectTime = gsRecord.getSelectTime();
 
-            selectTimeMap.computeIfAbsent(selectTime, k -> GSRecordNicknameList.create()).add(nickname);
+            selectTimeMap.computeIfAbsent(selectTime, k -> GSRecordNicknames.create()).add(nickname);
         }
         return convertMapToSelectionDetailsList(selectTimeMap);
     }

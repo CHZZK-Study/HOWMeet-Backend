@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.common.model.Nickname;
-import org.chzzk.howmeet.domain.common.model.NicknameList;
+import org.chzzk.howmeet.domain.common.model.Nicknames;
 import org.chzzk.howmeet.domain.common.model.SelectionDetail;
 import org.chzzk.howmeet.domain.regular.member.entity.Member;
 import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
@@ -18,7 +18,7 @@ import org.chzzk.howmeet.domain.regular.record.dto.get.MSRecordGetRequest;
 import org.chzzk.howmeet.domain.regular.record.dto.get.MSRecordGetResponse;
 import org.chzzk.howmeet.domain.regular.record.dto.post.MSRecordPostRequest;
 import org.chzzk.howmeet.domain.regular.record.entity.MemberScheduleRecord;
-import org.chzzk.howmeet.domain.regular.record.model.MSRecordNicknameList;
+import org.chzzk.howmeet.domain.regular.record.model.MSRecordNicknames;
 import org.chzzk.howmeet.domain.regular.record.model.MSRecordSelectionDetail;
 import org.chzzk.howmeet.domain.regular.record.repository.MSRecordRepository;
 import org.chzzk.howmeet.domain.regular.room.entity.Room;
@@ -104,9 +104,9 @@ public class MSRecordService {
 
         List<MemberScheduleRecord> msRecords = findMSRecordByMSId(msRecordGetRequest.msId());
 
-        NicknameList allNickname = MSRecordNicknameList.convertNicknameProvidersList(memberList);
+        Nicknames allNickname = MSRecordNicknames.convertNicknameProvidersList(memberList);
 
-        NicknameList participants = MSRecordNicknameList.convertMapToNickNameList(msRecords, nickNameMap);
+        Nicknames participants = MSRecordNicknames.convertMapToNickNameList(msRecords, nickNameMap);
         List<SelectionDetail> selectedInfoList = MSRecordSelectionDetail.convertMapToSelectionDetail(msRecords,
                 nickNameMap);
 

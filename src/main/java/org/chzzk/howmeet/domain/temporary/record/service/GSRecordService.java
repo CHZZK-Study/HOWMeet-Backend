@@ -10,14 +10,14 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.common.model.Nickname;
-import org.chzzk.howmeet.domain.common.model.NicknameList;
+import org.chzzk.howmeet.domain.common.model.Nicknames;
 import org.chzzk.howmeet.domain.common.model.SelectionDetail;
 import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
 import org.chzzk.howmeet.domain.temporary.auth.repository.GuestRepository;
 import org.chzzk.howmeet.domain.temporary.record.dto.get.response.GSRecordGetResponse;
 import org.chzzk.howmeet.domain.temporary.record.dto.post.request.GSRecordPostRequest;
 import org.chzzk.howmeet.domain.temporary.record.entity.GuestScheduleRecord;
-import org.chzzk.howmeet.domain.temporary.record.model.GSRecordNicknameList;
+import org.chzzk.howmeet.domain.temporary.record.model.GSRecordNicknames;
 import org.chzzk.howmeet.domain.temporary.record.model.GSRecordSelectionDetail;
 import org.chzzk.howmeet.domain.temporary.record.repository.GSRecordRepository;
 import org.chzzk.howmeet.domain.temporary.record.repository.TmpGuestRepository;
@@ -84,9 +84,9 @@ public class GSRecordService {
 
         List<GuestScheduleRecord> gsRecords = findGSRecordByGSId(gsId);
 
-        NicknameList allNickname = GSRecordNicknameList.convertNicknameProvidersList(guestList);
+        Nicknames allNickname = GSRecordNicknames.convertNicknameProvidersList(guestList);
 
-        NicknameList participants = GSRecordNicknameList.convertMapToNickNameList(gsRecords, nickNameMap);
+        Nicknames participants = GSRecordNicknames.convertMapToNickNameList(gsRecords, nickNameMap);
         List<SelectionDetail> selectedInfoList = GSRecordSelectionDetail.convertMapToSelectionDetail(gsRecords,
                 nickNameMap);
 

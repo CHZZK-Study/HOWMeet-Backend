@@ -5,19 +5,19 @@ import java.util.List;
 import java.util.Map;
 import lombok.NoArgsConstructor;
 import org.chzzk.howmeet.domain.common.model.Nickname;
-import org.chzzk.howmeet.domain.common.model.NicknameList;
+import org.chzzk.howmeet.domain.common.model.Nicknames;
 import org.chzzk.howmeet.domain.regular.record.entity.MemberScheduleRecord;
 
 @NoArgsConstructor
-public class MSRecordNicknameList extends NicknameList {
+public class MSRecordNicknames extends Nicknames {
 
-    public static MSRecordNicknameList create() {
-        return new MSRecordNicknameList();
+    public static MSRecordNicknames create() {
+        return new MSRecordNicknames();
     }
 
-    public static NicknameList convertMapToNickNameList(final List<MemberScheduleRecord> msRecords,
+    public static Nicknames convertMapToNickNameList(final List<MemberScheduleRecord> msRecords,
             final Map<Long, Nickname> nickNameMap) {
-        NicknameList nicknameList = create();
+        Nicknames nicknames = create();
         HashSet<Nickname> nickNameSet = new HashSet<>();
 
         Nickname nickname;
@@ -25,8 +25,8 @@ public class MSRecordNicknameList extends NicknameList {
             nickname = nickNameMap.get(msRecord.getMemberId());
             nickNameSet.add(nickname);
         }
-        nicknameList.addFromNicknameSet(nickNameSet);
+        nicknames.addFromNicknameSet(nickNameSet);
 
-        return nicknameList;
+        return nicknames;
     }
 }

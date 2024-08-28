@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class NicknameList {
+public class Nicknames {
 
     private final List<String> nicknames = new ArrayList<>();
 
-    public static NicknameList create() {
-        return new NicknameList();
+    public static Nicknames create() {
+        return new Nicknames();
     }
 
     @JsonValue
@@ -35,12 +35,12 @@ public class NicknameList {
                 .collect(Collectors.toList()));
     }
 
-    public static NicknameList convertNicknameProvidersList(final List<? extends NicknameProvider> nicknameProviders) {
-        NicknameList nicknameList = NicknameList.create();
+    public static Nicknames convertNicknameProvidersList(final List<? extends NicknameProvider> nicknameProviders) {
+        Nicknames nicknames = Nicknames.create();
 
         for (NicknameProvider provider : nicknameProviders) {
-            nicknameList.add(provider.getNickname());
+            nicknames.add(provider.getNickname());
         }
-        return nicknameList;
+        return nicknames;
     }
 }

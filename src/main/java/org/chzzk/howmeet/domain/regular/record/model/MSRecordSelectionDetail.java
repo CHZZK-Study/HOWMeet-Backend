@@ -17,7 +17,7 @@ public class MSRecordSelectionDetail extends SelectionDetail {
 
     public static List<SelectionDetail> convertMapToSelectionDetail(final List<MemberScheduleRecord> msRecords,
             final Map<Long, Nickname> nickNameMap) {
-        HashMap<LocalDateTime, MSRecordNicknameList> selectTimeMap = new HashMap<>();
+        HashMap<LocalDateTime, MSRecordNicknames> selectTimeMap = new HashMap<>();
 
         Nickname nickname;
         LocalDateTime selectTime;
@@ -25,7 +25,7 @@ public class MSRecordSelectionDetail extends SelectionDetail {
             nickname = nickNameMap.get(msRecord.getMemberId());
             selectTime = msRecord.getSelectTime();
 
-            selectTimeMap.computeIfAbsent(selectTime, k -> MSRecordNicknameList.create()).add(nickname);
+            selectTimeMap.computeIfAbsent(selectTime, k -> MSRecordNicknames.create()).add(nickname);
         }
         return convertMapToSelectionDetailsList(selectTimeMap);
     }

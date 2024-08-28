@@ -21,10 +21,10 @@ public class SelectionDetail {
     }
 
     public static List<SelectionDetail> convertMapToSelectionDetailsList(
-            final HashMap<LocalDateTime, ? extends NicknameList> selectTimeMap) {
+            final Map<LocalDateTime, ? extends Nicknames> selectTimeMap) {
         List<SelectionDetail> selectTimeList = new ArrayList<>();
 
-        for (Map.Entry<LocalDateTime, ? extends NicknameList> entry : selectTimeMap.entrySet()) {
+        for (Map.Entry<LocalDateTime, ? extends Nicknames> entry : selectTimeMap.entrySet()) {
             selectTimeList.add(of(entry.getKey(), ParticipantDetails.of(entry.getValue())));
         }
         return selectTimeList;
