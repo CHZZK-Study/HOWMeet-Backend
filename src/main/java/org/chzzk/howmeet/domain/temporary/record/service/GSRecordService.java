@@ -86,7 +86,7 @@ public class GSRecordService {
 
         Nicknames allNickname = GSRecordNicknames.convertNicknameProvidersList(guestList);
 
-        Nicknames participants = GSRecordNicknames.convertMapToNickNameList(gsRecords, nickNameMap);
+        Nicknames participants = GSRecordNicknames.distinctNicknames(gsRecords, nickNameMap);
         List<SelectionDetail> selectedInfoList = GSRecordSelectionDetail.convertMapToSelectionDetail(gsRecords,
                 nickNameMap);
 

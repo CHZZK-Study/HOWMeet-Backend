@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.NoArgsConstructor;
 
@@ -29,7 +30,7 @@ public class Nicknames {
         this.nicknames.add(nickName.getValue());
     }
 
-    public void addFromNicknameSet(final HashSet<Nickname> nickNameSet) {
+    public void addFromNicknameSet(final Set<Nickname> nickNameSet) {
         this.nicknames.addAll(nickNameSet.stream()
                 .map(Nickname::getValue)
                 .collect(Collectors.toList()));

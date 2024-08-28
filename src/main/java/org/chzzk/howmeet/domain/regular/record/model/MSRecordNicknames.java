@@ -3,6 +3,7 @@ package org.chzzk.howmeet.domain.regular.record.model;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import lombok.NoArgsConstructor;
 import org.chzzk.howmeet.domain.common.model.Nickname;
 import org.chzzk.howmeet.domain.common.model.Nicknames;
@@ -15,10 +16,10 @@ public class MSRecordNicknames extends Nicknames {
         return new MSRecordNicknames();
     }
 
-    public static Nicknames convertMapToNickNameList(final List<MemberScheduleRecord> msRecords,
+    public static Nicknames distinctNicknames(final List<MemberScheduleRecord> msRecords,
             final Map<Long, Nickname> nickNameMap) {
         Nicknames nicknames = create();
-        HashSet<Nickname> nickNameSet = new HashSet<>();
+        Set<Nickname> nickNameSet = new HashSet<>();
 
         Nickname nickname;
         for (MemberScheduleRecord msRecord : msRecords) {

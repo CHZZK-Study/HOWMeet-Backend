@@ -106,7 +106,7 @@ public class MSRecordService {
 
         Nicknames allNickname = MSRecordNicknames.convertNicknameProvidersList(memberList);
 
-        Nicknames participants = MSRecordNicknames.convertMapToNickNameList(msRecords, nickNameMap);
+        Nicknames participants = MSRecordNicknames.distinctNicknames(msRecords, nickNameMap);
         List<SelectionDetail> selectedInfoList = MSRecordSelectionDetail.convertMapToSelectionDetail(msRecords,
                 nickNameMap);
 
