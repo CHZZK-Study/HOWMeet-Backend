@@ -11,6 +11,7 @@ import org.chzzk.howmeet.domain.temporary.schedule.repository.GSRepository;
 import org.chzzk.howmeet.fixture.GSFixture;
 import org.chzzk.howmeet.fixture.GSRecordFixture;
 import org.chzzk.howmeet.fixture.GuestFixture;
+import org.chzzk.howmeet.global.config.TestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

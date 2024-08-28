@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.domain.temporary.record.repository;
+package org.chzzk.howmeet.global.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -18,3 +18,4 @@ public class TestConfig {
     }
 
 }
+

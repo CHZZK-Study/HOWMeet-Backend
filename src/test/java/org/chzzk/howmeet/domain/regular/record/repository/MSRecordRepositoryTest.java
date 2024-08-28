@@ -12,6 +12,7 @@ import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 import org.chzzk.howmeet.fixture.MSFixture;
 import org.chzzk.howmeet.fixture.MemberFixture;
 import org.chzzk.howmeet.fixture.RoomFixture;
+import org.chzzk.howmeet.global.config.TestConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
