@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MSRecordController {
 
-    final MSRecordService msRecordService;
+    private final MSRecordService msRecordService;
 
     @PostMapping
     public ResponseEntity<?> postMSRecord(@RequestBody final MSRecordPostRequest msRecordPostRequest,

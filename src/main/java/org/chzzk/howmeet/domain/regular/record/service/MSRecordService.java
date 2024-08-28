@@ -35,11 +35,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MSRecordService {
 
-    final MemberRepository memberRepository;
-    final MSRecordRepository msRecordRepository;
-    final MSRepository msRepository;
-    final RoomMemberRepository roomMemberRepository;
-    final RoomRepository roomRepository;
+    private final MemberRepository memberRepository;
+    private final MSRecordRepository msRecordRepository;
+    private final MSRepository msRepository;
+    private final RoomMemberRepository roomMemberRepository;
+    private final RoomRepository roomRepository;
 
 
     @Transactional

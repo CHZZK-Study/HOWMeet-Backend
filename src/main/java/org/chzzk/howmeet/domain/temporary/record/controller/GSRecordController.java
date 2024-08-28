@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class GSRecordController {
 
-    final GSRecordService gsRecordService;
+    private final GSRecordService gsRecordService;
 
     @GetMapping("/{gsId}")
     public ResponseEntity<?> getGSRecord(@PathVariable(value = "gsId") final Long gsId) {
