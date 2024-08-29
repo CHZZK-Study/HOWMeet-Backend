@@ -1,6 +1,7 @@
 package org.chzzk.howmeet.infra.oauth.service;
 
 import org.chzzk.howmeet.infra.oauth.exception.OAuthErrorResponseFactory;
+import org.chzzk.howmeet.infra.oauth.exception.OAuthServerException;
 import org.chzzk.howmeet.infra.oauth.exception.profile.OAuthProfileException;
 import org.chzzk.howmeet.infra.oauth.exception.profile.response.OAuthProfileErrorResponse;
 import org.chzzk.howmeet.infra.oauth.model.OAuthProvider;
@@ -16,10 +17,10 @@ public class ProfileFailHandler {
                 .map(OAuthProfileException::new);
     }
 
-    public Mono<IllegalStateException> handle5xxError(final ClientResponse clientResponse,
+    public Mono<OAuthServerException> handle5xxError(final ClientResponse clientResponse,
                                                       final OAuthProvider oAuthProvider) {
         return clientResponse.bodyToMono(OAuthErrorResponseFactory.getProfileResponseClassFrom(oAuthProvider.name()))
                 .map(OAuthProfileErrorResponse::getMessage)
-                .map(IllegalStateException::new);
+                .map(OAuthServerException::new);
     }
 }
