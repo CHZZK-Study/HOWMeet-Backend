@@ -17,13 +17,13 @@ public class MSRecordNicknames extends Nicknames {
     }
 
     public static Nicknames distinctNicknames(final List<MemberScheduleRecord> msRecords,
-            final Map<Long, Nickname> nickNameMap) {
+            final Map<Long, Nickname> nicknamesById) {
         Nicknames nicknames = create();
         Set<Nickname> nickNameSet = new HashSet<>();
 
         Nickname nickname;
         for (MemberScheduleRecord msRecord : msRecords) {
-            nickname = nickNameMap.get(msRecord.getMemberId());
+            nickname = nicknamesById.get(msRecord.getMemberId());
             nickNameSet.add(nickname);
         }
         nicknames.addFromNicknameSet(nickNameSet);

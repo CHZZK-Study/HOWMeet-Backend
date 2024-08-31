@@ -17,13 +17,13 @@ public class GSRecordNicknames extends Nicknames {
     }
 
     public static GSRecordNicknames distinctNicknames(final List<GuestScheduleRecord> gsRecords,
-            final Map<Long, Nickname> nickNameMap) {
+            final Map<Long, Nickname> nicknamesById) {
         GSRecordNicknames nicknameList = create();
         Set<Nickname> nickNameSet = new HashSet<>();
 
         Nickname nickname;
         for (GuestScheduleRecord gsRecord : gsRecords) {
-            nickname = nickNameMap.get(gsRecord.getGuestId());
+            nickname = nicknamesById.get(gsRecord.getGuestId());
             nickNameSet.add(nickname);
         }
         nicknameList.addFromNicknameSet(nickNameSet);
