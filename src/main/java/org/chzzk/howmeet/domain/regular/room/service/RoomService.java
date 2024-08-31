@@ -1,6 +1,7 @@
 package org.chzzk.howmeet.domain.regular.room.service;
 
 import lombok.RequiredArgsConstructor;
+import org.chzzk.howmeet.domain.regular.room.dto.RoomListResponse;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomResponse;
 import org.chzzk.howmeet.domain.regular.room.entity.Room;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.chzzk.howmeet.domain.regular.room.exception.RoomErrorCode.*;
 
@@ -50,6 +52,18 @@ public class RoomService {
         List<RoomMember> roomMembers = roomMemberRepository.findByRoomId(roomId);
         List<MemberSchedule> memberSchedules = room.getSchedules();
         return RoomResponse.of(room, roomMembers, memberSchedules);
+    }
+
+    public List<RoomListResponse> getJoinedRooms(final Long memberId) {
+        List<RoomMember> roomMembers = roomMemberRepository.findByMemberId(memberId);
+
+        return roomMembers.stream()
+                .map(roomMember -> {
+                    Room room = roomMember.getRoom();
+                    List<MemberSchedule> memberSchedules = room.getSchedules();
+                    return RoomListResponse.of(room, memberSchedules);
+                })
+                .collect(Collectors.toList());
     }
 
     @Transactional
