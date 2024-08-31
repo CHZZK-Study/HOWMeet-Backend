@@ -49,6 +49,12 @@ public class RoomController {
         return ResponseEntity.ok(roomResponse);
     }
 
+    @GetMapping("/joined")
+    public ResponseEntity<List<RoomListResponse>> getJoinedRooms(@RequestParam Long memberId) {
+        List<RoomListResponse> joinedRooms = roomService.getJoinedRooms(memberId);
+        return ResponseEntity.ok(joinedRooms);
+    }
+
     @DeleteMapping("/{roomId}")
     public ResponseEntity<?> deleteRoom(@PathVariable Long roomId) {
         roomService.deleteRoom(roomId);
