@@ -17,13 +17,8 @@ public class Nicknames {
         return new Nicknames();
     }
 
-    @JsonValue
-    public List<String> getNicknames() {
-        return nicknames;
-    }
-
     public int size() {
-        return getNicknames().size();
+        return nicknames.size();
     }
 
     public void add(final Nickname nickName) {
