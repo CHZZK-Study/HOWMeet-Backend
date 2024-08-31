@@ -17,7 +17,6 @@ import java.util.Optional;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.regular.member.entity.Member;
 import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
-import org.chzzk.howmeet.domain.regular.record.dto.get.MSRecordGetRequest;
 import org.chzzk.howmeet.domain.regular.record.dto.get.MSRecordGetResponse;
 import org.chzzk.howmeet.domain.regular.record.dto.post.MSRecordPostRequest;
 import org.chzzk.howmeet.domain.regular.record.entity.MemberScheduleRecord;
@@ -121,7 +120,6 @@ public class MSRecordServiceTest {
         Room room = RoomFixture.createRoomA();
         RoomMember roomMember1 = RoomMemberFixture.MEMBER_1.create(room);
 
-        MSRecordGetRequest msRecordGetRequest = new MSRecordGetRequest(msId, roomId);
         AuthPrincipal authPrincipal = new AuthPrincipal(memberId, "Kim", member.getRole());
 
         List<RoomMember> roomMemberList = Collections.singletonList(roomMember1);
@@ -132,7 +130,7 @@ public class MSRecordServiceTest {
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
         when(msRecordRepository.findByMemberScheduleId(msId)).thenReturn(msRecords);
 
-        MSRecordGetResponse msRecordGetResponse = msRecordService.getMSRecord(msRecordGetRequest, authPrincipal);
+        MSRecordGetResponse msRecordGetResponse = msRecordService.getMSRecord(roomId, msId, authPrincipal);
 
         assertEquals(msId, msRecordGetResponse.msId(), "MS ID가 일치하지 않습니다.");
         assertEquals(room.getName(), msRecordGetResponse.roomName(), "방 이름이 일치하지 않습니다.");

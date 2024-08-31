@@ -14,7 +14,6 @@ import org.chzzk.howmeet.domain.common.model.Nicknames;
 import org.chzzk.howmeet.domain.common.model.SelectionDetail;
 import org.chzzk.howmeet.domain.regular.member.entity.Member;
 import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
-import org.chzzk.howmeet.domain.regular.record.dto.get.MSRecordGetRequest;
 import org.chzzk.howmeet.domain.regular.record.dto.get.MSRecordGetResponse;
 import org.chzzk.howmeet.domain.regular.record.dto.post.MSRecordPostRequest;
 import org.chzzk.howmeet.domain.regular.record.entity.MemberScheduleRecord;
@@ -93,16 +92,16 @@ public class MSRecordService {
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 회원 id를 찾을 수 없습니다."));
     }
 
-    public MSRecordGetResponse getMSRecord(final MSRecordGetRequest msRecordGetRequest,
+    public MSRecordGetResponse getMSRecord(final Long roomId, final Long msId,
             final AuthPrincipal authPrincipal) {
-        checkLeaderAuthority(authPrincipal.id(), msRecordGetRequest.roomId());
+        checkLeaderAuthority(authPrincipal.id(), roomId);
 
-        List<Member> memberList = findMemberByRoomId(msRecordGetRequest.roomId());
-        Room room = findRoomByRoomId(msRecordGetRequest.roomId());
+        List<Member> memberList = findMemberByRoomId(roomId);
+        Room room = findRoomByRoomId(roomId);
         Map<Long, Nickname> nickNameMap = memberList.stream()
                 .collect(Collectors.toMap(Member::getId, Member::getNickname));
 
-        List<MemberScheduleRecord> msRecords = findMSRecordByMSId(msRecordGetRequest.msId());
+        List<MemberScheduleRecord> msRecords = findMSRecordByMSId(msId);
 
         Nicknames allNickname = MSRecordNicknames.convertNicknameProvidersList(memberList);
 
@@ -110,7 +109,7 @@ public class MSRecordService {
         List<SelectionDetail> selectedInfoList = MSRecordSelectionDetail.convertMapToSelectionDetail(msRecords,
                 nickNameMap);
 
-        return MSRecordGetResponse.of(msRecordGetRequest.msId(), room.getName(), allNickname, participants,
+        return MSRecordGetResponse.of(msId, room.getName(), allNickname, participants,
                 selectedInfoList);
     }
 

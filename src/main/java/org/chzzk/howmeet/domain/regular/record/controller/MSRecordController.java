@@ -29,9 +29,9 @@ public class MSRecordController {
                 .build();
     }
 
-    @GetMapping
-    public ResponseEntity<?> getMSRecord(@RequestBody final MSRecordGetRequest msRecordGetRequest,
+    @GetMapping("/{roomId}/{msId}")
+    public ResponseEntity<?> getMSRecord(@PathVariable(value = "roomId") final Long roomId, @PathVariable(value = "msId") final Long msId ,
             @Authenticated final AuthPrincipal authPrincipal) {
-        return ResponseEntity.ok(msRecordService.getMSRecord(msRecordGetRequest, authPrincipal));
+        return ResponseEntity.ok(msRecordService.getMSRecord(roomId, msId, authPrincipal));
     }
 }
