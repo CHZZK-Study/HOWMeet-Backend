@@ -1,6 +1,7 @@
 package org.chzzk.howmeet.domain.regular.room.service;
 
 import lombok.RequiredArgsConstructor;
+import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomListResponse;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomResponse;
@@ -27,6 +28,7 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final RoomMemberRepository roomMemberRepository;
     private final MSRepository msRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public RoomResponse createRoom(final RoomRequest roomRequest) {
@@ -61,7 +63,16 @@ public class RoomService {
                 .map(roomMember -> {
                     Room room = roomMember.getRoom();
                     List<MemberSchedule> memberSchedules = room.getSchedules();
-                    return RoomListResponse.of(room, memberSchedules);
+
+                    String leaderNickname = room.getMembers().stream()
+                            .filter(RoomMember::getIsLeader)
+                            .findFirst()
+                            .map(leader -> memberRepository.findSummaryById(leader.getMemberId())
+                                    .map(memberSummaryDto -> memberSummaryDto.nickname().getValue())
+                                    .orElse("Unknown"))
+                            .orElse("Unknown");
+
+                    return RoomListResponse.of(room, memberSchedules, leaderNickname);
                 })
                 .collect(Collectors.toList());
     }
