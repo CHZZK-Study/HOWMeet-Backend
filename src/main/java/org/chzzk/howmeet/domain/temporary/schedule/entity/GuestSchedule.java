@@ -40,7 +40,7 @@ public class GuestSchedule extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ScheduleStatus status;
 
-    private GuestSchedule(final List<String> dates, final ScheduleTime time, final ScheduleName name) {
+    public GuestSchedule(final List<String> dates, final ScheduleTime time, final ScheduleName name) {
         this.dates = dates;
         this.time = time;
         this.name = name;

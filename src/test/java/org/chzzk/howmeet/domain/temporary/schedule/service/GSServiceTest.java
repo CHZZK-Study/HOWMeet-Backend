@@ -1,5 +1,9 @@
 package org.chzzk.howmeet.domain.temporary.schedule.service;
 
+import org.chzzk.howmeet.domain.common.embedded.date.impl.ScheduleTime;
+import org.chzzk.howmeet.domain.common.model.ScheduleName;
+import org.chzzk.howmeet.domain.regular.schedule.entity.ScheduleStatus;
+import org.chzzk.howmeet.domain.temporary.schedule.entity.GuestSchedule;
 import org.chzzk.howmeet.domain.temporary.schedule.exception.GSException;
 import org.chzzk.howmeet.domain.temporary.schedule.repository.GSRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -9,6 +13,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -39,17 +47,36 @@ class GSServiceTest {
     }
 
     @Test
-    @DisplayName("비회원 일정 삭제 시 잘못된 ID로 예외 발생")
-    public void deleteGuestScheduleWhenInvalidId() {
-        // given
-        Long invalidId = 999L;
+    @DisplayName("10일 이상 지난 PROGRESS 상태의 스케줄 disable 처리")
+    public void disableProgressGuestSchedule() {
+        LocalDateTime tenDaysAgo = LocalDateTime.now().minusDays(10);
 
-        when(gsRepository.existsById(invalidId)).thenReturn(false);
+        GuestSchedule progressSchedule = mock(GuestSchedule.class);
+        lenient().when(progressSchedule.getStatus()).thenReturn(ScheduleStatus.PROGRESS);
+        lenient().when(progressSchedule.getCreatedAt()).thenReturn(tenDaysAgo); // 10일 전으로 설정
 
-        // when & then
-        assertThatThrownBy(() -> gsService.deleteGuestSchedule(invalidId))
-                .isInstanceOf(GSException.class)
-                .hasMessage(SCHEDULE_NOT_FOUND.getMessage());
-        verify(gsRepository, times(1)).existsById(invalidId);
+        when(gsRepository.findByStatusAndCreatedAtBefore(eq(ScheduleStatus.PROGRESS), any()))
+                .thenReturn(Collections.singletonList(progressSchedule));
+
+        gsService.disableOldGuestSchedules();
+
+        verify(progressSchedule).disable();
+    }
+
+    @Test
+    @DisplayName("10일 이상 지난 COMPLETE 상태의 스케줄 disable 처리")
+    public void disableCompleteGuestSchedule() {
+        LocalDateTime tenDaysAgo = LocalDateTime.now().minusDays(10);
+
+        GuestSchedule completeSchedule = mock(GuestSchedule.class);
+        lenient().when(completeSchedule.getStatus()).thenReturn(ScheduleStatus.COMPLETE);
+        lenient().when(completeSchedule.getUpdatedAt()).thenReturn(tenDaysAgo);
+
+        when(gsRepository.findByStatusAndUpdatedAtBefore(eq(ScheduleStatus.COMPLETE), any()))
+                .thenReturn(Collections.singletonList(completeSchedule));
+
+        gsService.disableOldGuestSchedules();
+
+        verify(completeSchedule).disable();
     }
 }

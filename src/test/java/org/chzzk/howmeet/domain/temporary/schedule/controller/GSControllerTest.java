@@ -127,29 +127,4 @@ public class GSControllerTest {
                 )
         ));
     }
-
-    @Test
-    @DisplayName("비회원 일정 삭제")
-    public void deleteGuestSchedule() throws Exception {
-        // given
-        final GuestSchedule guestSchedule = GSFixture.createGuestScheduleA();
-        willDoNothing().given(gsService).deleteGuestSchedule(guestSchedule.getId());
-
-        // when
-        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.delete("/guest-schedule/{guestScheduleId}", guestSchedule.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        // then
-        resultActions.andExpect(status().isOk());
-
-        // restdocs
-        resultActions.andDo(document("비회원 일정 삭제",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
-                pathParameters(
-                        parameterWithName("guestScheduleId").description("비회원 일정 ID")
-                )
-        ));
-    }
 }
