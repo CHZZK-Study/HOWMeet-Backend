@@ -3,7 +3,9 @@ package org.chzzk.howmeet.domain.temporary.record.model;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.NoArgsConstructor;
 import org.chzzk.howmeet.domain.common.model.Nickname;
 import org.chzzk.howmeet.domain.common.model.Nicknames;
@@ -18,16 +20,16 @@ public class GSRecordNicknames extends Nicknames {
 
     public static GSRecordNicknames distinctNicknames(final List<GuestScheduleRecord> gsRecords,
             final Map<Long, Nickname> nicknamesById) {
-        GSRecordNicknames nicknameList = create();
-        Set<Nickname> nickNameSet = new HashSet<>();
 
-        Nickname nickname;
-        for (GuestScheduleRecord gsRecord : gsRecords) {
-            nickname = nicknamesById.get(gsRecord.getGuestId());
-            nickNameSet.add(nickname);
-        }
-        nicknameList.addFromNicknameSet(nickNameSet);
+        GSRecordNicknames nicknames = create();
+        final Set<Nickname> nickNameSet = gsRecords.stream()
+                .map(GuestScheduleRecord::getGuestId)
+                .map(nicknamesById::get)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
 
-        return nicknameList;
+        nicknames.addAll(nickNameSet);
+
+        return nicknames;
     }
 }

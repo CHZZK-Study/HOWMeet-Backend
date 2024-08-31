@@ -3,7 +3,9 @@ package org.chzzk.howmeet.domain.regular.record.model;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.NoArgsConstructor;
 import org.chzzk.howmeet.domain.common.model.Nickname;
 import org.chzzk.howmeet.domain.common.model.Nicknames;
@@ -16,18 +18,18 @@ public class MSRecordNicknames extends Nicknames {
         return new MSRecordNicknames();
     }
 
-    public static Nicknames distinctNicknames(final List<MemberScheduleRecord> msRecords,
+    public static MSRecordNicknames distinctNicknames(final List<MemberScheduleRecord> msRecords,
             final Map<Long, Nickname> nicknamesById) {
-        Nicknames nicknames = create();
-        Set<Nickname> nickNameSet = new HashSet<>();
 
-        Nickname nickname;
-        for (MemberScheduleRecord msRecord : msRecords) {
-            nickname = nicknamesById.get(msRecord.getMemberId());
-            nickNameSet.add(nickname);
-        }
-        nicknames.addFromNicknameSet(nickNameSet);
+        MSRecordNicknames nicknames = create();
 
+        final Set<Nickname> nickNameSet = msRecords.stream()
+                .map(MemberScheduleRecord::getMemberId)
+                .map(nicknamesById::get)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        nicknames.addAll(nickNameSet);
         return nicknames;
     }
 }

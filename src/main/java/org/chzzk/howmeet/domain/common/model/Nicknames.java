@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Nicknames {
 
-    private final List<String> nicknames = new ArrayList<>();
+    private final List<Nickname> nicknames = new ArrayList<>();
 
     public static Nicknames create() {
         return new Nicknames();
@@ -22,13 +22,11 @@ public class Nicknames {
     }
 
     public void add(final Nickname nickName) {
-        this.nicknames.add(nickName.getValue());
+        this.nicknames.add(nickName);
     }
 
-    public void addFromNicknameSet(final Set<Nickname> nickNameSet) {
-        this.nicknames.addAll(nickNameSet.stream()
-                .map(Nickname::getValue)
-                .collect(Collectors.toList()));
+    public void addAll(final Set<Nickname> nickNameSet) {
+        this.nicknames.addAll(nickNameSet);
     }
 
     public static Nicknames convertNicknameProvidersList(final List<? extends NicknameProvider> nicknameProviders) {
