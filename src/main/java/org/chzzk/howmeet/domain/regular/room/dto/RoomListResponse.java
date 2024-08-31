@@ -1,21 +1,19 @@
 package org.chzzk.howmeet.domain.regular.room.dto;
 
+import org.chzzk.howmeet.domain.common.entity.BaseEntity;
 import org.chzzk.howmeet.domain.regular.room.entity.Room;
+import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
 import org.chzzk.howmeet.domain.regular.schedule.dto.MSResponse;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 import org.chzzk.howmeet.domain.regular.schedule.entity.ScheduleStatus;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class RoomListResponse {
+public record RoomListResponse (Long roomId, String name, String memberCount, List<MSResponse> ongoingSchedules) {
 
-    private final Long roomId;
-    private final String name;
-    private final String memberCount;
-    private final List<MSResponse> ongoingSchedules;
-
-    // 생성자
     public RoomListResponse(Long roomId, String name, String memberCount, List<MSResponse> ongoingSchedules) {
         this.roomId = roomId;
         this.name = name;
@@ -23,19 +21,20 @@ public class RoomListResponse {
         this.ongoingSchedules = ongoingSchedules;
     }
 
-    // of 메서드
-    public static RoomListResponse of(final Room room, final List<MemberSchedule> memberSchedules) {
-        // 방에 포함된 인원 수 계산
+    public static RoomListResponse of(final Room room, final List<MemberSchedule> memberSchedules, String leaderNickname) {
         int totalMembers = room.getMembers().size();
 
+        Optional<RoomMember> leaderRoomMember = room.getMembers().stream()
+                .filter(RoomMember::getIsLeader)
+                .findFirst();
+
         String memberCount = totalMembers > 1
-                ? String.format("%d 외 %d명", totalMembers - 1, totalMembers - 1)
+                ? String.format("%s 외 %d명", leaderNickname, totalMembers - 1)
                 : "1명";
 
-        // 예정된 일정 리스트 가져오기
         List<MSResponse> ongoingSchedules = memberSchedules.stream()
                 .filter(schedule -> schedule.getStatus() == ScheduleStatus.PROGRESS)
-                .sorted((a, b) -> a.getCreatedAt().compareTo(b.getCreatedAt()))
+                .sorted(Comparator.comparing(BaseEntity::getCreatedAt))
                 .map(MSResponse::from)
                 .collect(Collectors.toList());
 
