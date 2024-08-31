@@ -121,10 +121,8 @@ public class GSRecordServiceTest {
         GSRecordGetResponse gsRecordGetResponse = gsRecordService.getGSRecord(gsId);
 
         assertEquals(gsId, gsRecordGetResponse.gsId(), "GS ID가 일치하지 않습니다.");
-        assertTrue("총 인원에 회원 닉네임이 포함되어 있지 않습니다.",
-                gsRecordGetResponse.totalPersonnel().getNicknames().contains(guest.getNickname().getValue()));
-        assertTrue("참여 인원에 회원 닉네임이 포함되어 있지 않습니다.",
-                gsRecordGetResponse.participatedPersonnel().getNicknames().contains(guest.getNickname().getValue()));
+        assertTrue("총 인원에 회원 닉네임이 포함되어 있지 않습니다.", gsRecordGetResponse.totalPersonnel().contains(guest.getNickname()));
+        assertTrue("참여 인원에 회원 닉네임이 포함되어 있지 않습니다.", gsRecordGetResponse.participatedPersonnel().contains(guest.getNickname()));
         assertFalse("선택 시간 목록이 비어있습니다.", gsRecordGetResponse.selectTime().isEmpty());
 
     }

@@ -38,7 +38,7 @@ public class MSRecordRepositoryTest {
 
         memberRepository.save(member);
 
-        MemberScheduleRecord msRecord = MemberScheduleRecord.of(member, memberSchedule, LocalDateTime.now());
+        MemberScheduleRecord msRecord = MemberScheduleRecord.of(member.getId(), memberSchedule, LocalDateTime.now());
         msRecordRepository.save(msRecord);
         msRecordRepository.deleteByMemberScheduleIdAndMemberId(msRecord.getMemberScheduleId(), msRecord.getMemberId());
 
@@ -55,7 +55,7 @@ public class MSRecordRepositoryTest {
 
         memberRepository.save(member);
 
-        MemberScheduleRecord msRecord = MemberScheduleRecord.of(member, memberSchedule, LocalDateTime.now());
+        MemberScheduleRecord msRecord = MemberScheduleRecord.of(member.getId(), memberSchedule, LocalDateTime.now());
         msRecordRepository.save(msRecord);
 
         List<MemberScheduleRecord> records = msRecordRepository.findByMemberScheduleId(1L);

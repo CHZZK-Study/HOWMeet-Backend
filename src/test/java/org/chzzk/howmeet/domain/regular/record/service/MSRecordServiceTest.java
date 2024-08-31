@@ -116,7 +116,7 @@ public class MSRecordServiceTest {
 
         Member member = MemberFixture.KIM.생성();
         MemberSchedule memberSchedule = MSFixture.createMemberScheduleA(RoomFixture.createRoomA());
-        MemberScheduleRecord msRecord = MemberScheduleRecord.of(member, memberSchedule, LocalDateTime.now());
+        MemberScheduleRecord msRecord = MemberScheduleRecord.of(member.getId(), memberSchedule, LocalDateTime.now());
         Room room = RoomFixture.createRoomA();
         RoomMember roomMember1 = RoomMemberFixture.MEMBER_1.create(room);
 
@@ -135,9 +135,9 @@ public class MSRecordServiceTest {
         assertEquals(msId, msRecordGetResponse.msId(), "MS ID가 일치하지 않습니다.");
         assertEquals(room.getName(), msRecordGetResponse.roomName(), "방 이름이 일치하지 않습니다.");
         assertTrue("총 인원에 회원 닉네임이 포함되어 있지 않습니다.",
-                msRecordGetResponse.totalPersonnel().getNicknames().contains(member.getNickname().getValue()));
+                msRecordGetResponse.totalPersonnel().contains(member.getNickname()));
         assertTrue("참여 인원에 회원 닉네임이 포함되어 있지 않습니다.",
-                msRecordGetResponse.participatedPersonnel().getNicknames().contains(member.getNickname().getValue()));
+                msRecordGetResponse.participatedPersonnel().contains(member.getNickname()));
         assertFalse("선택 시간 목록이 비어있습니다.", msRecordGetResponse.selectTime().isEmpty());
 
     }

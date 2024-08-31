@@ -25,6 +25,10 @@ public class Nicknames {
         this.nicknames.add(nickName);
     }
 
+    public boolean contains(Nickname nickname){
+        return nicknames.contains(nickname);
+    }
+
     public void addAll(final Set<Nickname> nickNameSet) {
         this.nicknames.addAll(nickNameSet);
     }
