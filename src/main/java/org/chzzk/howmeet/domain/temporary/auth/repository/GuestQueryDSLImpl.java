@@ -11,6 +11,16 @@ public class GuestQueryDSLImpl implements GuestQueryDSL {
     private final JPAQueryFactory queryFactory;
 
     @Override
+    public boolean existsByGuestId(final Long guestId) {
+        final Integer fetchFirst = queryFactory.selectOne()
+                .from(guest)
+                .where(guest.id.eq(guestId))
+                .fetchFirst();
+
+        return fetchFirst != null;
+    }
+
+    @Override
     public boolean existsByGuestScheduleIdAndNickname(final Long guestScheduleId, final Nickname nickname) {
         final Integer fetchFirst = queryFactory.selectOne()
                 .from(guest)
