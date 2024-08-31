@@ -43,8 +43,8 @@ public class MemberScheduleRecord extends BaseEntity {
         this.roomId = ms.getRoom().getId();
     }
 
-    public static MemberScheduleRecord of(final Member member,
+    public static MemberScheduleRecord of(final Long memberId,
             final MemberSchedule memberSchedule, final LocalDateTime selectTime) {
-        return new MemberScheduleRecord(member.getId(), memberSchedule, selectTime);
+        return new MemberScheduleRecord(memberId, memberSchedule, selectTime);
     }
 }

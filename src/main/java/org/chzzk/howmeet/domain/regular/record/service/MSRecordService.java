@@ -43,18 +43,17 @@ public class MSRecordService {
 
     @Transactional
     public void postMSRecord(final MSRecordPostRequest msRecordPostRequest, final AuthPrincipal authPrincipal) {
-        Member member = findMemberByMemberId(authPrincipal.id());
         MemberSchedule ms = findMSByMSId(msRecordPostRequest.msId());
 
-        msRecordRepository.deleteByMemberScheduleIdAndMemberId(ms.getId(), member.getId());
+        msRecordRepository.deleteByMemberScheduleIdAndMemberId(ms.getId(), authPrincipal.id());
 
         List<LocalDateTime> selectTimes = msRecordPostRequest.selectTime();
-        List<MemberScheduleRecord> msRecords = convertSeletTimesToMSRecords(selectTimes, ms, member);
+        List<MemberScheduleRecord> msRecords = convertSeletTimesToMSRecords(selectTimes, ms, authPrincipal.id());
         msRecordRepository.saveAll(msRecords);
     }
 
     private List<MemberScheduleRecord> convertSeletTimesToMSRecords(final List<LocalDateTime> selectTimes,
-            final MemberSchedule ms, final Member member) {
+            final MemberSchedule ms, final Long memberId) {
 
         List<String> dates = ms.getDates();
         LocalTime startTime = ms.getTime().getStartTime();
@@ -62,7 +61,7 @@ public class MSRecordService {
 
         List<MemberScheduleRecord> msRecords = selectTimes.stream().map(selectTime -> {
             validateSelectTime(selectTime, dates, startTime, endTime);
-            return MemberScheduleRecord.of(member, ms, selectTime);
+            return MemberScheduleRecord.of(memberId, ms, selectTime);
         }).collect(Collectors.toList());
         return msRecords;
     }
