@@ -1,10 +1,11 @@
 package org.chzzk.howmeet.domain.regular.room.exception;
 
 import lombok.Getter;
+import org.chzzk.howmeet.domain.common.error.DomainErrorCode;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public enum RoomErrorCode {
+public enum RoomErrorCode implements DomainErrorCode {
     ROOM_NOT_FOUND("요청하신 방을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     ROOM_MEMBER_NOT_FOUND("해당 방의 멤버를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     INVALID_ROOM_MEMBER("해당 멤버가 지정된 방에 속하지 않습니다.", HttpStatus.BAD_REQUEST),
