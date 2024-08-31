@@ -28,9 +28,9 @@ public class GSController {
         return ResponseEntity.ok(gsResponse);
     }
 
-    @DeleteMapping("/{guestScheduleId}")
-    public ResponseEntity<String> deleteGuestSchedule(@PathVariable Long guestScheduleId) {
-        gsService.deleteGuestSchedule(guestScheduleId);
-        return ResponseEntity.ok("Guest schedule successfully deleted");
-    }
+//    @DeleteMapping("/{guestScheduleId}")
+//    public ResponseEntity<String> deleteGuestSchedule(@PathVariable Long guestScheduleId) {
+//        gsService.deleteGuestSchedule(guestScheduleId);
+//        return ResponseEntity.ok("Guest schedule successfully deleted");
+//    }
 }
