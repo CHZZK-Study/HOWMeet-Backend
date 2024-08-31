@@ -59,11 +59,10 @@ public class MSRecordService {
         LocalTime startTime = ms.getTime().getStartTime();
         LocalTime endTime = ms.getTime().getEndTime();
 
-        List<MemberScheduleRecord> msRecords = selectTimes.stream().map(selectTime -> {
+        return selectTimes.stream().map(selectTime -> {
             validateSelectTime(selectTime, dates, startTime, endTime);
             return MemberScheduleRecord.of(memberId, ms, selectTime);
         }).collect(Collectors.toList());
-        return msRecords;
     }
 
     private void validateSelectTime(final LocalDateTime selectTime, final List<String> dates, final LocalTime startTime,
@@ -112,10 +111,9 @@ public class MSRecordService {
                 selectedInfoList);
     }
 
-    private Room findRoomByRoomId(Long roomId) {
-        Room room = roomRepository.findById(roomId)
+    private Room findRoomByRoomId(final Long roomId) {
+        return roomRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 방 정보를 확인할 수 없습니다."));
-        return room;
     }
 
     private void checkLeaderAuthority(final Long memberId, final Long roomId) {

@@ -55,7 +55,7 @@ public class GSRecordService {
         LocalTime startTime = gs.getTime().getStartTime();
         LocalTime endTime = gs.getTime().getEndTime();
 
-        List<GuestScheduleRecord> gsRecords = selectTimes.stream().map(selectTime -> {
+        final List<GuestScheduleRecord> gsRecords = selectTimes.stream().map(selectTime -> {
             validateSelectTime(selectTime, dates, startTime, endTime);
             return GuestScheduleRecord.of(guest, gs, selectTime);
         }).collect(Collectors.toList());
@@ -95,7 +95,7 @@ public class GSRecordService {
 
 
     private List<GuestScheduleRecord> findGSRecordByGSId(final Long gsId) {
-        List<GuestScheduleRecord> gsRecords = gsRecordRepository.findByGuestScheduleId(gsId);
+        final List<GuestScheduleRecord> gsRecords = gsRecordRepository.findByGuestScheduleId(gsId);
         if (gsRecords == null) {
             return Collections.emptyList();
         }
