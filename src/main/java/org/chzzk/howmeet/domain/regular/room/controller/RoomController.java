@@ -21,7 +21,7 @@ public class RoomController {
     public ResponseEntity<?> createRoom(@RequestBody final RoomRequest roomRequest) {
         final RoomResponse roomResponse = roomService.createRoom(roomRequest);
         return ResponseEntity.created(URI.create("/room/" + roomResponse.roomId()))
-                .body(roomResponse);
+                .build();
     }
 
     @PatchMapping("/{roomId}")
