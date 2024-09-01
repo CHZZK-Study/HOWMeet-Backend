@@ -3,9 +3,11 @@ package org.chzzk.howmeet.domain.regular.auth.service;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.regular.auth.dto.login.request.MemberLoginRequest;
 import org.chzzk.howmeet.domain.regular.auth.dto.login.response.MemberLoginResponse;
-import org.chzzk.howmeet.domain.regular.auth.entity.Member;
+import org.chzzk.howmeet.domain.regular.member.entity.Member;
 import org.chzzk.howmeet.global.util.TokenProvider;
 import org.chzzk.howmeet.infra.oauth.model.OAuthProvider;
+import org.chzzk.howmeet.infra.oauth.model.profile.OAuthProfile;
+import org.chzzk.howmeet.infra.oauth.model.profile.OAuthProfileFactory;
 import org.chzzk.howmeet.infra.oauth.repository.InMemoryOAuthProviderRepository;
 import org.chzzk.howmeet.infra.oauth.service.OAuthClient;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +21,6 @@ import org.springframework.http.HttpMethod;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -48,8 +49,6 @@ class RegularAuthServiceTest {
     String code = "authenticate_code";
     String accessToken = "accessToken";
     MemberLoginResponse memberLoginResponse = MemberLoginResponse.of(accessToken, member);
-    OAuthProvider oAuthProvider = getOAuthProvider();
-    Map<String, Object> attribute = Collections.EMPTY_MAP;
 
     @ParameterizedTest
     @DisplayName("소셜 로그인")
@@ -57,11 +56,13 @@ class RegularAuthServiceTest {
     public void login(final String providerName) throws Exception {
         // given
         final MemberLoginRequest memberLoginRequest = new MemberLoginRequest(providerName, code);
+        final OAuthProvider oAuthProvider = getOAuthProvider(providerName);
+        final OAuthProfile oAuthProfile = getOAuthProfile(oAuthProvider);
 
         // when
         doReturn(oAuthProvider).when(inMemoryOAuthProviderRepository).findByProviderName(providerName);
-        doReturn(Mono.just(attribute)).when(oAuthClient).getProfile(oAuthProvider, code);
-        doReturn(member).when(oAuthResultHandler).saveOrGet(attribute, providerName);
+        doReturn(Mono.just(oAuthProfile)).when(oAuthClient).getProfile(oAuthProvider, code);
+        doReturn(member).when(oAuthResultHandler).saveOrGet(oAuthProfile);
         doReturn(accessToken).when(tokenProvider).createToken(AuthPrincipal.from(member));
         final MemberLoginResponse actual = regularAuthService.login(memberLoginRequest);
         final MemberLoginResponse expected = memberLoginResponse;
@@ -76,6 +77,7 @@ class RegularAuthServiceTest {
     public void loginWhenInvalidAuthenticateCode(final String providerName) throws Exception {
         // given
         final MemberLoginRequest memberLoginRequest = new MemberLoginRequest(providerName, code);
+        final OAuthProvider oAuthProvider = getOAuthProvider(providerName);
 
         // when
         doThrow(new RuntimeException()).when(oAuthClient).getProfile(oAuthProvider, code);
@@ -85,9 +87,9 @@ class RegularAuthServiceTest {
                 .isInstanceOf(RuntimeException.class);
     }
 
-    private OAuthProvider getOAuthProvider() {
+    private OAuthProvider getOAuthProvider(final String providerName) {
         return new OAuthProvider(
-                "name",
+                providerName,
                 "clientId",
                 "clientSecret",
                 "redirectUrl",
@@ -97,5 +99,9 @@ class RegularAuthServiceTest {
                 HttpMethod.GET,
                 "profileUrl"
         );
+    }
+
+    private OAuthProfile getOAuthProfile(final OAuthProvider oAuthProvider) {
+        return OAuthProfileFactory.of(Collections.emptyMap(), oAuthProvider);
     }
 }

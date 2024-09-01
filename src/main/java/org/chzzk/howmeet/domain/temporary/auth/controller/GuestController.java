@@ -1,5 +1,6 @@
 package org.chzzk.howmeet.domain.temporary.auth.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.temporary.auth.dto.login.request.GuestLoginRequest;
 import org.chzzk.howmeet.domain.temporary.auth.dto.login.response.GuestLoginResponse;
@@ -21,13 +22,13 @@ public class GuestController {
     private final GuestService guestService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody final GuestLoginRequest guestLoginRequest) {
+    public ResponseEntity<?> login(@RequestBody @Valid final GuestLoginRequest guestLoginRequest) {
         final GuestLoginResponse guestLoginResponse = guestService.login(guestLoginRequest);
         return ResponseEntity.ok(guestLoginResponse);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody final GuestSignupRequest guestSignupRequest) {
+    public ResponseEntity<?> signup(@RequestBody @Valid final GuestSignupRequest guestSignupRequest) {
         final GuestSignupResponse guestSignupResponse = guestService.signup(guestSignupRequest);
         return ResponseEntity.status(CREATED)
                 .body(guestSignupResponse);

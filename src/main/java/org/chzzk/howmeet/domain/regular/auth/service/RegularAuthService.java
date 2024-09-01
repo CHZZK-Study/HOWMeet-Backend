@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.regular.auth.dto.login.request.MemberLoginRequest;
 import org.chzzk.howmeet.domain.regular.auth.dto.login.response.MemberLoginResponse;
-import org.chzzk.howmeet.domain.regular.auth.entity.Member;
+import org.chzzk.howmeet.domain.regular.member.entity.Member;
 import org.chzzk.howmeet.global.util.TokenProvider;
 import org.chzzk.howmeet.infra.oauth.model.OAuthProvider;
 import org.chzzk.howmeet.infra.oauth.repository.InMemoryOAuthProviderRepository;
@@ -26,7 +26,7 @@ public class RegularAuthService {
         final OAuthProvider oAuthProvider = inMemoryOAuthProviderRepository.findByProviderName(memberLoginRequest.providerName());
         final Member member = oAuthClient.getProfile(oAuthProvider, memberLoginRequest.code())
                 .publishOn(Schedulers.boundedElastic())
-                .map(attributes -> oauthResultHandler.saveOrGet(attributes, memberLoginRequest.providerName()))
+                .map(oauthResultHandler::saveOrGet)
                 .block();
 
         final AuthPrincipal authPrincipal = AuthPrincipal.from(member);

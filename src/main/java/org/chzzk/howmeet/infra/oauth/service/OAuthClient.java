@@ -5,6 +5,8 @@ import org.chzzk.howmeet.infra.oauth.dto.token.request.OAuthTokenRequest;
 import org.chzzk.howmeet.infra.oauth.dto.token.response.OAuthTokenResponse;
 import org.chzzk.howmeet.infra.oauth.exception.token.OAuthTokenIssueException;
 import org.chzzk.howmeet.infra.oauth.model.OAuthProvider;
+import org.chzzk.howmeet.infra.oauth.model.profile.OAuthProfile;
+import org.chzzk.howmeet.infra.oauth.model.profile.OAuthProfileFactory;
 import org.chzzk.howmeet.infra.oauth.util.MultiValueMapConverter;
 import org.h2.util.StringUtils;
 import org.springframework.core.ParameterizedTypeReference;
@@ -28,14 +30,15 @@ public class OAuthClient {
     private final TokenIssueFailHandler tokenIssueFailHandler;
     private final WebClient webClient;
 
-    public Mono<Map<String, Object>> getProfile(final OAuthProvider provider, final String code) {
+    public Mono<OAuthProfile> getProfile(final OAuthProvider provider, final String code) {
         return oAuthTimeoutDecorator.decorate(issueToken(provider, code))
                 .flatMap(response -> {
                     if (failedTokenIssue(response)) {
                         return Mono.error(OAuthTokenIssueException.createWhenResponseIsNullOrEmpty());
                     }
 
-                    return oAuthTimeoutDecorator.decorate(getProfileFromToken(provider, response.access_token()));
+                    return oAuthTimeoutDecorator.decorate(getProfileFromToken(provider, response.access_token()))
+                            .map(attributes -> OAuthProfileFactory.of(attributes, provider));
                 });
     }
 
