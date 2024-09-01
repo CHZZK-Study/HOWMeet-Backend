@@ -88,7 +88,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     private void validateMember(final AuthPrincipal authPrincipal) {
         final Long id = authPrincipal.id();
-        if (!guestRepository.existsById(id) && !memberRepository.existsById(id)) {
+        if (!guestRepository.existsByGuestId(id) && !memberRepository.existsByMemberId(id)) {
             throw new AuthException(JWT_INVALID_SUBJECT);
         }
     }

@@ -6,6 +6,7 @@ import org.chzzk.howmeet.global.interceptor.GuestAuthorityInterceptor;
 import org.chzzk.howmeet.global.resolver.AuthPrincipalResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -33,5 +34,14 @@ public class WebConfig implements WebMvcConfigurer {
         resolvers.add(authPrincipalResolver);
     }
 
-    // cors
+    @Override
+    public void addCorsMappings(final CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOriginPatterns("*")
+                .allowedHeaders("*")
+                .allowedMethods("*")
+                .allowCredentials(true)
+                .maxAge(3000);
+
+    }
 }

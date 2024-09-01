@@ -1,10 +1,9 @@
 package org.chzzk.howmeet.domain.regular.schedule.exception;
 
-public class MSException extends RuntimeException {
-    private final MSErrorCode errorCode;
+import org.chzzk.howmeet.domain.common.error.DomainException;
 
+public class MSException extends DomainException {
     public MSException(final MSErrorCode errorCode) {
-        super(errorCode.getMessage());
-        this.errorCode = errorCode;
+        super(errorCode);
     }
 }

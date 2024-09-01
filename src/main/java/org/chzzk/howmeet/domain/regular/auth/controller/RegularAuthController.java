@@ -1,5 +1,6 @@
 package org.chzzk.howmeet.domain.regular.auth.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.regular.auth.dto.login.request.MemberLoginRequest;
 import org.chzzk.howmeet.domain.regular.auth.dto.login.response.MemberLoginResponse;
@@ -17,7 +18,7 @@ public class RegularAuthController {
     private final RegularAuthService regularAuthService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody final MemberLoginRequest memberLoginRequest) {
+    public ResponseEntity<?> login(@RequestBody @Valid final MemberLoginRequest memberLoginRequest) {
         final MemberLoginResponse memberLoginResponse = regularAuthService.login(memberLoginRequest);
         return ResponseEntity.ok(memberLoginResponse);
     }
