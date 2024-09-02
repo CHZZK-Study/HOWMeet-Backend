@@ -1,6 +1,7 @@
 package org.chzzk.howmeet.domain.regular.room.service;
 
 import lombok.RequiredArgsConstructor;
+import org.chzzk.howmeet.domain.regular.member.dto.nickname.dto.MemberNicknameDto;
 import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomListResponse;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
@@ -68,8 +69,8 @@ public class RoomService {
                     String leaderNickname = room.getMembers().stream()
                             .filter(RoomMember::getIsLeader)
                             .findFirst()
-                            .map(leader -> memberRepository.findSummaryById(leader.getMemberId())
-                                    .map(memberSummaryDto -> memberSummaryDto.nickname().getValue())
+                            .map(leader -> memberRepository.findIdAndNicknameById(leader.getMemberId())
+                                    .map(memberNicknameDto -> memberNicknameDto.nickname().getValue())
                                     .orElse(null))
                             .orElse(null);
 

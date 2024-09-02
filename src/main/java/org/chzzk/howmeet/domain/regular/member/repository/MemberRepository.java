@@ -1,5 +1,6 @@
 package org.chzzk.howmeet.domain.regular.member.repository;
 
+import org.chzzk.howmeet.domain.regular.member.dto.nickname.dto.MemberNicknameDto;
 import org.chzzk.howmeet.domain.regular.member.dto.summary.dto.MemberSummaryDto;
 import org.chzzk.howmeet.domain.regular.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             "FROM Member m " +
             "WHERE m.id =:id")
     Optional<MemberSummaryDto> findSummaryById(@Param("id") final Long id);
+
+    @Query("SELECT NEW org.chzzk.howmeet.domain.regular.member.dto.nickname.dto.MemberNicknameDto(m.id, m.nickname) " +
+            "FROM Member m " +
+            "WHERE m.id = :id")
+    Optional<MemberNicknameDto> findIdAndNicknameById(@Param("id") final Long id);
 }
