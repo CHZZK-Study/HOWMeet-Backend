@@ -42,6 +42,10 @@ public class GuestAuthorityInterceptor implements HandlerInterceptor {
 
     private void validateGuestAuthorization(final HttpServletRequest request) {
         final AuthPrincipal authPrincipal = (AuthPrincipal) request.getAttribute(authAttributeKey);
+        if (Objects.isNull(authPrincipal)) {
+            throw new AuthenticationException(JWT_NOT_FOUND);
+        }
+
         if (!authPrincipal.isGuest()) {
             throw new AuthorizationException(JWT_FORBIDDEN);
         }

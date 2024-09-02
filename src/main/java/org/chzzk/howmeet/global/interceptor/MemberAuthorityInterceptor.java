@@ -42,6 +42,10 @@ public class MemberAuthorityInterceptor implements HandlerInterceptor {
 
     private void validateMemberAuthorization(final HttpServletRequest request) {
         final AuthPrincipal authPrincipal = (AuthPrincipal) request.getAttribute(authAttributeKey);
+        if (Objects.isNull(authPrincipal)) {
+            throw new AuthenticationException(JWT_NOT_FOUND);
+        }
+
         if (!authPrincipal.isMember()) {
             throw new AuthorizationException(JWT_FORBIDDEN);
         }
