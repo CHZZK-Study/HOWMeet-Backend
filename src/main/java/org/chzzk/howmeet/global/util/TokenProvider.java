@@ -64,6 +64,7 @@ public class TokenProvider {
                     .getExpiration()
                     .before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
+            log.info("JWT 검증 실패 : {}", e.getMessage());
             return false;
         }
     }
