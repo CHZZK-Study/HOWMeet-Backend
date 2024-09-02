@@ -10,12 +10,10 @@ import org.chzzk.howmeet.infra.oauth.model.OAuthProvider;
 import org.chzzk.howmeet.infra.oauth.repository.InMemoryOAuthProviderRepository;
 import org.chzzk.howmeet.infra.oauth.service.OAuthClient;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.scheduler.Schedulers;
 
 @RequiredArgsConstructor
 @Service
-@Transactional(readOnly = true)
 public class RegularAuthService {
     private final InMemoryOAuthProviderRepository inMemoryOAuthProviderRepository;
     private final OAuthClient oAuthClient;
