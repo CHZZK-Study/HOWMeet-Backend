@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.regular.auth.entity.RefreshToken;
 import org.chzzk.howmeet.domain.regular.auth.repository.RefreshTokenRepository;
+import org.chzzk.howmeet.domain.regular.auth.util.RefreshTokenProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

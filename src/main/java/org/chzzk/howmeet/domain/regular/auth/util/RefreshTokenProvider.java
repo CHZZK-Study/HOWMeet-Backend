@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.domain.regular.auth.service;
+package org.chzzk.howmeet.domain.regular.auth.util;
 
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.regular.auth.entity.RefreshToken;
