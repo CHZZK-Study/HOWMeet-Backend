@@ -2,6 +2,7 @@ package org.chzzk.howmeet.global.error;
 
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.chzzk.howmeet.domain.common.auth.exception.AuthException;
 import org.chzzk.howmeet.domain.common.error.DomainException;
 import org.chzzk.howmeet.infra.error.InfraException;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +46,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DomainException.class)
-    public ResponseEntity<ErrorResponse> handleBusinessException(final DomainException exception) {
+    public ResponseEntity<ErrorResponse> handleDomainException(final DomainException exception) {
+        return ResponseEntity.status(exception.getStatus())
+                .body(ErrorResponse.of(exception.getStatus(), exception.getMessage()));
+    }
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ErrorResponse> handleAuthException(final AuthException exception) {
         return ResponseEntity.status(exception.getStatus())
                 .body(ErrorResponse.of(exception.getStatus(), exception.getMessage()));
     }

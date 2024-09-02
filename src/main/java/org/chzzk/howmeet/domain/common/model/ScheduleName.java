@@ -14,13 +14,12 @@ public class ScheduleName {
 
     // Todo : JSON 역직렬화에 필요한 생성자를 추가 -> 오류가 잡히지 않아서 chatGpt를 참고하여 추가함, 수정할 수 있는지 확인 필요
     @JsonCreator
-    public ScheduleName(@JsonProperty("name") final String name) {
-        this.value = name;
+    public ScheduleName(@JsonProperty("value") final String value) {
+        this.value = value;
     }
 
-    @JsonCreator
-    public static ScheduleName from(@JsonProperty("name") final String name) {
-        return new ScheduleName(name);
+    public static ScheduleName from(final String value) {
+        return new ScheduleName(value);
     }
 
     private void validateName(final String value) {
