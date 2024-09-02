@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public record RoomListResponse (Long roomId, String name, String memberCount, List<MSResponse> ongoingSchedules) {
+public record RoomListResponse (Long roomId, String name, String memberSummary, List<MSResponse> schedules) {
 
-    public RoomListResponse(Long roomId, String name, String memberCount, List<MSResponse> ongoingSchedules) {
+    public RoomListResponse(Long roomId, String name, String memberSummary, List<MSResponse> schedules) {
         this.roomId = roomId;
         this.name = name;
-        this.memberCount = memberCount;
-        this.ongoingSchedules = ongoingSchedules;
+        this.memberSummary = memberSummary;
+        this.schedules = schedules;
     }
 
     public static RoomListResponse of(final Room room, final List<MemberSchedule> memberSchedules, String leaderNickname) {
@@ -28,11 +28,11 @@ public record RoomListResponse (Long roomId, String name, String memberCount, Li
                 .filter(RoomMember::getIsLeader)
                 .findFirst();
 
-        String memberCount = totalMembers > 1
+        String memberSummary = totalMembers > 1
                 ? String.format("%s 외 %d명", leaderNickname, totalMembers - 1)
                 : "1명";
 
-        List<MSResponse> ongoingSchedules = memberSchedules.stream()
+        List<MSResponse> schedules = memberSchedules.stream()
                 .filter(schedule -> schedule.getStatus() == ScheduleStatus.PROGRESS)
                 .sorted(Comparator.comparing(BaseEntity::getCreatedAt))
                 .map(MSResponse::from)
@@ -41,8 +41,8 @@ public record RoomListResponse (Long roomId, String name, String memberCount, Li
         return new RoomListResponse(
                 room.getId(),
                 room.getName().getValue(),
-                memberCount,
-                ongoingSchedules
+                memberSummary,
+                schedules
         );
     }
 }
