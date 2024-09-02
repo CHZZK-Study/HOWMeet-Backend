@@ -6,7 +6,9 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum RefreshTokenErrorCode implements DomainErrorCode {
-    REFRESH_TOKEN_NO_AUTHORITY("정기 회원이 아닙니다.", HttpStatus.BAD_REQUEST);
+    REFRESH_TOKEN_NO_AUTHORITY("정기 회원이 아닙니다.", HttpStatus.BAD_REQUEST),
+    REFRESH_TOKEN_NOT_FOUND("리프레시 토큰을 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
+
     private final String message;
     private final HttpStatus status;
 
