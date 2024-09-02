@@ -11,7 +11,10 @@ import org.chzzk.howmeet.domain.regular.auth.dto.login.request.MemberLoginReques
 import org.chzzk.howmeet.domain.regular.auth.dto.login.response.MemberLoginResponse;
 import org.chzzk.howmeet.domain.regular.auth.dto.reissue.MemberReissueResult;
 import org.chzzk.howmeet.domain.regular.auth.dto.reissue.response.MemberReissueResponse;
+import org.chzzk.howmeet.domain.regular.auth.exception.RefreshTokenErrorCode;
+import org.chzzk.howmeet.domain.regular.auth.exception.RefreshTokenException;
 import org.chzzk.howmeet.domain.regular.auth.service.RegularAuthService;
+import org.h2.util.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +51,7 @@ public class RegularAuthController {
     @RegularUser
     public ResponseEntity<?> logout(@Authenticated final AuthPrincipal authPrincipal,
                                     @CookieValue(name = REFRESH_TOKEN) final String refreshTokenValue) {
+        validateRefreshToken(refreshTokenValue);
         regularAuthService.logout(authPrincipal, refreshTokenValue);
         return ResponseEntity.noContent()
                 .header(HttpHeaders.SET_COOKIE, refreshTokenCookieProvider.createLogoutCookie().toString())
@@ -58,10 +62,17 @@ public class RegularAuthController {
     @RegularUser
     public ResponseEntity<?> reissue(@Authenticated final AuthPrincipal authPrincipal,
                                      @CookieValue(name = REFRESH_TOKEN) final String refreshTokenValue) {
+        validateRefreshToken(refreshTokenValue);
         final MemberReissueResult memberReissueResult = regularAuthService.reissue(authPrincipal, refreshTokenValue);
         final ResponseCookie cookie = refreshTokenCookieProvider.createCookie(memberReissueResult.refreshToken());
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(MemberReissueResponse.from(memberReissueResult));
+    }
+
+    private void validateRefreshToken(final String value) {
+        if (StringUtils.isNullOrEmpty(value)) {
+            throw new RefreshTokenException(RefreshTokenErrorCode.REFRESH_TOKEN_NOT_FOUND);
+        }
     }
 }
