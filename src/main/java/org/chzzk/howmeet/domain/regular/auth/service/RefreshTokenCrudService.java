@@ -17,10 +17,18 @@ public class RefreshTokenCrudService {
 
     @Transactional
     public RefreshToken save(final AuthPrincipal authPrincipal) {
+        validateAuthPrincipal(authPrincipal);
         return refreshTokenRepository.save(refreshTokenProvider.createToken(authPrincipal));
     }
 
     public void delete(final AuthPrincipal authPrincipal, final String value) {
+        validateAuthPrincipal(authPrincipal);
         refreshTokenRepository.deleteByMemberIdAndValue(authPrincipal.id(), value);
+    }
+
+    private void validateAuthPrincipal(final AuthPrincipal authPrincipal) {
+        if (!authPrincipal.isMember()) {
+            throw new IllegalArgumentException();
+        }
     }
 }
