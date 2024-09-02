@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DomainException.class)
-    public ResponseEntity<ErrorResponse> handleBusinessException(final DomainException exception) {
+    public ResponseEntity<ErrorResponse> handleDomainException(final DomainException exception) {
         return ResponseEntity.status(exception.getStatus())
                 .body(ErrorResponse.of(exception.getStatus(), exception.getMessage()));
     }
