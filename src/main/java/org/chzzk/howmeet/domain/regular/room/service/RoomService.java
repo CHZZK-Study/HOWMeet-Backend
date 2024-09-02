@@ -10,6 +10,7 @@ import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
 import org.chzzk.howmeet.domain.regular.room.exception.RoomException;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomMemberRepository;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomRepository;
+import org.chzzk.howmeet.domain.regular.room.util.RoomListMapper;
 import org.chzzk.howmeet.domain.regular.schedule.dto.MSRequest;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 import org.chzzk.howmeet.domain.regular.schedule.repository.MSRepository;
@@ -72,7 +73,7 @@ public class RoomService {
                                     .orElse(null))
                             .orElse(null);
 
-                    return RoomListResponse.of(room, memberSchedules, leaderNickname);
+                    return RoomListMapper.toRoomListResponse(room, memberSchedules, leaderNickname);
                 })
                 .collect(Collectors.toList());
     }
