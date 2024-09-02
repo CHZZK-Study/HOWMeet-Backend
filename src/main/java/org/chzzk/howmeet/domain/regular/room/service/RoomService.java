@@ -69,8 +69,8 @@ public class RoomService {
                             .findFirst()
                             .map(leader -> memberRepository.findSummaryById(leader.getMemberId())
                                     .map(memberSummaryDto -> memberSummaryDto.nickname().getValue())
-                                    .orElse("Unknown"))
-                            .orElse("Unknown");
+                                    .orElse(null))
+                            .orElse(null);
 
                     return RoomListResponse.of(room, memberSchedules, leaderNickname);
                 })
