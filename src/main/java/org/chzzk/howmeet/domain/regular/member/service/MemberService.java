@@ -5,7 +5,6 @@ import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.regular.member.dto.summary.dto.MemberSummaryDto;
 import org.chzzk.howmeet.domain.regular.member.dto.summary.response.MemberSummaryResponse;
 import org.chzzk.howmeet.domain.regular.member.exception.MemberException;
-import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
 import static org.chzzk.howmeet.domain.regular.member.exception.MemberErrorCode.MEMBER_NOT_FOUND;
@@ -13,7 +12,7 @@ import static org.chzzk.howmeet.domain.regular.member.exception.MemberErrorCode.
 @RequiredArgsConstructor
 @Service
 public class MemberService {
-    private final MemberRepository memberRepository;
+    private final MemberFindService memberFindService;
 
     public MemberSummaryResponse getSummary(final AuthPrincipal authPrincipal) {
         final MemberSummaryDto memberSummaryDto = findMemberSummaryById(authPrincipal.id());
@@ -21,7 +20,7 @@ public class MemberService {
     }
 
     private MemberSummaryDto findMemberSummaryById(final Long memberId) {
-        return memberRepository.findSummaryById(memberId)
+        return memberFindService.findSummaryByMemberId(memberId)
                 .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
     }
 }

@@ -13,16 +13,18 @@ import lombok.ToString;
 import org.chzzk.howmeet.domain.common.auth.entity.UserDetails;
 import org.chzzk.howmeet.domain.common.auth.model.Role;
 import org.chzzk.howmeet.domain.common.entity.BaseEntity;
-import org.chzzk.howmeet.domain.common.model.Nickname;
-import org.chzzk.howmeet.domain.common.model.converter.NicknameConverter;
 import org.chzzk.howmeet.domain.common.model.Image;
+import org.chzzk.howmeet.domain.common.model.Nickname;
+import org.chzzk.howmeet.domain.common.model.NicknameProvider;
 import org.chzzk.howmeet.domain.common.model.converter.ImageConverter;
+import org.chzzk.howmeet.domain.common.model.converter.NicknameConverter;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class Member extends BaseEntity implements UserDetails {
+public class Member extends BaseEntity implements UserDetails, NicknameProvider {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -2,9 +2,15 @@ package org.chzzk.howmeet.infra.oauth.model;
 
 import org.springframework.http.HttpMethod;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public record OAuthProvider(String name,
                             String clientId,
                             String clientSecret,
+                            String authorizeUrl,
+                            HttpMethod authorizeMethod,
+                            List<String> scope,
                             String redirectUrl,
                             String grantType,
                             HttpMethod tokenMethod,
@@ -16,6 +22,9 @@ public record OAuthProvider(String name,
                 provider.getName(),
                 client.getId(),
                 client.getSecret(),
+                provider.getAuthorize().getUrl(),
+                HttpMethod.valueOf(provider.getAuthorize().getMethod()),
+                new ArrayList<>(client.getScopes()),
                 client.getRedirectUrl(),
                 provider.getToken().getIssue().getGrant_type(),
                 HttpMethod.valueOf(provider.getToken().getIssue().getMethod()),

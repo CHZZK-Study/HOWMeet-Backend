@@ -15,18 +15,19 @@ import org.chzzk.howmeet.domain.common.auth.model.Role;
 import org.chzzk.howmeet.domain.common.entity.BaseEntity;
 import org.chzzk.howmeet.domain.common.model.EncodedPassword;
 import org.chzzk.howmeet.domain.common.model.Nickname;
+import org.chzzk.howmeet.domain.common.model.NicknameProvider;
 import org.chzzk.howmeet.domain.common.model.converter.EncodedPasswordConverter;
 import org.chzzk.howmeet.domain.common.model.converter.NicknameConverter;
 import org.chzzk.howmeet.domain.temporary.auth.exception.GuestException;
 import org.chzzk.howmeet.domain.temporary.auth.util.PasswordEncoder;
 
-import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.INVALID_PASSWORD;
+import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.NOT_MATCHED_PASSWORD;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class Guest extends BaseEntity implements UserDetails {
+public class Guest extends BaseEntity implements UserDetails, NicknameProvider {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -55,7 +56,7 @@ public class Guest extends BaseEntity implements UserDetails {
 
     public void validatePassword(final String planePassword, final PasswordEncoder passwordEncoder) {
         if (!password.isMatch(planePassword, passwordEncoder)) {
-            throw new GuestException(INVALID_PASSWORD);
+            throw new GuestException(NOT_MATCHED_PASSWORD);
         }
     }
 
