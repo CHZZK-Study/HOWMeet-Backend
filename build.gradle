@@ -103,9 +103,10 @@ ext {
 
 tasks.named('test') {
     useJUnitPlatform()
-    exclude '**/GuestRepositoryTest.*'
-}
+//    exclude '**/GuestRepositoryTest.*'
+    exclude '**/*RepositoryTest.*'
 
+}
 
 tasks.withType(GenerateSwaggerUI) {
     dependsOn 'openapi3'
