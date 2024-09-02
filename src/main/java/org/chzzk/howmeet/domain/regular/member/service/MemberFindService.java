@@ -19,7 +19,7 @@ public class MemberFindService {
         return memberRepository.findBySocialId(socialId);
     }
 
-    public Optional<MemberSummaryDto> findSummary(final Long memberId) {
+    public Optional<MemberSummaryDto> findSummaryByMemberId(final Long memberId) {
         return memberRepository.findSummaryById(memberId);
     }
 }

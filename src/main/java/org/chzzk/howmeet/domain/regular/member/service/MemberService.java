@@ -20,7 +20,7 @@ public class MemberService {
     }
 
     private MemberSummaryDto findMemberSummaryById(final Long memberId) {
-        return memberFindService.findSummary(memberId)
+        return memberFindService.findSummaryByMemberId(memberId)
                 .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
     }
 }

@@ -40,7 +40,7 @@ class MemberServiceTest {
         final MemberSummaryResponse expect = MemberSummaryResponse.from(memberSummaryDto);
 
         // when
-        doReturn(Optional.of(memberSummaryDto)).when(memberFindService).findSummary(authPrincipal.id());
+        doReturn(Optional.of(memberSummaryDto)).when(memberFindService).findSummaryByMemberId(authPrincipal.id());
         final MemberSummaryResponse actual = memberService.getSummary(authPrincipal);
 
         // then
@@ -54,7 +54,7 @@ class MemberServiceTest {
         final AuthPrincipal authPrincipal = AuthPrincipal.from(member);
 
         // when
-        doReturn(Optional.empty()).when(memberFindService).findSummary(authPrincipal.id());
+        doReturn(Optional.empty()).when(memberFindService).findSummaryByMemberId(authPrincipal.id());
 
         // then
         assertThatThrownBy(() -> memberService.getSummary(authPrincipal))
