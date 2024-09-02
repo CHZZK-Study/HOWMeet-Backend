@@ -9,6 +9,9 @@ import org.chzzk.howmeet.domain.regular.auth.util.RefreshTokenProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
+import static org.chzzk.howmeet.domain.regular.auth.exception.RefreshTokenErrorCode.REFRESH_TOKEN_NOT_FOUND;
 import static org.chzzk.howmeet.domain.regular.auth.exception.RefreshTokenErrorCode.REFRESH_TOKEN_NO_AUTHORITY;
 
 @RequiredArgsConstructor
@@ -24,9 +27,16 @@ public class RefreshTokenCrudService {
         return refreshTokenRepository.save(refreshTokenProvider.createToken(authPrincipal));
     }
 
+    @Transactional
     public void delete(final AuthPrincipal authPrincipal, final String value) {
         validateAuthPrincipal(authPrincipal);
-        refreshTokenRepository.deleteByMemberIdAndValue(authPrincipal.id(), value);
+        final RefreshToken refreshToken = refreshTokenRepository.findByValue(value)
+                .orElseThrow(() -> new RefreshTokenException(REFRESH_TOKEN_NOT_FOUND));
+        if (!Objects.equals(refreshToken.getMemberId(), authPrincipal.id())) {
+            throw new IllegalArgumentException();
+        }
+
+        refreshTokenRepository.delete(refreshToken);
     }
 
     private void validateAuthPrincipal(final AuthPrincipal authPrincipal) {
