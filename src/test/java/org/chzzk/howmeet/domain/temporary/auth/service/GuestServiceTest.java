@@ -9,7 +9,6 @@ import org.chzzk.howmeet.domain.temporary.auth.dto.login.response.GuestLoginResp
 import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
 import org.chzzk.howmeet.domain.temporary.auth.exception.GuestException;
 import org.chzzk.howmeet.domain.temporary.auth.util.PasswordEncoder;
-import org.chzzk.howmeet.domain.temporary.schedule.exception.GSException;
 import org.chzzk.howmeet.global.util.TokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +24,6 @@ import java.util.Optional;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.GUEST_ALREADY_EXIST;
 import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.INVALID_PASSWORD;
 import static org.chzzk.howmeet.fixture.GuestFixture.KIM;
 import static org.mockito.Mockito.doNothing;
@@ -85,7 +83,7 @@ class GuestServiceTest extends RestDocsTest {
         doReturn(true).when(passwordEncoder)
                 .matches(password, encodedPassword.getValue());
         doReturn(Optional.of(guest)).when(guestFindService)
-                .find(guest.getGuestScheduleId(), guest.getNickname().getValue());
+                .find(guestLoginRequest.guestScheduleId(), guestLoginRequest.nickname());
         doReturn(accessToken).when(tokenProvider)
                 .createToken(AuthPrincipal.from(guest));
         final GuestLoginResponse actual = guestService.login(guestLoginRequest);
@@ -132,7 +130,7 @@ class GuestServiceTest extends RestDocsTest {
         doNothing().when(passwordValidator)
                 .validate(password);
         doReturn(Optional.of(guest)).when(guestFindService)
-                .find(guest.getGuestScheduleId(), guest.getNickname().getValue());
+                .find(guestLoginRequest.guestScheduleId(), guestLoginRequest.nickname());
         doReturn(false).when(passwordEncoder)
                 .matches(password, encodedPassword.getValue());
 
@@ -140,19 +138,6 @@ class GuestServiceTest extends RestDocsTest {
         assertThatThrownBy(() -> guestService.login(guestLoginRequest))
                 .isInstanceOf(GuestException.class)
                 .hasMessageContaining(INVALID_PASSWORD.getMessage());
-    }
-
-    @Test
-    @DisplayName("1회용 로그인 일정 ID가 잘못된 경우 예외 발생")
-    public void signupWhenInvalidScheduleId() throws Exception {
-        // when
-        doThrow(GSException.class).when(guestSaveService)
-                .save(guest.getGuestScheduleId(), guest.getNickname().getValue(), encodedPassword);
-
-        // then
-        assertThatThrownBy(() -> guestService.login(guestLoginRequest))
-                .isInstanceOf(GuestException.class)
-                .hasMessageContaining(GUEST_ALREADY_EXIST.getMessage());
     }
 
     @Test
@@ -165,9 +150,13 @@ class GuestServiceTest extends RestDocsTest {
         doNothing().when(passwordValidator)
                 .validate(password);
         doReturn(Optional.empty()).when(guestFindService)
-                .find(guest.getGuestScheduleId(), guest.getNickname().getValue());
+                .find(guestLoginRequest.guestScheduleId(), guestLoginRequest.nickname());
         doReturn(encodedPassword.getValue()).when(passwordEncoder)
                 .encode(password);
+        doReturn(true).when(passwordEncoder)
+                        .matches(guestLoginRequest.password(), encodedPassword.getValue());
+        doReturn(accessToken).when(tokenProvider)
+                        .createToken(AuthPrincipal.from(guest));
         doReturn(guest).when(guestSaveService)
                 .save(guestLoginRequest.guestScheduleId(), guestLoginRequest.nickname(), encodedPassword);
         final GuestLoginResponse actual = guestService.login(guestLoginRequest);
