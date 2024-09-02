@@ -86,25 +86,27 @@ public class GSRecordService {
     }
 
     public GSRecordGetResponse getGSRecord(final Long gsId) {
-        List<Guest> guestList = tmpGuestRepository.findByGuestScheduleId(gsId);
-        Map<Long, Nickname> nickNameMap = guestList.stream()
+        GuestSchedule guestSchedule = findGSByGSId(gsId);
+        List<Guest> guests = tmpGuestRepository.findByGuestScheduleId(guestSchedule.getId());
+
+        Map<Long, Nickname> nickNameMap = guests.stream()
                 .collect(Collectors.toMap(Guest::getId, Guest::getNickname));
 
-        List<GuestScheduleRecord> gsRecords = findGSRecordByGSId(gsId);
+        List<GuestScheduleRecord> gsRecords = findGSRecordByGSId(guestSchedule.getId());
 
-        Nicknames allNickname = GSRecordNicknames.convertNicknameProvidersList(guestList);
+        Nicknames allNickname = GSRecordNicknames.convertNicknameProvidersList(guests);
 
         Nicknames participants = GSRecordNicknames.distinctNicknames(gsRecords, nickNameMap);
         List<SelectionDetail> selectedInfoList = GSRecordSelectionDetail.convertMapToSelectionDetail(gsRecords,
                 nickNameMap);
 
-        return GSRecordGetResponse.of(gsId, allNickname, participants, selectedInfoList);
+        return GSRecordGetResponse.of(guestSchedule.getId(), allNickname, participants, selectedInfoList);
     }
 
 
     private List<GuestScheduleRecord> findGSRecordByGSId(final Long gsId) {
         final List<GuestScheduleRecord> gsRecords = gsRecordRepository.findByGuestScheduleId(gsId);
-        if (gsRecords == null) {
+        if (gsRecords.isEmpty()) {
             return Collections.emptyList();
         }
         return gsRecords;
