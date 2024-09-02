@@ -1,10 +1,7 @@
 package org.chzzk.howmeet.domain.regular.room.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.chzzk.howmeet.domain.regular.room.dto.RoomMemberRequest;
-import org.chzzk.howmeet.domain.regular.room.dto.RoomMemberResponse;
-import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
-import org.chzzk.howmeet.domain.regular.room.dto.RoomResponse;
+import org.chzzk.howmeet.domain.regular.room.dto.*;
 import org.chzzk.howmeet.domain.regular.room.service.RoomMemberService;
 import org.chzzk.howmeet.domain.regular.room.service.RoomService;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +21,7 @@ public class RoomController {
     public ResponseEntity<?> createRoom(@RequestBody final RoomRequest roomRequest) {
         final RoomResponse roomResponse = roomService.createRoom(roomRequest);
         return ResponseEntity.created(URI.create("/room/" + roomResponse.roomId()))
-                .body(roomResponse);
+                .build();
     }
 
     @PatchMapping("/{roomId}")
@@ -47,6 +44,12 @@ public class RoomController {
     public ResponseEntity<?> getRoom(@PathVariable Long roomId) {
         final RoomResponse roomResponse = roomService.getRoom(roomId);
         return ResponseEntity.ok(roomResponse);
+    }
+
+    @GetMapping("/joined/{memberId}")
+    public ResponseEntity<List<RoomListResponse>> getJoinedRooms(@PathVariable Long memberId) {
+        List<RoomListResponse> joinedRooms = roomService.getJoinedRooms(memberId);
+        return ResponseEntity.ok(joinedRooms);
     }
 
     @DeleteMapping("/{roomId}")
