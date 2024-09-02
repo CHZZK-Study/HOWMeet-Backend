@@ -21,7 +21,7 @@ import org.chzzk.howmeet.domain.common.model.converter.NicknameConverter;
 import org.chzzk.howmeet.domain.temporary.auth.exception.GuestException;
 import org.chzzk.howmeet.domain.temporary.auth.util.PasswordEncoder;
 
-import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.INVALID_PASSWORD;
+import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.NOT_MATCHED_PASSWORD;
 
 @Entity
 @Getter
@@ -56,7 +56,7 @@ public class Guest extends BaseEntity implements UserDetails, NicknameProvider {
 
     public void validatePassword(final String planePassword, final PasswordEncoder passwordEncoder) {
         if (!password.isMatch(planePassword, passwordEncoder)) {
-            throw new GuestException(INVALID_PASSWORD);
+            throw new GuestException(NOT_MATCHED_PASSWORD);
         }
     }
 
