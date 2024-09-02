@@ -110,6 +110,12 @@ tasks.named('test') {
 tasks.withType(GenerateSwaggerUI) {
     dependsOn 'openapi3'
 
+    def docsDir = file('build/resources/main/static/docs')
+    if (!docsDir.exists()) {
+        docsDir.mkdirs()
+        println "Created directory: ${docsDir}"
+    }
+
     delete file('src/main/resources/static/docs/')
     copy {
         from "build/resources/main/static/docs"
