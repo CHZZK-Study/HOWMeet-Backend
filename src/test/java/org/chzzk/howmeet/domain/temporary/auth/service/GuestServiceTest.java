@@ -12,6 +12,7 @@ import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
 import org.chzzk.howmeet.domain.temporary.auth.exception.GuestException;
 import org.chzzk.howmeet.domain.temporary.auth.repository.GuestRepository;
 import org.chzzk.howmeet.domain.temporary.auth.util.PasswordEncoder;
+import org.chzzk.howmeet.domain.temporary.schedule.repository.GSRepository;
 import org.chzzk.howmeet.global.util.TokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,6 +49,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class GuestServiceTest extends RestDocsTest {
     @Mock
     GuestRepository guestRepository;
+
+    @Mock
+    GSRepository gsRepository;
 
     @Mock
     PasswordEncoder passwordEncoder;
@@ -171,6 +175,8 @@ class GuestServiceTest extends RestDocsTest {
                 .validate(password);
         doReturn(false).when(guestRepository)
                 .existsByGuestScheduleIdAndNickname(guest.getGuestScheduleId(), guest.getNickname());
+        doReturn(true).when(gsRepository)
+                        .existsByGuestScheduleId(guest.getGuestScheduleId());
         doReturn(encodedPassword.getValue()).when(passwordEncoder)
                 .encode(password);
         doReturn(guest).when(guestRepository)
