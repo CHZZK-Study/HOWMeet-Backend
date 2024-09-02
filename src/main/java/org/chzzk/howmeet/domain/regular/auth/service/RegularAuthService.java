@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.regular.auth.dto.login.request.MemberLoginRequest;
 import org.chzzk.howmeet.domain.regular.auth.dto.login.response.MemberLoginResponse;
+import org.chzzk.howmeet.domain.regular.auth.dto.reissue.MemberReissueResult;
+import org.chzzk.howmeet.domain.regular.auth.entity.RefreshToken;
 import org.chzzk.howmeet.domain.regular.member.entity.Member;
 import org.chzzk.howmeet.global.util.TokenProvider;
 import org.chzzk.howmeet.infra.oauth.model.OAuthProvider;
@@ -18,6 +20,7 @@ public class RegularAuthService {
     private final InMemoryOAuthProviderRepository inMemoryOAuthProviderRepository;
     private final OAuthClient oAuthClient;
     private final OAuthResultHandler oauthResultHandler;
+    private final RefreshTokenCrudService refreshTokenCrudService;
     private final TokenProvider tokenProvider;
 
     public MemberLoginResponse login(final MemberLoginRequest memberLoginRequest) {
@@ -30,5 +33,16 @@ public class RegularAuthService {
         final AuthPrincipal authPrincipal = AuthPrincipal.from(member);
         final String accessToken = tokenProvider.createToken(authPrincipal);
         return MemberLoginResponse.of(accessToken, member);
+    }
+
+    public void logout(final AuthPrincipal authPrincipal, final String refreshTokenValue) {
+        refreshTokenCrudService.delete(authPrincipal, refreshTokenValue);
+    }
+
+    public MemberReissueResult reissue(final AuthPrincipal authPrincipal, final String refreshTokenValue) {
+        refreshTokenCrudService.delete(authPrincipal, refreshTokenValue);
+        final String accessToken = tokenProvider.createToken(authPrincipal);
+        final RefreshToken refreshToken = refreshTokenCrudService.save(authPrincipal);
+        return MemberReissueResult.of(accessToken, refreshToken);
     }
 }
