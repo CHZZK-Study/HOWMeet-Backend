@@ -2,6 +2,8 @@ package org.chzzk.howmeet.domain.regular.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
+import org.chzzk.howmeet.domain.regular.auth.dto.authorize.request.MemberAuthorizeRequest;
+import org.chzzk.howmeet.domain.regular.auth.dto.authorize.response.MemberAuthorizeResponse;
 import org.chzzk.howmeet.domain.regular.auth.dto.login.request.MemberLoginRequest;
 import org.chzzk.howmeet.domain.regular.auth.dto.login.response.MemberLoginResponse;
 import org.chzzk.howmeet.domain.regular.member.entity.Member;
@@ -10,17 +12,21 @@ import org.chzzk.howmeet.infra.oauth.model.OAuthProvider;
 import org.chzzk.howmeet.infra.oauth.repository.InMemoryOAuthProviderRepository;
 import org.chzzk.howmeet.infra.oauth.service.OAuthClient;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.scheduler.Schedulers;
 
 @RequiredArgsConstructor
 @Service
-@Transactional(readOnly = true)
 public class RegularAuthService {
     private final InMemoryOAuthProviderRepository inMemoryOAuthProviderRepository;
     private final OAuthClient oAuthClient;
     private final OAuthResultHandler oauthResultHandler;
     private final TokenProvider tokenProvider;
+
+    public MemberAuthorizeResponse authorize(final MemberAuthorizeRequest memberAuthorizeRequest) {
+        final String providerName = memberAuthorizeRequest.providerName();
+        final OAuthProvider oAuthProvider = inMemoryOAuthProviderRepository.findByProviderName(providerName);
+        return MemberAuthorizeResponse.from(oAuthProvider);
+    }
 
     public MemberLoginResponse login(final MemberLoginRequest memberLoginRequest) {
         final OAuthProvider oAuthProvider = inMemoryOAuthProviderRepository.findByProviderName(memberLoginRequest.providerName());

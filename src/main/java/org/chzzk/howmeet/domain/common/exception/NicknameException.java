@@ -1,10 +1,9 @@
 package org.chzzk.howmeet.domain.common.exception;
 
-public class NicknameException extends RuntimeException {
-    private final NicknameErrorCode errorCode;
+import org.chzzk.howmeet.domain.common.error.DomainException;
 
+public class NicknameException extends DomainException {
     public NicknameException(final NicknameErrorCode errorCode) {
-        super(errorCode.getMessage());
-        this.errorCode = errorCode;
+        super(errorCode);
     }
 }
