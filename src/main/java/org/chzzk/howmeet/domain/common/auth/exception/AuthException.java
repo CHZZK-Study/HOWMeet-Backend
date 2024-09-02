@@ -1,10 +1,14 @@
 package org.chzzk.howmeet.domain.common.auth.exception;
 
-public class AuthException extends RuntimeException {
-    private final AuthErrorCode errorCode;
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
-    public AuthException(final AuthErrorCode errorCode) {
+@Getter
+public class AuthException extends RuntimeException {
+    private final HttpStatus status;
+
+    public AuthException(final AuthErrorCode errorCode, final HttpStatus status) {
         super(errorCode.getMessage());
-        this.errorCode = errorCode;
+        this.status = status;
     }
 }

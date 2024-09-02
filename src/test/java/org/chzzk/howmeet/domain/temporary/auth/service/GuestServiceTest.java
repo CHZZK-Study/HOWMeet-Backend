@@ -6,11 +6,8 @@ import org.chzzk.howmeet.domain.common.model.EncodedPassword;
 import org.chzzk.howmeet.domain.temporary.auth.controller.GuestController;
 import org.chzzk.howmeet.domain.temporary.auth.dto.login.request.GuestLoginRequest;
 import org.chzzk.howmeet.domain.temporary.auth.dto.login.response.GuestLoginResponse;
-import org.chzzk.howmeet.domain.temporary.auth.dto.signup.request.GuestSignupRequest;
-import org.chzzk.howmeet.domain.temporary.auth.dto.signup.response.GuestSignupResponse;
 import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
 import org.chzzk.howmeet.domain.temporary.auth.exception.GuestException;
-import org.chzzk.howmeet.domain.temporary.auth.repository.GuestRepository;
 import org.chzzk.howmeet.domain.temporary.auth.util.PasswordEncoder;
 import org.chzzk.howmeet.global.util.TokenProvider;
 import org.junit.jupiter.api.DisplayName;
@@ -27,13 +24,9 @@ import java.util.Optional;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import static org.chzzk.howmeet.domain.common.exception.NicknameErrorCode.INVALID_NICKNAME;
-import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.GUEST_ALREADY_EXIST;
-import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.GUEST_NOT_FOUND;
 import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.INVALID_PASSWORD;
+import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.NOT_MATCHED_PASSWORD;
 import static org.chzzk.howmeet.fixture.GuestFixture.KIM;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -49,7 +42,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureRestDocs
 class GuestServiceTest extends RestDocsTest {
     @Mock
-    GuestRepository guestRepository;
+    GuestFindService guestFindService;
+
+    @Mock
+    GuestSaveService guestSaveService;
 
     @Mock
     PasswordEncoder passwordEncoder;
@@ -75,11 +71,9 @@ class GuestServiceTest extends RestDocsTest {
     String accessToken = "accessToken";
     GuestLoginRequest guestLoginRequest = new GuestLoginRequest(guest.getGuestScheduleId(), nickname, password);;
     GuestLoginResponse guestLoginResponse = GuestLoginResponse.of(accessToken, guest);
-    GuestSignupRequest guestSignupRequest = new GuestSignupRequest(guest.getGuestScheduleId(), nickname, password);
-    GuestSignupResponse guestSignupResponse = GuestSignupResponse.of(guest);
 
     @Test
-    @DisplayName("1회용 로그인")
+    @DisplayName("1회용 로그인 (기존 회원)")
     public void login() throws Exception {
         // given
         final GuestLoginResponse expect = guestLoginResponse;
@@ -89,8 +83,8 @@ class GuestServiceTest extends RestDocsTest {
                 .validate(password);
         doReturn(true).when(passwordEncoder)
                 .matches(password, encodedPassword.getValue());
-        doReturn(Optional.of(guest)).when(guestRepository)
-                .findByGuestScheduleIdAndNickname(guest.getGuestScheduleId(), guest.getNickname());
+        doReturn(Optional.of(guest)).when(guestFindService)
+                .find(guestLoginRequest.guestScheduleId(), guestLoginRequest.nickname());
         doReturn(accessToken).when(tokenProvider)
                 .createToken(AuthPrincipal.from(guest));
         final GuestLoginResponse actual = guestService.login(guestLoginRequest);
@@ -118,21 +112,6 @@ class GuestServiceTest extends RestDocsTest {
     }
 
     @Test
-    @DisplayName("1회용 로그인 시 일치하는 회원이 없는 경우 예외 발생")
-    public void loginWhenInvalidNickname() throws Exception {
-        // when
-        doNothing().when(passwordValidator)
-                .validate(password);
-        doReturn(Optional.empty()).when(guestRepository)
-                .findByGuestScheduleIdAndNickname(guest.getGuestScheduleId(), guest.getNickname());
-
-        // then
-        assertThatThrownBy(() -> guestService.login(guestLoginRequest))
-                .isInstanceOf(GuestException.class)
-                .hasMessageContaining(GUEST_NOT_FOUND.getMessage());
-    }
-
-    @Test
     @DisplayName("1회용 로그인 시 비밀번호 검증 실패시 예외 발생")
     public void loginWhenInvalidPassword() throws Exception {
         // when
@@ -151,74 +130,39 @@ class GuestServiceTest extends RestDocsTest {
         // when
         doNothing().when(passwordValidator)
                 .validate(password);
-        doReturn(Optional.of(guest)).when(guestRepository)
-                .findByGuestScheduleIdAndNickname(guest.getGuestScheduleId(), guest.getNickname());
+        doReturn(Optional.of(guest)).when(guestFindService)
+                .find(guestLoginRequest.guestScheduleId(), guestLoginRequest.nickname());
         doReturn(false).when(passwordEncoder)
                 .matches(password, encodedPassword.getValue());
 
         // then
         assertThatThrownBy(() -> guestService.login(guestLoginRequest))
                 .isInstanceOf(GuestException.class)
-                .hasMessageContaining(INVALID_PASSWORD.getMessage());
+                .hasMessageContaining(NOT_MATCHED_PASSWORD.getMessage());
     }
 
     @Test
-    @DisplayName("1회용 회원가입")
+    @DisplayName("1회용 로그인 (신규 회원)")
     public void signup() throws Exception {
         // given
-        final GuestSignupResponse expect = guestSignupResponse;
+        final GuestLoginResponse expect = guestLoginResponse;
 
         // when
         doNothing().when(passwordValidator)
                 .validate(password);
-        doReturn(false).when(guestRepository)
-                .existsByGuestScheduleIdAndNickname(guest.getGuestScheduleId(), guest.getNickname());
+        doReturn(Optional.empty()).when(guestFindService)
+                .find(guestLoginRequest.guestScheduleId(), guestLoginRequest.nickname());
         doReturn(encodedPassword.getValue()).when(passwordEncoder)
                 .encode(password);
-        doReturn(guest).when(guestRepository)
-                .save(any());
-        final GuestSignupResponse actual = guestService.signup(guestSignupRequest);
+        doReturn(true).when(passwordEncoder)
+                        .matches(guestLoginRequest.password(), encodedPassword.getValue());
+        doReturn(accessToken).when(tokenProvider)
+                        .createToken(AuthPrincipal.from(guest));
+        doReturn(guest).when(guestSaveService)
+                .save(guestLoginRequest.guestScheduleId(), guestLoginRequest.nickname(), encodedPassword);
+        final GuestLoginResponse actual = guestService.login(guestLoginRequest);
 
         // then
         assertThat(actual).isEqualTo(expect);
-    }
-
-    @Test
-    @DisplayName("1회용 회원가입시 닉네임 중복시 예외 발생")
-    public void signupWhenDuplicatedNickname() throws Exception {
-        // when
-        doReturn(true).when(guestRepository)
-                .existsByGuestScheduleIdAndNickname(guest.getGuestScheduleId(), guest.getNickname());
-
-        // then
-        assertThatThrownBy(() -> guestService.signup(guestSignupRequest))
-                .isInstanceOf(GuestException.class)
-                .hasMessageContaining(GUEST_ALREADY_EXIST.getMessage());
-    }
-
-    @Test
-    @DisplayName("1회용 회원가입시 비밀번호 검증 실패시 예외 발생")
-    public void signupWhenInvalidPassword() throws Exception {
-        // when
-        doThrow(new GuestException(INVALID_PASSWORD)).when(passwordValidator)
-                .validate(password);
-
-        // then
-        assertThatThrownBy(() -> guestService.signup(guestSignupRequest))
-                .isInstanceOf(GuestException.class)
-                .hasMessageContaining(INVALID_PASSWORD.getMessage());
-    }
-
-    @Test
-    @DisplayName("1회용 회원가입시 일정 ID가 잘못된 경우 예외 발생")
-    public void signupWhenInvalidScheduleId() throws Exception {
-        // when
-        doReturn(true).when(guestRepository)
-                .existsByGuestScheduleIdAndNickname(guest.getGuestScheduleId(), guest.getNickname());
-
-        // then
-        assertThatThrownBy(() -> guestService.signup(guestSignupRequest))
-                .isInstanceOf(GuestException.class)
-                .hasMessageContaining(GUEST_ALREADY_EXIST.getMessage());
     }
 }

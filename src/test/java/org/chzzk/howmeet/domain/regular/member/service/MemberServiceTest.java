@@ -6,7 +6,6 @@ import org.chzzk.howmeet.domain.regular.member.dto.summary.dto.MemberSummaryDto;
 import org.chzzk.howmeet.domain.regular.member.dto.summary.response.MemberSummaryResponse;
 import org.chzzk.howmeet.domain.regular.member.entity.Member;
 import org.chzzk.howmeet.domain.regular.member.exception.MemberException;
-import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +24,7 @@ import static org.mockito.Mockito.doReturn;
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
     @Mock
-    MemberRepository memberRepository;
+    MemberFindService memberFindService;
 
     @InjectMocks
     MemberService memberService;
@@ -41,7 +40,7 @@ class MemberServiceTest {
         final MemberSummaryResponse expect = MemberSummaryResponse.from(memberSummaryDto);
 
         // when
-        doReturn(Optional.of(memberSummaryDto)).when(memberRepository).findSummaryById(authPrincipal.id());
+        doReturn(Optional.of(memberSummaryDto)).when(memberFindService).findSummaryByMemberId(authPrincipal.id());
         final MemberSummaryResponse actual = memberService.getSummary(authPrincipal);
 
         // then
@@ -55,7 +54,7 @@ class MemberServiceTest {
         final AuthPrincipal authPrincipal = AuthPrincipal.from(member);
 
         // when
-        doReturn(Optional.empty()).when(memberRepository).findSummaryById(authPrincipal.id());
+        doReturn(Optional.empty()).when(memberFindService).findSummaryByMemberId(authPrincipal.id());
 
         // then
         assertThatThrownBy(() -> memberService.getSummary(authPrincipal))
