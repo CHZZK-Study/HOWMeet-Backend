@@ -14,6 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -37,12 +39,13 @@ class RefreshTokenCrudServiceTest {
     AuthPrincipal guestAuthPrincipal = AuthPrincipal.from(GuestFixture.KIM.생성());
     String refreshTokenValue = "refreshToken";
     Long expiration = 360_000L;
+    RefreshToken refreshToken = RefreshToken.of(memberPrincipal, refreshTokenValue, expiration);
 
     @Test
     @DisplayName("리프레시 토큰 저장")
     public void save() throws Exception {
         // given
-        final RefreshToken expect = RefreshToken.of(memberPrincipal, refreshTokenValue, expiration);
+        final RefreshToken expect = refreshToken;
 
         // when
         doReturn(expect).when(refreshTokenProvider)
@@ -67,8 +70,10 @@ class RefreshTokenCrudServiceTest {
     @DisplayName("토큰 파싱 정보와 리프레시 토큰값을 통해 리프레시 토큰 삭제")
     public void deleteByAuthPrincipalAndValue() throws Exception {
         // when
+        doReturn(Optional.of(refreshToken)).when(refreshTokenRepository)
+                .findByValue(refreshTokenValue);
         doNothing().when(refreshTokenRepository)
-                .deleteByMemberIdAndValue(memberPrincipal.id(), refreshTokenValue);
+                .delete(refreshToken);
 
         // then
         assertThatCode(() -> refreshTokenCrudService.delete(memberPrincipal, refreshTokenValue))
