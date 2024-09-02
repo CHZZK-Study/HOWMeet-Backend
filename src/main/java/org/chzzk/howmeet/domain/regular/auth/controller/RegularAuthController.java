@@ -8,6 +8,7 @@ import org.chzzk.howmeet.domain.regular.auth.annotation.RegularUser;
 import org.chzzk.howmeet.domain.regular.auth.dto.authorize.request.MemberAuthorizeRequest;
 import org.chzzk.howmeet.domain.regular.auth.dto.authorize.response.MemberAuthorizeResponse;
 import org.chzzk.howmeet.domain.regular.auth.dto.login.request.MemberLoginRequest;
+import org.chzzk.howmeet.domain.regular.auth.dto.login.MemberLoginResult;
 import org.chzzk.howmeet.domain.regular.auth.dto.login.response.MemberLoginResponse;
 import org.chzzk.howmeet.domain.regular.auth.dto.reissue.MemberReissueResult;
 import org.chzzk.howmeet.domain.regular.auth.dto.reissue.response.MemberReissueResponse;
@@ -43,8 +44,11 @@ public class RegularAuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid final MemberLoginRequest memberLoginRequest) {
-        final MemberLoginResponse memberLoginResponse = regularAuthService.login(memberLoginRequest);
-        return ResponseEntity.ok(memberLoginResponse);
+        final MemberLoginResult memberLoginResult = regularAuthService.login(memberLoginRequest);
+        final ResponseCookie cookie = refreshTokenCookieProvider.createCookie(memberLoginResult.refreshToken());
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(MemberLoginResponse.from(memberLoginResult));
     }
 
     @PostMapping("/logout")
