@@ -1,7 +1,9 @@
 package org.chzzk.howmeet.domain.regular.auth.entity;
 
 import jakarta.persistence.Column;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.regular.auth.exception.RefreshTokenException;
@@ -14,6 +16,7 @@ import static org.chzzk.howmeet.domain.regular.auth.exception.RefreshTokenErrorC
 
 @RedisHash(value = "refresh_token")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class RefreshToken {
     @Id
