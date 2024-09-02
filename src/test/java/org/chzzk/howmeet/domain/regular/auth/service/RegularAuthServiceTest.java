@@ -1,6 +1,8 @@
 package org.chzzk.howmeet.domain.regular.auth.service;
 
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
+import org.chzzk.howmeet.domain.regular.auth.dto.authorize.request.MemberAuthorizeRequest;
+import org.chzzk.howmeet.domain.regular.auth.dto.authorize.response.MemberAuthorizeResponse;
 import org.chzzk.howmeet.domain.regular.auth.dto.login.request.MemberLoginRequest;
 import org.chzzk.howmeet.domain.regular.auth.dto.login.response.MemberLoginResponse;
 import org.chzzk.howmeet.domain.regular.member.entity.Member;
@@ -21,6 +23,7 @@ import org.springframework.http.HttpMethod;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -50,6 +53,24 @@ class RegularAuthServiceTest {
     String accessToken = "accessToken";
     MemberLoginResponse memberLoginResponse = MemberLoginResponse.of(accessToken, member);
 
+    @ParameterizedTest
+    @DisplayName("인가 코드")
+    @ValueSource(strings = {"naver", "google", "kakao"})
+    public void authorize(final String providerName) throws Exception {
+        // given
+        final MemberAuthorizeRequest memberAuthorizeRequest = new MemberAuthorizeRequest(providerName);
+        final OAuthProvider oAuthProvider = getOAuthProvider(providerName);
+        final MemberAuthorizeResponse expect = MemberAuthorizeResponse.from(oAuthProvider);
+
+        // when
+        doReturn(oAuthProvider).when(inMemoryOAuthProviderRepository)
+                .findByProviderName(providerName);
+        final MemberAuthorizeResponse actual = regularAuthService.authorize(memberAuthorizeRequest);
+
+        // then
+        assertThat(actual).isEqualTo(expect);
+    }
+    
     @ParameterizedTest
     @DisplayName("소셜 로그인")
     @ValueSource(strings = {"naver", "google", "kakao"})
@@ -92,6 +113,9 @@ class RegularAuthServiceTest {
                 providerName,
                 "clientId",
                 "clientSecret",
+                "authorizeUrl",
+                HttpMethod.GET,
+                List.of("profile", "image"),
                 "redirectUrl",
                 "grantType",
                 HttpMethod.GET,
