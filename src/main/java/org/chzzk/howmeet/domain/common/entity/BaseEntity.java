@@ -34,7 +34,7 @@ public abstract class BaseEntity {
         this.disable = false;
     }
 
-    public void disable() {
+    public void deactivate() {
         this.disable = true;
     }
 }

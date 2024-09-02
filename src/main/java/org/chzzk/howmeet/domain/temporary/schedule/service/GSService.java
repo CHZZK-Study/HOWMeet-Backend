@@ -42,13 +42,13 @@ public class GSService {
         // PROGRESS 상태인 스케줄 삭제
         List<GuestSchedule> progressSchedules = gsRepository.findByStatusAndCreatedAtBefore(ScheduleStatus.PROGRESS, now.minusDays(10));
         for (GuestSchedule schedule : progressSchedules) {
-            schedule.disable();
+            schedule.deactivate();
         }
 
         // COMPLETE 상태인 스케줄 삭제
         List<GuestSchedule> completeSchedules = gsRepository.findByStatusAndUpdatedAtBefore(ScheduleStatus.COMPLETE, now.minusDays(10));
         for (GuestSchedule schedule : completeSchedules) {
-            schedule.disable();
+            schedule.deactivate();
         }
     }
 }

@@ -1,7 +1,5 @@
 package org.chzzk.howmeet.domain.temporary.schedule.service;
 
-import org.chzzk.howmeet.domain.common.embedded.date.impl.ScheduleTime;
-import org.chzzk.howmeet.domain.common.model.ScheduleName;
 import org.chzzk.howmeet.domain.regular.schedule.entity.ScheduleStatus;
 import org.chzzk.howmeet.domain.temporary.schedule.entity.GuestSchedule;
 import org.chzzk.howmeet.domain.temporary.schedule.exception.GSException;
@@ -14,9 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -60,7 +56,7 @@ class GSServiceTest {
 
         gsService.disableOldGuestSchedules();
 
-        verify(progressSchedule).disable();
+        verify(progressSchedule).deactivate();
     }
 
     @Test
@@ -77,6 +73,6 @@ class GSServiceTest {
 
         gsService.disableOldGuestSchedules();
 
-        verify(completeSchedule).disable();
+        verify(completeSchedule).deactivate();
     }
 }
