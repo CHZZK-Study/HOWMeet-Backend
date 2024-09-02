@@ -25,6 +25,7 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.docume
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.INVALID_PASSWORD;
+import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.NOT_MATCHED_PASSWORD;
 import static org.chzzk.howmeet.fixture.GuestFixture.KIM;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -137,7 +138,7 @@ class GuestServiceTest extends RestDocsTest {
         // then
         assertThatThrownBy(() -> guestService.login(guestLoginRequest))
                 .isInstanceOf(GuestException.class)
-                .hasMessageContaining(INVALID_PASSWORD.getMessage());
+                .hasMessageContaining(NOT_MATCHED_PASSWORD.getMessage());
     }
 
     @Test
