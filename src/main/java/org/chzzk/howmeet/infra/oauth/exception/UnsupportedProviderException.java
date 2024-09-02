@@ -2,7 +2,7 @@ package org.chzzk.howmeet.infra.oauth.exception;
 
 import org.chzzk.howmeet.infra.oauth.model.OAuthProvider;
 
-public class UnsupportedProviderException extends RuntimeException {
+public class UnsupportedProviderException extends OAuthClientException {
     public UnsupportedProviderException(final String providerName) {
         super(providerName + " 소셜 로그인은 지원하지 않습니다.");
     }

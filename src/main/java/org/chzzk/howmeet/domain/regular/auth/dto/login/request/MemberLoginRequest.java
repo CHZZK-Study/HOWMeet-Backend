@@ -1,4 +1,8 @@
 package org.chzzk.howmeet.domain.regular.auth.dto.login.request;
 
-public record MemberLoginRequest(String providerName, String code) {
+import jakarta.validation.constraints.NotBlank;
+
+public record MemberLoginRequest(
+        @NotBlank String providerName,
+        @NotBlank String code) {
 }
