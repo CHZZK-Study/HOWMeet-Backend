@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Objects;
 
 import static org.chzzk.howmeet.domain.regular.auth.exception.RefreshTokenErrorCode.REFRESH_TOKEN_NOT_FOUND;
+import static org.chzzk.howmeet.domain.regular.auth.exception.RefreshTokenErrorCode.REFRESH_TOKEN_NOT_MATCHED;
 import static org.chzzk.howmeet.domain.regular.auth.exception.RefreshTokenErrorCode.REFRESH_TOKEN_NO_AUTHORITY;
 
 @RequiredArgsConstructor
@@ -30,12 +31,8 @@ public class RefreshTokenCrudService {
     @Transactional
     public void delete(final AuthPrincipal authPrincipal, final String value) {
         validateAuthPrincipal(authPrincipal);
-        final RefreshToken refreshToken = refreshTokenRepository.findByValue(value)
-                .orElseThrow(() -> new RefreshTokenException(REFRESH_TOKEN_NOT_FOUND));
-        if (!Objects.equals(refreshToken.getMemberId(), authPrincipal.id())) {
-            throw new IllegalArgumentException();
-        }
-
+        final RefreshToken refreshToken = findRefreshTokenByValue(value);
+        validateRefreshTokenAndAccessTokenNotMatched(authPrincipal, refreshToken);
         refreshTokenRepository.delete(refreshToken);
     }
 
@@ -43,5 +40,16 @@ public class RefreshTokenCrudService {
         if (!authPrincipal.isMember()) {
             throw new RefreshTokenException(REFRESH_TOKEN_NO_AUTHORITY);
         }
+    }
+
+    private void validateRefreshTokenAndAccessTokenNotMatched(final AuthPrincipal authPrincipal, final RefreshToken refreshToken) {
+        if (!Objects.equals(refreshToken.getMemberId(), authPrincipal.id())) {
+            throw new RefreshTokenException(REFRESH_TOKEN_NOT_MATCHED);
+        }
+    }
+
+    private RefreshToken findRefreshTokenByValue(final String value) {
+        return refreshTokenRepository.findByValue(value)
+                .orElseThrow(() -> new RefreshTokenException(REFRESH_TOKEN_NOT_FOUND));
     }
 }
