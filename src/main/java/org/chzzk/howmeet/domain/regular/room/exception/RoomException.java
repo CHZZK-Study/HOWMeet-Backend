@@ -1,10 +1,9 @@
 package org.chzzk.howmeet.domain.regular.room.exception;
 
-public class RoomException extends RuntimeException {
-    private final RoomErrorCode errorCode;
+import org.chzzk.howmeet.domain.common.error.DomainException;
 
+public class RoomException extends DomainException {
     public RoomException(final RoomErrorCode errorCode) {
-        super(errorCode.getMessage());
-        this.errorCode = errorCode;
+        super(errorCode);
     }
 }
