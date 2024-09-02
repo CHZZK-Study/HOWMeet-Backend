@@ -28,7 +28,7 @@ public abstract class BaseEntity {
     // todo 7/20 김민우 : 비회원에 포함되는 엔티티만 넣어도 되지 않을까?
     @Column(name = "disable", nullable = false)
     @ColumnDefault("0")
-    protected Boolean disable;
+    private  Boolean disable;
 
     protected BaseEntity() {
         this.disable = false;
