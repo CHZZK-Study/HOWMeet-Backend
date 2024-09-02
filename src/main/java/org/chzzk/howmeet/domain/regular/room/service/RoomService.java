@@ -62,21 +62,23 @@ public class RoomService {
         List<RoomMember> roomMembers = roomMemberRepository.findByMemberId(memberId);
 
         return roomMembers.stream()
-                .map(roomMember -> {
-                    Room room = roomMember.getRoom();
-                    List<MemberSchedule> memberSchedules = room.getSchedules();
-
-                    String leaderNickname = room.getMembers().stream()
-                            .filter(RoomMember::getIsLeader)
-                            .findFirst()
-                            .map(leader -> memberRepository.findIdAndNicknameById(leader.getMemberId())
-                                    .map(memberNicknameDto -> memberNicknameDto.nickname().getValue())
-                                    .orElse(null))
-                            .orElse(null);
-
-                    return RoomListMapper.toRoomListResponse(room, memberSchedules, leaderNickname);
-                })
+                .map(this::mapToRoomListResponse)
                 .collect(Collectors.toList());
+    }
+
+    private RoomListResponse mapToRoomListResponse(RoomMember roomMember) {
+        Room room = roomMember.getRoom();
+        List<MemberSchedule> memberSchedules = room.getSchedules();
+
+        String leaderNickname = room.getMembers().stream()
+                .filter(RoomMember::getIsLeader)
+                .findFirst()
+                .map(leader -> memberRepository.findIdAndNicknameById(leader.getMemberId())
+                        .map(memberNicknameDto -> memberNicknameDto.nickname().getValue())
+                        .orElse(null))
+                .orElse(null);
+
+        return RoomListMapper.toRoomListResponse(room, memberSchedules, leaderNickname);
     }
 
     @Transactional
