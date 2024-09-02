@@ -1,18 +1,19 @@
 package org.chzzk.howmeet.domain.regular.record.controller;
 
-import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.auth.annotation.Authenticated;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
-import org.chzzk.howmeet.domain.regular.record.dto.get.MSRecordGetRequest;
 import org.chzzk.howmeet.domain.regular.record.dto.post.MSRecordPostRequest;
 import org.chzzk.howmeet.domain.regular.record.service.MSRecordService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.net.URI;
 
 @RequiredArgsConstructor
 @RequestMapping("/ms-record")
@@ -30,8 +31,9 @@ public class MSRecordController {
     }
 
     @GetMapping("/{roomId}/{msId}")
-    public ResponseEntity<?> getMSRecord(@PathVariable(value = "roomId") final Long roomId, @PathVariable(value = "msId") final Long msId ,
-            @Authenticated final AuthPrincipal authPrincipal) {
+    public ResponseEntity<?> getMSRecord(@PathVariable(value = "roomId") final Long roomId,
+                                         @PathVariable(value = "msId") final Long msId ,
+                                         @Authenticated final AuthPrincipal authPrincipal) {
         return ResponseEntity.ok(msRecordService.getMSRecord(roomId, msId, authPrincipal));
     }
 }
