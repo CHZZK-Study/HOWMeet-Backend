@@ -2,6 +2,7 @@ package org.chzzk.howmeet.domain.regular.auth.service;
 
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.regular.auth.entity.RefreshToken;
+import org.chzzk.howmeet.domain.regular.auth.exception.RefreshTokenException;
 import org.chzzk.howmeet.domain.regular.auth.repository.RefreshTokenRepository;
 import org.chzzk.howmeet.domain.regular.auth.util.RefreshTokenProvider;
 import org.chzzk.howmeet.fixture.GuestFixture;
@@ -16,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.chzzk.howmeet.domain.regular.auth.exception.RefreshTokenErrorCode.REFRESH_TOKEN_NO_AUTHORITY;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -57,7 +59,8 @@ class RefreshTokenCrudServiceTest {
     @DisplayName("1회용 회원으로 리프레시 토큰 저장시 예외 발생")
     public void saveWhenInvalidAuthPrincipal() throws Exception {
         assertThatThrownBy(() -> refreshTokenCrudService.save(guestAuthPrincipal))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(RefreshTokenException.class)
+                .hasMessageContaining(REFRESH_TOKEN_NO_AUTHORITY.getMessage());
     }
 
     @Test
@@ -76,6 +79,7 @@ class RefreshTokenCrudServiceTest {
     @DisplayName("1회용 회원으로 리프레시 토큰 삭제시 예외 발생")
     public void deleteWhenInvalidAuthPrincipal() throws Exception {
         assertThatThrownBy(() -> refreshTokenCrudService.delete(guestAuthPrincipal, refreshTokenValue))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(RefreshTokenException.class)
+                .hasMessageContaining(REFRESH_TOKEN_NO_AUTHORITY.getMessage());
     }
 }
