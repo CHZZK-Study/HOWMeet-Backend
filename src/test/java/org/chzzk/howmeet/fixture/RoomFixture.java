@@ -8,6 +8,7 @@ import org.chzzk.howmeet.domain.regular.room.entity.Room;
 import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
 import org.chzzk.howmeet.domain.regular.room.model.RoomDescription;
 import org.chzzk.howmeet.domain.regular.room.model.RoomName;
+import org.chzzk.howmeet.domain.regular.room.util.RoomListMapper;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -87,13 +88,13 @@ public enum RoomFixture {
         Room room = createRoomA();
         List<MemberSchedule> memberSchedules = room.getSchedules();
         Member leader = KIM.생성();
-        return RoomListResponse.of(room, memberSchedules, leader.getNickname().toString());
+        return RoomListMapper.toRoomListResponse(room, memberSchedules, leader.getNickname().toString());
     }
 
     public static RoomListResponse createRoomListResponseB() {
         Room room = createRoomB();
         List<MemberSchedule> memberSchedules = room.getSchedules();
         Member leader = KIM.생성();
-        return RoomListResponse.of(room, memberSchedules, leader.getNickname().toString());
+        return RoomListMapper.toRoomListResponse(room, memberSchedules, leader.getNickname().toString());
     }
 }

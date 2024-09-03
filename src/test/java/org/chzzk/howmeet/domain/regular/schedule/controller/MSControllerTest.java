@@ -86,7 +86,8 @@ public class MSControllerTest {
                         fieldWithPath("name.value").type(STRING).description("회원 일정 이름"),
                         fieldWithPath("dates").type(ARRAY).description("회원 일정 날짜 목록"),
                         fieldWithPath("time.startTime").type(STRING).description("회원 일정 시작 시간"),
-                        fieldWithPath("time.endTime").type(STRING).description("회원 일정 종료 시간")
+                        fieldWithPath("time.endTime").type(STRING).description("회원 일정 종료 시간"),
+                        fieldWithPath("status").type(STRING).description("회원 일정 상태")
                 )
         ));
     }
@@ -119,7 +120,8 @@ public class MSControllerTest {
                         fieldWithPath("name.value").type(STRING).description("회원 일정 이름"),
                         fieldWithPath("dates").type(ARRAY).description("회원 일정 날짜 목록"),
                         fieldWithPath("time.startTime").type(STRING).description("회원 일정 시작 시간"),
-                        fieldWithPath("time.endTime").type(STRING).description("회원 일정 종료 시간")
+                        fieldWithPath("time.endTime").type(STRING).description("회원 일정 종료 시간"),
+                        fieldWithPath("status").type(STRING).description("회원 일정 상태")
                 )
         ));
     }
