@@ -78,14 +78,6 @@ public class GSControllerTest {
                         fieldWithPath("time.startTime").type(STRING).description("비회원 일정 시작 시간"),
                         fieldWithPath("time.endTime").type(STRING).description("비회원 일정 종료 시간"),
                         fieldWithPath("name.value").type(STRING).description("비회원 일정 이름")
-                ),
-                responseFields(
-                        fieldWithPath("guestScheduleId").type(NUMBER).description("비회원 일정 ID"),
-                        fieldWithPath("name").type(STRING).description("비회원 일정 이름"),
-                        fieldWithPath("startDate").type(STRING).description("비회원 일정 시작 날짜"),
-                        fieldWithPath("startTime").type(STRING).description("비회원 일정 시작 시간"),
-                        fieldWithPath("endDate").type(STRING).description("비회원 일정 종료 날짜"),
-                        fieldWithPath("endTime").type(STRING).description("비회원 일정 종료 시간")
                 )
         ));
     }
@@ -114,12 +106,12 @@ public class GSControllerTest {
                         parameterWithName("guestScheduleId").description("비회원 일정 ID")
                 ),
                 responseFields(
-                        fieldWithPath("guestScheduleId").type(NUMBER).description("비회원 일정 ID"),
-                        fieldWithPath("name").type(STRING).description("비회원 일정 이름"),
-                        fieldWithPath("startDate").type(STRING).description("비회원 일정 시작 날짜"),
-                        fieldWithPath("startTime").type(STRING).description("비회원 일정 시작 시간"),
-                        fieldWithPath("endDate").type(STRING).description("비회원 일정 종료 날짜"),
-                        fieldWithPath("endTime").type(STRING).description("비회원 일정 종료 시간")
+                        fieldWithPath("id").type(NUMBER).description("비회원 일정 ID"),
+                        fieldWithPath("name.value").type(STRING).description("비회원 일정 이름"),
+                        fieldWithPath("dates").type(ARRAY).description("비회원 일정 날짜 목록"),
+                        fieldWithPath("time.startTime").type(STRING).description("비회원 일정 시작 시간"),
+                        fieldWithPath("time.endTime").type(STRING).description("비회원 일정 종료 시간"),
+                        fieldWithPath("status").type(STRING).description("비회원 일정 상태")
                 )
         ));
     }
