@@ -101,7 +101,6 @@ public class GSRecordServiceTest {
 
         assertEquals("선택할 수 없는 날짜를 선택하셨습니다.", exception.getMessage());
     }
-    
 
     @Test
     @DisplayName("GuestScheduleRecord 조회")
