@@ -54,58 +54,58 @@ public class MSRecordServiceTest {
     @InjectMocks
     private MSRecordService msRecordService;
 
-//    @Test
-//    @DisplayName("MemberScheduleRecord 입력")
-//    public void postMSRecord() {
-//        Member member = MemberFixture.KIM.생성();
-//        MemberSchedule memberSchedule = MSFixture.createMemberScheduleA(RoomFixture.createRoomA());
-//        List<LocalDateTime> selectTimes = Arrays.asList(
-//                LocalDateTime.of(2023, 1, 1, 10, 30),
-//                LocalDateTime.of(2023, 1, 1, 11, 0),
-//                LocalDateTime.of(2023, 1, 1, 11, 30)
-//        );
-//
-//        MSRecordPostRequest msRecordPostRequest = new MSRecordPostRequest(memberSchedule.getId(), selectTimes);
-//        AuthPrincipal authPrincipal = new AuthPrincipal(1L, member.getNickname().getValue(), member.getRole());
-//
-//        when(msRepository.findById(memberSchedule.getId())).thenReturn(Optional.of(memberSchedule));
-//        when(memberRepository.findById(anyLong())).thenAnswer(invocation -> {
-//            Long id = invocation.getArgument(0);
-//            return Optional.of(Member.of("김민우", "Kim", "123"));
-//        });
-//
-//        msRecordService.postMSRecord(msRecordPostRequest, authPrincipal);
-//
-//        verify(msRecordRepository).deleteByMemberScheduleIdAndMemberId(memberSchedule.getId(), member.getId());
-//        verify(msRecordRepository).saveAll(anyList());
-//    }
-//
-//    @Test
-//    @DisplayName("잘못된 일정의 MemberScheduleRecord 입력으로 예외 발생")
-//    void testPostMSRecord_InvalidDate_ThrowsException() {
-//        Member member = MemberFixture.KIM.생성();
-//        MemberSchedule memberSchedule = MSFixture.createMemberScheduleA(RoomFixture.createRoomA());
-//        List<LocalDateTime> selectTimes = Arrays.asList(
-//                LocalDateTime.of(2020, 1, 1, 10, 30),
-//                LocalDateTime.of(2020, 1, 1, 11, 0),
-//                LocalDateTime.of(2020, 1, 1, 11, 30)
-//        );
-//
-//        MSRecordPostRequest msRecordPostRequest = new MSRecordPostRequest(memberSchedule.getId(), selectTimes);
-//        AuthPrincipal authPrincipal = new AuthPrincipal(1L, member.getNickname().getValue(), member.getRole());
-//
-//        when(msRepository.findById(memberSchedule.getId())).thenReturn(Optional.of(memberSchedule));
-//        when(memberRepository.findById(anyLong())).thenAnswer(invocation -> {
-//            Long id = invocation.getArgument(0);
-//            return Optional.of(Member.of("김민우", "Kim", "123"));
-//        });
-//
-//        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-//            msRecordService.postMSRecord(msRecordPostRequest, authPrincipal);
-//        });
-//
-//        assertEquals("선택할 수 없는 날짜를 선택하셨습니다.", exception.getMessage());
-//    }
+   @Test
+   @DisplayName("MemberScheduleRecord 입력")
+   public void postMSRecord() {
+       Member member = MemberFixture.KIM.생성();
+       MemberSchedule memberSchedule = MSFixture.createMemberScheduleA(RoomFixture.createRoomA());
+       List<LocalDateTime> selectTimes = Arrays.asList(
+               LocalDateTime.of(2023, 1, 1, 10, 30),
+               LocalDateTime.of(2023, 1, 1, 11, 0),
+               LocalDateTime.of(2023, 1, 1, 11, 30)
+       );
+
+       MSRecordPostRequest msRecordPostRequest = new MSRecordPostRequest(memberSchedule.getId(), selectTimes);
+       AuthPrincipal authPrincipal = new AuthPrincipal(1L, member.getNickname().getValue(), member.getRole());
+
+       when(msRepository.findById(memberSchedule.getId())).thenReturn(Optional.of(memberSchedule));
+       when(memberRepository.findById(anyLong())).thenAnswer(invocation -> {
+           Long id = invocation.getArgument(0);
+           return Optional.of(Member.of("김민우", "Kim", "123"));
+       });
+
+       msRecordService.postMSRecord(msRecordPostRequest, authPrincipal);
+
+       verify(msRecordRepository).deleteByMemberScheduleIdAndMemberId(memberSchedule.getId(), member.getId());
+       verify(msRecordRepository).saveAll(anyList());
+   }
+
+   @Test
+   @DisplayName("잘못된 일정의 MemberScheduleRecord 입력으로 예외 발생")
+   void testPostMSRecord_InvalidDate_ThrowsException() {
+       Member member = MemberFixture.KIM.생성();
+       MemberSchedule memberSchedule = MSFixture.createMemberScheduleA(RoomFixture.createRoomA());
+       List<LocalDateTime> selectTimes = Arrays.asList(
+               LocalDateTime.of(2020, 1, 1, 10, 30),
+               LocalDateTime.of(2020, 1, 1, 11, 0),
+               LocalDateTime.of(2020, 1, 1, 11, 30)
+       );
+
+       MSRecordPostRequest msRecordPostRequest = new MSRecordPostRequest(memberSchedule.getId(), selectTimes);
+       AuthPrincipal authPrincipal = new AuthPrincipal(1L, member.getNickname().getValue(), member.getRole());
+
+       when(msRepository.findById(memberSchedule.getId())).thenReturn(Optional.of(memberSchedule));
+       when(memberRepository.findById(anyLong())).thenAnswer(invocation -> {
+           Long id = invocation.getArgument(0);
+           return Optional.of(Member.of("김민우", "Kim", "123"));
+       });
+
+       IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+           msRecordService.postMSRecord(msRecordPostRequest, authPrincipal);
+       });
+
+       assertEquals("선택할 수 없는 날짜를 선택하셨습니다.", exception.getMessage());
+   }
 
     @Test
     @DisplayName("MemberScheduleRecord 조회")
