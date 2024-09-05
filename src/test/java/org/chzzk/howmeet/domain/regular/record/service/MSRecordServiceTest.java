@@ -138,7 +138,7 @@ public class MSRecordServiceTest {
                 msRecordGetResponse.totalPersonnel().contains(member.getNickname()));
         assertTrue("참여 인원에 회원 닉네임이 포함되어 있지 않습니다.",
                 msRecordGetResponse.participatedPersonnel().contains(member.getNickname()));
-        assertFalse("선택 시간 목록이 비어있습니다.", msRecordGetResponse.selectTime().isEmpty());
+        assertFalse("선택 시간 목록이 비어있습니다.", msRecordGetResponse.time().isEmpty());
 
     }
 
