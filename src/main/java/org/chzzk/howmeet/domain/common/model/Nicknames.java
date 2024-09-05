@@ -33,6 +33,10 @@ public class Nicknames {
         this.nicknames.addAll(nickNameSet);
     }
 
+//    public List<Nickname> getNicknames(){
+//        return List.copyOf(nicknames);
+//    }
+
     public static Nicknames convertNicknameProvidersList(final List<? extends NicknameProvider> nicknameProviders) {
         Nicknames nicknames = Nicknames.create();
 
@@ -40,5 +44,12 @@ public class Nicknames {
             nicknames.add(provider.getNickname());
         }
         return nicknames;
+    }
+
+    @JsonValue
+    public List<String> toJson() {
+        return List.copyOf(nicknames).stream()
+                .map(Nickname::getValue) // 각 Nickname 객체의 value 값을 추출
+                .collect(Collectors.toList());
     }
 }
