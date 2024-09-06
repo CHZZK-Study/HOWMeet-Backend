@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest(showSql = false, includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Repository.class))
-@Import({TestJpaAuditingConfig.class, TestQueryDslConfig.class})
+@Import(TestQueryDslConfig.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @TestPropertySource(locations = "classpath:application-test.yml")
