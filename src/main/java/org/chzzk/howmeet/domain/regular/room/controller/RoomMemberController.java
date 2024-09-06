@@ -14,32 +14,35 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-@RestController("/room/{roomId}/members")
+@RequestMapping("/room/{roomId}/members")
+@RestController
 public class RoomMemberController {
     private final RoomMemberService roomMemberService;
 
     @GetMapping
     @RegularUser
     public ResponseEntity<?> get(@Authenticated final AuthPrincipal authPrincipal,
-                                 @PathVariable("roomId") final Long roomId) {
+                                 @PathVariable(name = "roomId") final Long roomId) {
         final RoomMemberGetResponse roomMemberGetResponse = roomMemberService.get(authPrincipal, roomId);
         return ResponseEntity.ok(roomMemberGetResponse);
     }
 
     @DeleteMapping("/{roomMemberId}")
-    public ResponseEntity<?> deleteRoomMember(@PathVariable Long roomId, @PathVariable Long roomMemberId) {
+    public ResponseEntity<?> deleteRoomMember(@PathVariable(name = "roomId") Long roomId,
+                                              @PathVariable(name = "roomMemberId") Long roomMemberId) {
         roomMemberService.deleteRoomMember(roomId, roomMemberId);
         return ResponseEntity.ok("RoomMember successfully deleted");
     }
 
     @PatchMapping
     public ResponseEntity<List<RoomMemberResponse>> updateRoomMembers(
-            @PathVariable Long roomId,
+            @PathVariable(name = "roomId") Long roomId,
             @RequestBody final List<RoomMemberRequest> roomMemberRequests) {
         List<RoomMemberResponse> roomMemberResponses = roomMemberService.updateRoomMembers(roomId, roomMemberRequests);
         return ResponseEntity.ok(roomMemberResponses);
