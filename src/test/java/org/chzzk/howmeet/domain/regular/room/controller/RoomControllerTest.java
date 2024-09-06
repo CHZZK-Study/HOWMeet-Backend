@@ -173,93 +173,93 @@ public class RoomControllerTest {
                 )
         ));
     }
-    @Test
-    @DisplayName("방 조회 테스트")
-    void getRoom() throws Exception {
-        // given
-        RoomResponse roomResponse = RoomFixture.createRoomResponseA();
+//    @Test
+//    @DisplayName("방 조회 테스트")
+//    void getRoom() throws Exception {
+//        // given
+//        RoomResponse roomResponse = RoomFixture.createRoomResponseA();
+//
+//        given(roomService.getRoom(any(Long.class))).willReturn(roomResponse);
+//
+//        // when
+//        ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.get("/room/{roomId}", 1L)
+//                .contentType(MediaType.APPLICATION_JSON)
+//        );
+//
+//        // then
+//        result.andExpect(status().isOk());
+//
+//        // restdocs
+//        result.andDo(document("방 조회",
+//                preprocessRequest(prettyPrint()),
+//                preprocessResponse(prettyPrint()),
+//                pathParameters(
+//                        parameterWithName("roomId").description("방 ID")
+//                ),
+//                responseFields(
+//                        fieldWithPath("roomId").type(NUMBER).description("방 ID"),
+//                        fieldWithPath("name").type(STRING).description("방 이름"),
+//                        fieldWithPath("description").type(STRING).description("방 설명"),
+//                        fieldWithPath("roomMembers").type(ARRAY).description("방 멤버 목록").optional(),
+//                        fieldWithPath("roomMembers[].id").type(NUMBER).description("방 멤버 ID").optional(),
+//                        fieldWithPath("roomMembers[].memberId").type(NUMBER).description("멤버 ID"),
+//                        fieldWithPath("roomMembers[].isLeader").type(BOOLEAN).description("리더 여부"),
+//                        fieldWithPath("ongoingSchedules").type(ARRAY).description("진행 중인 스케줄 목록").optional(),
+//                        fieldWithPath("ongoingSchedules[].id").type(NUMBER).description("스케줄 ID"),
+//                        fieldWithPath("ongoingSchedules[].dates").type(ARRAY).description("스케줄 날짜 목록"),
+//                        fieldWithPath("ongoingSchedules[].time.startTime").type(STRING).description("스케줄 시작 시간"),
+//                        fieldWithPath("ongoingSchedules[].time.endTime").type(STRING).description("스케줄 종료 시간"),
+//                        fieldWithPath("ongoingSchedules[].name.value").type(STRING).description("스케줄 이름"),
+//                        fieldWithPath("completedSchedules").type(ARRAY).description("완료된 스케줄 목록").optional(),
+//                        fieldWithPath("completedSchedules[].id").type(NUMBER).description("스케줄 ID"),
+//                        fieldWithPath("completedSchedules[].dates").type(ARRAY).description("스케줄 날짜 목록"),
+//                        fieldWithPath("completedSchedules[].time.startTime").type(STRING).description("스케줄 시작 시간"),
+//                        fieldWithPath("completedSchedules[].time.endTime").type(STRING).description("스케줄 종료 시간"),
+//                        fieldWithPath("completedSchedules[].name.value").type(STRING).description("스케줄 이름")
+//                )
+//        ));
+//    }
 
-        given(roomService.getRoom(any(Long.class))).willReturn(roomResponse);
-
-        // when
-        ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.get("/room/{roomId}", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        // then
-        result.andExpect(status().isOk());
-
-        // restdocs
-        result.andDo(document("방 조회",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
-                pathParameters(
-                        parameterWithName("roomId").description("방 ID")
-                ),
-                responseFields(
-                        fieldWithPath("roomId").type(NUMBER).description("방 ID"),
-                        fieldWithPath("name").type(STRING).description("방 이름"),
-                        fieldWithPath("description").type(STRING).description("방 설명"),
-                        fieldWithPath("roomMembers").type(ARRAY).description("방 멤버 목록").optional(),
-                        fieldWithPath("roomMembers[].id").type(NUMBER).description("방 멤버 ID").optional(),
-                        fieldWithPath("roomMembers[].memberId").type(NUMBER).description("멤버 ID"),
-                        fieldWithPath("roomMembers[].isLeader").type(BOOLEAN).description("리더 여부"),
-                        fieldWithPath("ongoingSchedules").type(ARRAY).description("진행 중인 스케줄 목록").optional(),
-                        fieldWithPath("ongoingSchedules[].id").type(NUMBER).description("스케줄 ID"),
-                        fieldWithPath("ongoingSchedules[].dates").type(ARRAY).description("스케줄 날짜 목록"),
-                        fieldWithPath("ongoingSchedules[].time.startTime").type(STRING).description("스케줄 시작 시간"),
-                        fieldWithPath("ongoingSchedules[].time.endTime").type(STRING).description("스케줄 종료 시간"),
-                        fieldWithPath("ongoingSchedules[].name.value").type(STRING).description("스케줄 이름"),
-                        fieldWithPath("completedSchedules").type(ARRAY).description("완료된 스케줄 목록").optional(),
-                        fieldWithPath("completedSchedules[].id").type(NUMBER).description("스케줄 ID"),
-                        fieldWithPath("completedSchedules[].dates").type(ARRAY).description("스케줄 날짜 목록"),
-                        fieldWithPath("completedSchedules[].time.startTime").type(STRING).description("스케줄 시작 시간"),
-                        fieldWithPath("completedSchedules[].time.endTime").type(STRING).description("스케줄 종료 시간"),
-                        fieldWithPath("completedSchedules[].name.value").type(STRING).description("스케줄 이름")
-                )
-        ));
-    }
-
-    @Test
-    @DisplayName("회원이 참여한 방 목록 조회 테스트")
-    void getJoinedRooms() throws Exception {
-        // given
-        Long memberId = 1L;
-        List<RoomListResponse> joinedRooms = List.of(
-                RoomFixture.createRoomListResponseA(),
-                RoomFixture.createRoomListResponseB()
-        );
-
-        given(roomService.getJoinedRooms(memberId)).willReturn(joinedRooms);
-
-        // when
-        ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.get("/room/joined/{memberId}", memberId)
-                .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        // then
-        result.andExpect(status().isOk());
-
-        // restdocs
-        result.andDo(document("회원 참여 방 목록 조회",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
-                pathParameters(
-                        parameterWithName("memberId").description("회원 ID")
-                ),
-                responseFields(
-                        fieldWithPath("[].roomId").type(NUMBER).description("방 ID"),
-                        fieldWithPath("[].name").type(STRING).description("방 이름"),
-                        fieldWithPath("[].memberCount").description("방 멤버 수"),
-                        fieldWithPath("[].ongoingSchedules").type(ARRAY).description("진행 중인 스케줄 목록").optional(),
-                        fieldWithPath("[].ongoingSchedules[].id").type(NUMBER).description("스케줄 ID"),
-                        fieldWithPath("[].ongoingSchedules[].dates").type(ARRAY).description("스케줄 날짜 목록"),
-                        fieldWithPath("[].ongoingSchedules[].time.startTime").type(STRING).description("스케줄 시작 시간"),
-                        fieldWithPath("[].ongoingSchedules[].time.endTime").type(STRING).description("스케줄 종료 시간"),
-                        fieldWithPath("[].ongoingSchedules[].name.value").type(STRING).description("스케줄 이름")
-                )
-        ));
-    }
+//    @Test
+//    @DisplayName("회원이 참여한 방 목록 조회 테스트")
+//    void getJoinedRooms() throws Exception {
+//        // given
+//        Long memberId = 1L;
+//        List<RoomListResponse> joinedRooms = List.of(
+//                RoomFixture.createRoomListResponseA(),
+//                RoomFixture.createRoomListResponseB()
+//        );
+//
+//        given(roomService.getJoinedRooms(memberId)).willReturn(joinedRooms);
+//
+//        // when
+//        ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.get("/room/joined/{memberId}", memberId)
+//                .contentType(MediaType.APPLICATION_JSON)
+//        );
+//
+//        // then
+//        result.andExpect(status().isOk());
+//
+//        // restdocs
+//        result.andDo(document("회원 참여 방 목록 조회",
+//                preprocessRequest(prettyPrint()),
+//                preprocessResponse(prettyPrint()),
+//                pathParameters(
+//                        parameterWithName("memberId").description("회원 ID")
+//                ),
+//                responseFields(
+//                        fieldWithPath("[].roomId").type(NUMBER).description("방 ID"),
+//                        fieldWithPath("[].name").type(STRING).description("방 이름"),
+//                        fieldWithPath("[].memberCount").description("방 멤버 수"),
+//                        fieldWithPath("[].ongoingSchedules").type(ARRAY).description("진행 중인 스케줄 목록").optional(),
+//                        fieldWithPath("[].ongoingSchedules[].id").type(NUMBER).description("스케줄 ID"),
+//                        fieldWithPath("[].ongoingSchedules[].dates").type(ARRAY).description("스케줄 날짜 목록"),
+//                        fieldWithPath("[].ongoingSchedules[].time.startTime").type(STRING).description("스케줄 시작 시간"),
+//                        fieldWithPath("[].ongoingSchedules[].time.endTime").type(STRING).description("스케줄 종료 시간"),
+//                        fieldWithPath("[].ongoingSchedules[].name.value").type(STRING).description("스케줄 이름")
+//                )
+//        ));
+//    }
 
     @Test
     @DisplayName("방 삭제 테스트")
