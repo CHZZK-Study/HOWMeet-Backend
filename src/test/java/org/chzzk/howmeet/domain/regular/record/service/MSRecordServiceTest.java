@@ -69,14 +69,9 @@ public class MSRecordServiceTest {
         AuthPrincipal authPrincipal = new AuthPrincipal(1L, member.getNickname().getValue(), member.getRole());
 
         when(msRepository.findById(memberSchedule.getId())).thenReturn(Optional.of(memberSchedule));
-        when(memberRepository.findById(anyLong())).thenAnswer(invocation -> {
-            Long id = invocation.getArgument(0);
-            return Optional.of(Member.of("김민우", "Kim", "123"));
-        });
-
         msRecordService.postMSRecord(msRecordPostRequest, authPrincipal);
 
-        verify(msRecordRepository).deleteByMemberScheduleIdAndMemberId(memberSchedule.getId(), member.getId());
+        verify(msRecordRepository).deleteByMemberScheduleIdAndMemberId(1L, 1L);
         verify(msRecordRepository).saveAll(anyList());
     }
 
@@ -95,11 +90,6 @@ public class MSRecordServiceTest {
         AuthPrincipal authPrincipal = new AuthPrincipal(1L, member.getNickname().getValue(), member.getRole());
 
         when(msRepository.findById(memberSchedule.getId())).thenReturn(Optional.of(memberSchedule));
-        when(memberRepository.findById(anyLong())).thenAnswer(invocation -> {
-            Long id = invocation.getArgument(0);
-            return Optional.of(Member.of("김민우", "Kim", "123"));
-        });
-
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             msRecordService.postMSRecord(msRecordPostRequest, authPrincipal);
         });
@@ -141,6 +131,4 @@ public class MSRecordServiceTest {
         assertFalse("선택 시간 목록이 비어있습니다.", msRecordGetResponse.time().isEmpty());
 
     }
-
-
 }
