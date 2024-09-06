@@ -66,21 +66,6 @@ public class RoomService {
                 .collect(Collectors.toList());
     }
 
-    private RoomListResponse mapToRoomListResponse(RoomMember roomMember) {
-        Room room = roomMember.getRoom();
-        List<MemberSchedule> memberSchedules = room.getSchedules();
-
-        String leaderNickname = room.getMembers().stream()
-                .filter(RoomMember::getIsLeader)
-                .findFirst()
-                .map(leader -> memberRepository.findIdAndNicknameById(leader.getMemberId())
-                        .map(memberNicknameDto -> memberNicknameDto.nickname().getValue())
-                        .orElse(null))
-                .orElse(null);
-
-        return RoomListMapper.toRoomListResponse(room, memberSchedules, leaderNickname);
-    }
-
     @Transactional
     public RoomResponse updateRoom(final Long roomId, final RoomRequest roomRequest) {
         Room room = getRoomById(roomId);
@@ -99,14 +84,19 @@ public class RoomService {
         roomRepository.delete(room);
     }
 
-    @Transactional
-    public void deleteRoomMember(final Long roomId, final Long roomMemberId) {
-        RoomMember roomMember = roomMemberRepository.findById(roomMemberId)
-                .orElseThrow(() -> new RoomException(ROOM_MEMBER_NOT_FOUND));
-        if (!roomMember.getRoom().getId().equals(roomId)) {
-            throw new RoomException(INVALID_ROOM_MEMBER);
-        }
-        roomMemberRepository.deleteById(roomMemberId);
+    private RoomListResponse mapToRoomListResponse(RoomMember roomMember) {
+        Room room = roomMember.getRoom();
+        List<MemberSchedule> memberSchedules = room.getSchedules();
+
+        String leaderNickname = room.getMembers().stream()
+                .filter(RoomMember::getIsLeader)
+                .findFirst()
+                .map(leader -> memberRepository.findIdAndNicknameById(leader.getMemberId())
+                        .map(memberNicknameDto -> memberNicknameDto.nickname().getValue())
+                        .orElse(null))
+                .orElse(null);
+
+        return RoomListMapper.toRoomListResponse(room, memberSchedules, leaderNickname);
     }
 
     private Room getRoomById(Long roomId) {
