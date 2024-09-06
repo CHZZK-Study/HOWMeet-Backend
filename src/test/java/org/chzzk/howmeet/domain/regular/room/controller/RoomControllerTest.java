@@ -43,9 +43,6 @@ public class RoomControllerTest {
     @MockBean
     private RoomService roomService;
 
-    @MockBean
-    private RoomMemberService roomMemberService;
-
     @Test
     @DisplayName("방 생성 테스트")
     void createRoom() throws Exception {
@@ -135,44 +132,6 @@ public class RoomControllerTest {
         ));
     }
 
-    @Test
-    @DisplayName("방 멤버 업데이트 테스트")
-    void updateRoomMembers() throws Exception {
-        // given
-        Room room = RoomFixture.createRoomA();
-        List<RoomMemberRequest> roomMemberRequests = RoomMemberFixture.createRoomMemberRequests(room);
-        List<RoomMemberResponse> roomMemberResponses = RoomMemberFixture.createRoomMemberResponses(room);
-
-        given(roomMemberService.updateRoomMembers(any(Long.class), anyList())).willReturn(roomMemberResponses);
-
-        // when
-        ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.patch("/room/{roomId}/members", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(roomMemberRequests))
-        );
-
-        // then
-        result.andExpect(status().isOk());
-
-        // restdocs
-        result.andDo(document("방 멤버 업데이트",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
-                pathParameters(
-                        parameterWithName("roomId").description("방 ID")
-                ),
-                requestFields(
-                        fieldWithPath("[].memberId").type(NUMBER).description("멤버 ID"),
-                        fieldWithPath("[].roomId").type(NUMBER).description("방 ID"),
-                        fieldWithPath("[].isLeader").type(BOOLEAN).description("리더 여부")
-                ),
-                responseFields(
-                        fieldWithPath("[].id").type(NUMBER).description("방 멤버 ID").optional(),
-                        fieldWithPath("[].memberId").type(NUMBER).description("멤버 ID"),
-                        fieldWithPath("[].isLeader").type(BOOLEAN).description("리더 여부")
-                )
-        ));
-    }
     @Test
     @DisplayName("방 조회 테스트")
     void getRoom() throws Exception {
@@ -281,31 +240,6 @@ public class RoomControllerTest {
                 preprocessResponse(prettyPrint()),
                 pathParameters(
                         parameterWithName("roomId").description("방 ID")
-                )
-        ));
-    }
-
-    @Test
-    @DisplayName("방 멤버 삭제 테스트")
-    void deleteRoomMember() throws Exception {
-        // given
-        willDoNothing().given(roomService).deleteRoomMember(any(Long.class), any(Long.class));
-
-        // when
-        ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.delete("/room/{roomId}/members/{roomMemberId}", 1L, 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        // then
-        result.andExpect(status().isOk());
-
-        // restdocs
-        result.andDo(document("방 멤버 삭제",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
-                pathParameters(
-                        parameterWithName("roomId").description("방 ID"),
-                        parameterWithName("roomMemberId").description("방 멤버 ID")
                 )
         ));
     }
