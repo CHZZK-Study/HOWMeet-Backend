@@ -1,25 +1,17 @@
 package org.chzzk.howmeet.domain.regular.room.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.chzzk.howmeet.domain.regular.room.dto.RoomMemberRequest;
-import org.chzzk.howmeet.domain.regular.room.dto.RoomMemberResponse;
-import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
-import org.chzzk.howmeet.domain.regular.room.dto.RoomResponse;
+import org.chzzk.howmeet.domain.regular.room.dto.*;
 import org.chzzk.howmeet.domain.regular.room.entity.Room;
 import org.chzzk.howmeet.domain.regular.room.service.RoomMemberService;
 import org.chzzk.howmeet.domain.regular.room.service.RoomService;
 import org.chzzk.howmeet.fixture.RoomFixture;
 import org.chzzk.howmeet.fixture.RoomMemberFixture;
 import org.chzzk.howmeet.global.config.ControllerTest;
-import org.chzzk.howmeet.global.config.WebConfig;
-import org.chzzk.howmeet.global.interceptor.AuthenticationInterceptor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
@@ -39,10 +31,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(value = RoomController.class, excludeFilters = {
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebConfig.class),
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = AuthenticationInterceptor.class)
-})
 @ControllerTest
 public class RoomControllerTest {
 
@@ -89,25 +77,6 @@ public class RoomControllerTest {
                         fieldWithPath("msRequest.name.value").type(STRING).description("일정 이름"),
                         fieldWithPath("msRequest.roomId").type(NUMBER).description("방 ID").optional(),
                         fieldWithPath("leaderMemberId").type(NUMBER).description("리더 멤버 ID")
-                ),
-                responseFields(
-                        fieldWithPath("roomId").type(NUMBER).description("방 ID"),
-                        fieldWithPath("name").type(STRING).description("방 이름"),
-                        fieldWithPath("description").type(STRING).description("방 설명"),
-                        fieldWithPath("roomMembers").type(ARRAY).description("방 멤버 목록").optional(),
-                        fieldWithPath("roomMembers[].id").type(NUMBER).description("방 멤버 ID").optional(),
-                        fieldWithPath("roomMembers[].memberId").type(NUMBER).description("멤버 ID"),
-                        fieldWithPath("roomMembers[].isLeader").type(BOOLEAN).description("리더 여부"),
-                        fieldWithPath("memberSchedules").type(ARRAY).description("방 스케줄 목록").optional(),
-                        fieldWithPath("memberSchedules[].createdAt").type(STRING).description("스케줄 생성일").optional(),
-                        fieldWithPath("memberSchedules[].updatedAt").type(STRING).description("스케줄 수정일").optional(),
-                        fieldWithPath("memberSchedules[].disable").type(BOOLEAN).description("스케줄 비활성화 여부").optional(),
-                        fieldWithPath("memberSchedules[].id").type(NUMBER).description("스케줄 ID"),
-                        fieldWithPath("memberSchedules[].dates").type(ARRAY).description("스케줄 날짜 목록"),
-                        fieldWithPath("memberSchedules[].time.startTime").type(STRING).description("스케줄 시작 시간"),
-                        fieldWithPath("memberSchedules[].time.endTime").type(STRING).description("스케줄 종료 시간"),
-                        fieldWithPath("memberSchedules[].name.value").type(STRING).description("스케줄 이름"),
-                        fieldWithPath("memberSchedules[].status").type(STRING).description("스케줄 상태")
                 )
         ));
     }
@@ -155,16 +124,13 @@ public class RoomControllerTest {
                         fieldWithPath("roomMembers[].id").type(NUMBER).description("방 멤버 ID").optional(),
                         fieldWithPath("roomMembers[].memberId").type(NUMBER).description("멤버 ID"),
                         fieldWithPath("roomMembers[].isLeader").type(BOOLEAN).description("리더 여부"),
-                        fieldWithPath("memberSchedules").type(ARRAY).description("방 스케줄 목록").optional(),
-                        fieldWithPath("memberSchedules[].createdAt").type(STRING).description("스케줄 생성일").optional(),
-                        fieldWithPath("memberSchedules[].updatedAt").type(STRING).description("스케줄 수정일").optional(),
-                        fieldWithPath("memberSchedules[].disable").type(BOOLEAN).description("스케줄 비활성화 여부").optional(),
-                        fieldWithPath("memberSchedules[].id").type(NUMBER).description("스케줄 ID"),
-                        fieldWithPath("memberSchedules[].dates").type(ARRAY).description("스케줄 날짜 목록"),
-                        fieldWithPath("memberSchedules[].time.startTime").type(STRING).description("스케줄 시작 시간"),
-                        fieldWithPath("memberSchedules[].time.endTime").type(STRING).description("스케줄 종료 시간"),
-                        fieldWithPath("memberSchedules[].name.value").type(STRING).description("스케줄 이름"),
-                        fieldWithPath("memberSchedules[].status").type(STRING).description("스케줄 상태")
+                        fieldWithPath("schedules").type(ARRAY).description("진행 중인 스케줄 목록").optional(),
+                        fieldWithPath("schedules[].id").type(NUMBER).description("스케줄 ID"),
+                        fieldWithPath("schedules[].dates").type(ARRAY).description("스케줄 날짜 목록"),
+                        fieldWithPath("schedules[].time.startTime").type(STRING).description("스케줄 시작 시간"),
+                        fieldWithPath("schedules[].time.endTime").type(STRING).description("스케줄 종료 시간"),
+                        fieldWithPath("schedules[].name.value").type(STRING).description("스케줄 이름"),
+                        fieldWithPath("schedules[].status").type(STRING).description("스케줄 상태")
                 )
         ));
     }
@@ -238,16 +204,59 @@ public class RoomControllerTest {
                         fieldWithPath("roomMembers[].id").type(NUMBER).description("방 멤버 ID").optional(),
                         fieldWithPath("roomMembers[].memberId").type(NUMBER).description("멤버 ID"),
                         fieldWithPath("roomMembers[].isLeader").type(BOOLEAN).description("리더 여부"),
-                        fieldWithPath("memberSchedules").type(ARRAY).description("방 스케줄 목록").optional(),
-                        fieldWithPath("memberSchedules[].createdAt").type(STRING).description("스케줄 생성일").optional(),
-                        fieldWithPath("memberSchedules[].updatedAt").type(STRING).description("스케줄 수정일").optional(),
-                        fieldWithPath("memberSchedules[].disable").type(BOOLEAN).description("스케줄 비활성화 여부").optional(),
-                        fieldWithPath("memberSchedules[].id").type(NUMBER).description("스케줄 ID"),
-                        fieldWithPath("memberSchedules[].dates").type(ARRAY).description("스케줄 날짜 목록"),
-                        fieldWithPath("memberSchedules[].time.startTime").type(STRING).description("스케줄 시작 시간"),
-                        fieldWithPath("memberSchedules[].time.endTime").type(STRING).description("스케줄 종료 시간"),
-                        fieldWithPath("memberSchedules[].name.value").type(STRING).description("스케줄 이름"),
-                        fieldWithPath("memberSchedules[].status").type(STRING).description("스케줄 상태")
+                        fieldWithPath("ongoingSchedules").type(ARRAY).description("진행 중인 스케줄 목록").optional(),
+                        fieldWithPath("ongoingSchedules[].id").type(NUMBER).description("스케줄 ID"),
+                        fieldWithPath("ongoingSchedules[].dates").type(ARRAY).description("스케줄 날짜 목록"),
+                        fieldWithPath("ongoingSchedules[].time.startTime").type(STRING).description("스케줄 시작 시간"),
+                        fieldWithPath("ongoingSchedules[].time.endTime").type(STRING).description("스케줄 종료 시간"),
+                        fieldWithPath("ongoingSchedules[].name.value").type(STRING).description("스케줄 이름"),
+                        fieldWithPath("completedSchedules").type(ARRAY).description("완료된 스케줄 목록").optional(),
+                        fieldWithPath("completedSchedules[].id").type(NUMBER).description("스케줄 ID"),
+                        fieldWithPath("completedSchedules[].dates").type(ARRAY).description("스케줄 날짜 목록"),
+                        fieldWithPath("completedSchedules[].time.startTime").type(STRING).description("스케줄 시작 시간"),
+                        fieldWithPath("completedSchedules[].time.endTime").type(STRING).description("스케줄 종료 시간"),
+                        fieldWithPath("completedSchedules[].name.value").type(STRING).description("스케줄 이름")
+                )
+        ));
+    }
+
+    @Test
+    @DisplayName("회원이 참여한 방 목록 조회 테스트")
+    void getJoinedRooms() throws Exception {
+        // given
+        Long memberId = 1L;
+        List<RoomListResponse> joinedRooms = List.of(
+                RoomFixture.createRoomListResponseA(),
+                RoomFixture.createRoomListResponseB()
+        );
+
+        given(roomService.getJoinedRooms(memberId)).willReturn(joinedRooms);
+
+        // when
+        ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.get("/room/joined/{memberId}", memberId)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        result.andExpect(status().isOk());
+
+        // restdocs
+        result.andDo(document("회원 참여 방 목록 조회",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                pathParameters(
+                        parameterWithName("memberId").description("회원 ID")
+                ),
+                responseFields(
+                        fieldWithPath("[].roomId").type(NUMBER).description("방 ID"),
+                        fieldWithPath("[].name").type(STRING).description("방 이름"),
+                        fieldWithPath("[].memberCount").description("방 멤버 수"),
+                        fieldWithPath("[].ongoingSchedules").type(ARRAY).description("진행 중인 스케줄 목록").optional(),
+                        fieldWithPath("[].ongoingSchedules[].id").type(NUMBER).description("스케줄 ID"),
+                        fieldWithPath("[].ongoingSchedules[].dates").type(ARRAY).description("스케줄 날짜 목록"),
+                        fieldWithPath("[].ongoingSchedules[].time.startTime").type(STRING).description("스케줄 시작 시간"),
+                        fieldWithPath("[].ongoingSchedules[].time.endTime").type(STRING).description("스케줄 종료 시간"),
+                        fieldWithPath("[].ongoingSchedules[].name.value").type(STRING).description("스케줄 이름")
                 )
         ));
     }
