@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface RoomMemberRepository extends JpaRepository<RoomMember, Long> {
     List<RoomMember> findByRoomId(final Long roomId);
+    List<RoomMember> findByMemberId(final Long memberId);
 }

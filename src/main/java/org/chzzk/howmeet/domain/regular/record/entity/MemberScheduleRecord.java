@@ -1,17 +1,16 @@
 package org.chzzk.howmeet.domain.regular.record.entity;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.chzzk.howmeet.domain.common.entity.BaseEntity;
-import org.chzzk.howmeet.domain.common.embedded.date.impl.RecordDate;
 import org.chzzk.howmeet.domain.regular.member.entity.Member;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 
@@ -20,12 +19,16 @@ import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class MemberScheduleRecord extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Embedded
-    private RecordDate date;
+    @Column(name = "room_id")
+    private Long roomId;
+
+    @Column(name = "select_time")
+    private LocalDateTime selectTime;
 
     @Column(name = "member_id", nullable = false)
     private Long memberId;
@@ -33,13 +36,15 @@ public class MemberScheduleRecord extends BaseEntity {
     @Column(name = "member_schedule_id", nullable = false)
     private Long memberScheduleId;
 
-    private MemberScheduleRecord(final RecordDate date, final Long memberId, final Long memberScheduleId) {
-        this.date = date;
+    private MemberScheduleRecord(final Long memberId, final MemberSchedule ms, final LocalDateTime selectTime) {
+        this.selectTime = selectTime;
         this.memberId = memberId;
-        this.memberScheduleId = memberScheduleId;
+        this.memberScheduleId = ms.getId();
+        this.roomId = ms.getRoom().getId();
     }
 
-    public static MemberScheduleRecord of(final RecordDate date, final Member member, final MemberSchedule memberSchedule) {
-        return new MemberScheduleRecord(date, member.getId(), memberSchedule.getId());
+    public static MemberScheduleRecord of(final Long memberId,
+            final MemberSchedule memberSchedule, final LocalDateTime selectTime) {
+        return new MemberScheduleRecord(memberId, memberSchedule, selectTime);
     }
 }

@@ -1,6 +1,9 @@
 package org.chzzk.howmeet.domain.regular.room.service;
 
 import lombok.RequiredArgsConstructor;
+import org.chzzk.howmeet.domain.regular.member.dto.nickname.dto.MemberNicknameDto;
+import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
+import org.chzzk.howmeet.domain.regular.room.dto.RoomListResponse;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomResponse;
 import org.chzzk.howmeet.domain.regular.room.entity.Room;
@@ -8,6 +11,7 @@ import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
 import org.chzzk.howmeet.domain.regular.room.exception.RoomException;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomMemberRepository;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomRepository;
+import org.chzzk.howmeet.domain.regular.room.util.RoomListMapper;
 import org.chzzk.howmeet.domain.regular.schedule.dto.MSRequest;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 import org.chzzk.howmeet.domain.regular.schedule.repository.MSRepository;
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.chzzk.howmeet.domain.regular.room.exception.RoomErrorCode.*;
 
@@ -25,6 +30,7 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final RoomMemberRepository roomMemberRepository;
     private final MSRepository msRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public RoomResponse createRoom(final RoomRequest roomRequest) {
@@ -50,6 +56,29 @@ public class RoomService {
         List<RoomMember> roomMembers = roomMemberRepository.findByRoomId(roomId);
         List<MemberSchedule> memberSchedules = room.getSchedules();
         return RoomResponse.of(room, roomMembers, memberSchedules);
+    }
+
+    public List<RoomListResponse> getJoinedRooms(final Long memberId) {
+        List<RoomMember> roomMembers = roomMemberRepository.findByMemberId(memberId);
+
+        return roomMembers.stream()
+                .map(this::mapToRoomListResponse)
+                .collect(Collectors.toList());
+    }
+
+    private RoomListResponse mapToRoomListResponse(RoomMember roomMember) {
+        Room room = roomMember.getRoom();
+        List<MemberSchedule> memberSchedules = room.getSchedules();
+
+        String leaderNickname = room.getMembers().stream()
+                .filter(RoomMember::getIsLeader)
+                .findFirst()
+                .map(leader -> memberRepository.findIdAndNicknameById(leader.getMemberId())
+                        .map(memberNicknameDto -> memberNicknameDto.nickname().getValue())
+                        .orElse(null))
+                .orElse(null);
+
+        return RoomListMapper.toRoomListResponse(room, memberSchedules, leaderNickname);
     }
 
     @Transactional

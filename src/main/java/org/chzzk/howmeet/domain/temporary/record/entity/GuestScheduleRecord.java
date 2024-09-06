@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,8 +25,8 @@ public class GuestScheduleRecord extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Embedded
-    private RecordDate date;
+    @Column(name = "select_time")
+    private LocalDateTime selectTime;
 
     @Column(name = "guest_id", nullable = false)
     private Long guestId;
@@ -33,13 +34,13 @@ public class GuestScheduleRecord extends BaseEntity {
     @Column(name = "guest_schedule_id", nullable = false)
     private Long guestScheduleId;
 
-    private GuestScheduleRecord(final RecordDate date, final Long guestId, final Long guestScheduleId) {
-        this.date = date;
+    private GuestScheduleRecord(final Long guestId, final Long guestScheduleId, final LocalDateTime selectTime) {
         this.guestId = guestId;
         this.guestScheduleId = guestScheduleId;
+        this.selectTime = selectTime;
     }
 
-    public static GuestScheduleRecord of(final Guest guest, final GuestSchedule guestSchedule, final RecordDate date) {
-        return new GuestScheduleRecord(date, guestSchedule.getId(), guest.getId());
+    public static GuestScheduleRecord of(final Guest guest, final GuestSchedule guestSchedule, final LocalDateTime selectTime) {
+        return new GuestScheduleRecord(guest.getId(), guestSchedule.getId(), selectTime);
     }
 }

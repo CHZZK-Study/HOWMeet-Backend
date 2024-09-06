@@ -6,9 +6,10 @@ spring:
       - classpath:/yaml/application-auth.yml
       - classpath:/yaml/application-db.yml
       - classpath:/yaml/application-oauth.yml
+      - classpath:/yaml/application-redis.yml
   profiles:
     group:
-      develop: auth, db, oauth
+      develop: auth, db, oauth, redis
     active: develop
 springdoc:
   swagger-ui:

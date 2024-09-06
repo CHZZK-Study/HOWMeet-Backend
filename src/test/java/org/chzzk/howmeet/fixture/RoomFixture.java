@@ -1,15 +1,20 @@
 package org.chzzk.howmeet.fixture;
 
+import org.chzzk.howmeet.domain.regular.member.entity.Member;
+import org.chzzk.howmeet.domain.regular.room.dto.RoomListResponse;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomResponse;
 import org.chzzk.howmeet.domain.regular.room.entity.Room;
 import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
 import org.chzzk.howmeet.domain.regular.room.model.RoomDescription;
 import org.chzzk.howmeet.domain.regular.room.model.RoomName;
+import org.chzzk.howmeet.domain.regular.room.util.RoomListMapper;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
+
+import static org.chzzk.howmeet.fixture.MemberFixture.KIM;
 
 public enum RoomFixture {
     ROOM_A("Room A", "This is room A"),
@@ -56,7 +61,7 @@ public enum RoomFixture {
                 RoomName.from(ROOM_A.name),
                 RoomDescription.from(ROOM_A.description),
                 MSFixture.createMSRequestA(null),
-                1L // 리더 멤버 ID
+                1L
         );
     }
 
@@ -65,17 +70,31 @@ public enum RoomFixture {
                 RoomName.from(ROOM_B.name),
                 RoomDescription.from(ROOM_B.description),
                 MSFixture.createMSRequestB(null),
-                2L // 리더 멤버 ID
+                1L
         );
     }
 
     public static RoomResponse createRoomResponseA() {
-        Room room = ROOM_A.createRoomA();
+        Room room = createRoomA();
         return RoomResponse.of(room, room.getMembers(), room.getSchedules());
     }
 
     public static RoomResponse createRoomResponseB() {
-        Room room = ROOM_B.createRoomB();
+        Room room = createRoomB();
         return RoomResponse.of(room, room.getMembers(), room.getSchedules());
+    }
+
+    public static RoomListResponse createRoomListResponseA() {
+        Room room = createRoomA();
+        List<MemberSchedule> memberSchedules = room.getSchedules();
+        Member leader = KIM.생성();
+        return RoomListMapper.toRoomListResponse(room, memberSchedules, leader.getNickname().toString());
+    }
+
+    public static RoomListResponse createRoomListResponseB() {
+        Room room = createRoomB();
+        List<MemberSchedule> memberSchedules = room.getSchedules();
+        Member leader = KIM.생성();
+        return RoomListMapper.toRoomListResponse(room, memberSchedules, leader.getNickname().toString());
     }
 }
