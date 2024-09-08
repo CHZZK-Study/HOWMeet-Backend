@@ -84,7 +84,6 @@ public class RoomService {
     @Transactional
     public RoomResponse updateRoom(final Long roomId, final RoomRequest roomRequest) {
         Room room = getRoomById(roomId);
-        room.updateDescription(roomRequest.description());
         room.updateName(roomRequest.name());
         roomRepository.save(room);
 
