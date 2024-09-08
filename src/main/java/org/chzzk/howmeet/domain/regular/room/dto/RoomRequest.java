@@ -7,11 +7,10 @@ import org.chzzk.howmeet.domain.regular.schedule.dto.MSRequest;
 
 public record RoomRequest(
         RoomName name,
-        RoomDescription description,
         MSRequest msRequest,
         Long leaderMemberId
 ) {
     public Room toEntity() {
-        return new Room(description, name);
+        return new Room(name);
     }
 }
