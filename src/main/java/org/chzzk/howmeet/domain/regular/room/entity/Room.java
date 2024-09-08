@@ -27,25 +27,14 @@ public class Room extends BaseEntity {
     @Column(name = "name", nullable = false)
     private RoomName name;
 
-    @Convert(converter = RoomDescriptionConverter.class)
-    @Column(name = "description", nullable = false)
-    private RoomDescription description;
-
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberSchedule> schedules;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomMember> members;
 
-    public Room(final RoomDescription description, final RoomName name) {
-        this.description = description;
+    public Room(final RoomName name) {
         this.name = name;
-    }
-
-    public void updateDescription(final RoomDescription description) {
-        if (!description.isNullOrEmpty()) {
-            this.description = description;
-        }
     }
 
     public void updateName(final RoomName name) {

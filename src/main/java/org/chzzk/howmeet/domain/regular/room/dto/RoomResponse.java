@@ -9,7 +9,8 @@ import org.chzzk.howmeet.domain.regular.schedule.entity.ScheduleStatus;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public record RoomResponse(Long roomId, String name, String description,
+public record RoomResponse(Long roomId,
+                           String name,
                            List<RoomMemberResponse> roomMembers,
                            List<MSResponse> schedules) {
 
@@ -26,7 +27,6 @@ public record RoomResponse(Long roomId, String name, String description,
         return new RoomResponse(
                 room.getId(),
                 room.getName().getValue(),
-                room.getDescription().getValue(),
                 roomMemberResponse,
                 schedules
         );
