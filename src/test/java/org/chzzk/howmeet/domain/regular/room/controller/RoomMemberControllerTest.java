@@ -79,7 +79,7 @@ class RoomMemberControllerTest {
 
     @Test
     @DisplayName("방 멤버 조회 테스트")
-    public void get() throws Exception {
+    public void getRoomMember() throws Exception {
         // given
         final Room roomA = createRoomA();
         final RoomMember roomMember = MEMBER_1.create(roomA);

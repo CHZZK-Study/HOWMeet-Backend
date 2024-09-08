@@ -27,8 +27,8 @@ public class RoomMemberController {
 
     @GetMapping
     @RegularUser
-    public ResponseEntity<?> get(@Authenticated final AuthPrincipal authPrincipal,
-                                 @PathVariable(name = "roomId") final Long roomId) {
+    public ResponseEntity<?> getRoomMember(@Authenticated final AuthPrincipal authPrincipal,
+                                           @PathVariable(name = "roomId") final Long roomId) {
         final RoomMemberGetResponse roomMemberGetResponse = roomMemberService.get(authPrincipal, roomId);
         return ResponseEntity.ok(roomMemberGetResponse);
     }
