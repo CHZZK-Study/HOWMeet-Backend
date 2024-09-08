@@ -28,7 +28,7 @@ public class RoomMemberService {
     private final RoomMemberRepository roomMemberRepository;
     private final RoomRepository roomRepository;
 
-    public RoomMemberGetResponse get(final AuthPrincipal authPrincipal, final Long roomId) {
+    public RoomMemberGetResponse getRoomMember(final AuthPrincipal authPrincipal, final Long roomId) {
         final RoomMember roomMember = findRoomMemberByAuthAndRoomId(authPrincipal, roomId);
         return RoomMemberGetResponse.from(roomMember);
     }

@@ -29,7 +29,7 @@ public class RoomMemberController {
     @RegularUser
     public ResponseEntity<?> getRoomMember(@Authenticated final AuthPrincipal authPrincipal,
                                            @PathVariable(name = "roomId") final Long roomId) {
-        final RoomMemberGetResponse roomMemberGetResponse = roomMemberService.get(authPrincipal, roomId);
+        final RoomMemberGetResponse roomMemberGetResponse = roomMemberService.getRoomMember(authPrincipal, roomId);
         return ResponseEntity.ok(roomMemberGetResponse);
     }
 

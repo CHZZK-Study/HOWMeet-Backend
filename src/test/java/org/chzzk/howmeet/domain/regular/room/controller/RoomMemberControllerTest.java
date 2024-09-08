@@ -84,7 +84,7 @@ class RoomMemberControllerTest {
         final Room roomA = createRoomA();
         final RoomMember roomMember = MEMBER_1.create(roomA);
         final RoomMemberGetResponse expect = RoomMemberGetResponse.from(roomMember);
-        doReturn(expect).when(roomMemberService).get(any(), any());
+        doReturn(expect).when(roomMemberService).getRoomMember(any(), any());
 
         // when
         final ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.get("/room/{roomId}/members", 1L)
