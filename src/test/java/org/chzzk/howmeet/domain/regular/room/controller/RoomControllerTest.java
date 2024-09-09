@@ -62,7 +62,7 @@ public class RoomControllerTest {
         );
 
         // then
-        result.andExpect(status().isCreated());
+        result.andExpect(status().isOk());
 
         // restdocs
         result.andDo(document("방 생성",
@@ -70,13 +70,15 @@ public class RoomControllerTest {
                 preprocessResponse(prettyPrint()),
                 requestFields(
                         fieldWithPath("name").type(STRING).description("방 이름"),
-                        fieldWithPath("description").type(STRING).description("방 설명"),
                         fieldWithPath("msRequest.dates").type(ARRAY).description("일정 날짜 목록"),
                         fieldWithPath("msRequest.time.startTime").type(STRING).description("일정 시작 시간"),
                         fieldWithPath("msRequest.time.endTime").type(STRING).description("일정 종료 시간"),
                         fieldWithPath("msRequest.name.value").type(STRING).description("일정 이름"),
                         fieldWithPath("msRequest.roomId").type(NUMBER).description("방 ID").optional(),
                         fieldWithPath("leaderMemberId").type(NUMBER).description("리더 멤버 ID")
+                ),
+                responseFields(
+                        fieldWithPath("roomId").type(NUMBER).description("방 ID")
                 )
         ));
     }
@@ -108,7 +110,6 @@ public class RoomControllerTest {
                 ),
                 requestFields(
                         fieldWithPath("name").type(STRING).description("방 이름"),
-                        fieldWithPath("description").type(STRING).description("방 설명"),
                         fieldWithPath("msRequest.dates").type(ARRAY).description("일정 날짜 목록"),
                         fieldWithPath("msRequest.time.startTime").type(STRING).description("일정 시작 시간"),
                         fieldWithPath("msRequest.time.endTime").type(STRING).description("일정 종료 시간"),
@@ -119,7 +120,6 @@ public class RoomControllerTest {
                 responseFields(
                         fieldWithPath("roomId").type(NUMBER).description("방 ID"),
                         fieldWithPath("name").type(STRING).description("방 이름"),
-                        fieldWithPath("description").type(STRING).description("방 설명"),
                         fieldWithPath("roomMembers").type(ARRAY).description("방 멤버 목록").optional(),
                         fieldWithPath("roomMembers[].id").type(NUMBER).description("방 멤버 ID").optional(),
                         fieldWithPath("roomMembers[].memberId").type(NUMBER).description("멤버 ID"),
@@ -199,7 +199,6 @@ public class RoomControllerTest {
                 responseFields(
                         fieldWithPath("roomId").type(NUMBER).description("방 ID"),
                         fieldWithPath("name").type(STRING).description("방 이름"),
-                        fieldWithPath("description").type(STRING).description("방 설명"),
                         fieldWithPath("roomMembers").type(ARRAY).description("방 멤버 목록").optional(),
                         fieldWithPath("roomMembers[].id").type(NUMBER).description("방 멤버 ID").optional(),
                         fieldWithPath("roomMembers[].memberId").type(NUMBER).description("멤버 ID"),

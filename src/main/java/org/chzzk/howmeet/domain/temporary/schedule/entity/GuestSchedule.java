@@ -10,6 +10,7 @@ import org.chzzk.howmeet.domain.common.entity.BaseEntity;
 import org.chzzk.howmeet.domain.common.model.ScheduleName;
 import org.chzzk.howmeet.domain.common.model.converter.ScheduleNameConverter;
 import org.chzzk.howmeet.domain.regular.schedule.entity.ScheduleStatus;
+import org.chzzk.howmeet.domain.temporary.schedule.util.ListToJsonConverter;
 
 import java.util.List;
 
@@ -25,8 +26,8 @@ public class GuestSchedule extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ElementCollection
-    @Column(name = "date", nullable = false)
+    @Column(name = "dates", columnDefinition = "json")
+    @Convert(converter = ListToJsonConverter.class)
     private List<String> dates;
 
     @Embedded
