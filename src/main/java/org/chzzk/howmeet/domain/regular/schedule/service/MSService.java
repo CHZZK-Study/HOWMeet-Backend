@@ -20,37 +20,37 @@ import static org.chzzk.howmeet.domain.regular.schedule.exception.MSErrorCode.SC
 public class MSService {
     private final MSRepository msRepository;
     private final RoomRepository roomRepository;
-    //private final InviteUrlProvider inviteUrlProvider;
 
     @Transactional
-    public MSResponse createMemberSchedule(final MSRequest msRequest) {
-        Room room = roomRepository.findById(msRequest.roomId())
+    public MSResponse createMemberSchedule(final Long roomId, final MSRequest msRequest) {
+        Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new MSException(ROOM_NOT_FOUND));
 
         MemberSchedule memberSchedule = msRequest.toEntity(room);
-
         MemberSchedule savedSchedule = msRepository.save(memberSchedule);
-
-        // String inviteLink = inviteUrlProvider.generateInviteUrl("member-schedule", savedSchedule.getId());
 
         return MSResponse.from(savedSchedule);
     }
 
-    public MSResponse getMemberSchedule(final Long memberScheduleId) {
-        MemberSchedule memberSchedule = findMemberScheduleById(memberScheduleId);
-        // String inviteLink = inviteUrlProvider.generateInviteUrl("member-schedule", memberScheduleId);
+    public MSResponse getMemberSchedule(final Long roomId, final Long msId) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new MSException(ROOM_NOT_FOUND));
 
+        MemberSchedule memberSchedule = findMemberScheduleByIdAndRoom(msId, room);
         return MSResponse.from(memberSchedule);
     }
 
     @Transactional
-    public void deleteMemberSchedule(final Long memberScheduleId) {
-        MemberSchedule memberSchedule = findMemberScheduleById(memberScheduleId);
-        msRepository.delete(memberSchedule);
+    public void deleteMemberSchedule(final Long roomId, final Long msId) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new MSException(ROOM_NOT_FOUND));
+        MemberSchedule memberSchedule = findMemberScheduleByIdAndRoom(msId, room);
+        memberSchedule.deactivate();
+        msRepository.save(memberSchedule);
     }
 
-    private MemberSchedule findMemberScheduleById(Long memberScheduleId) {
-        return msRepository.findById(memberScheduleId)
+    private MemberSchedule findMemberScheduleByIdAndRoom(Long memberScheduleId, Room room) {
+        return msRepository.findByIdAndRoom(memberScheduleId, room)
                 .orElseThrow(() -> new MSException(SCHEDULE_NOT_FOUND));
     }
 }
