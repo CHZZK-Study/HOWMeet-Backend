@@ -41,14 +41,14 @@ public enum MSFixture {
         return memberSchedule;
     }
 
-    public static MSRequest createMSRequestA(Long roomId) {
+    public static MSRequest createMSRequestA() {
         ScheduleTime scheduleTime = ScheduleTime.of(MEETING_A.startTime, MEETING_A.endTime);
-        return new MSRequest(MEETING_A.dates, scheduleTime, MEETING_A.name, roomId);
+        return new MSRequest(MEETING_A.dates, scheduleTime, MEETING_A.name);
     }
 
-    public static MSRequest createMSRequestB(Long roomId) {
+    public static MSRequest createMSRequestB() {
         ScheduleTime scheduleTime = ScheduleTime.of(MEETING_B.startTime, MEETING_B.endTime);
-        return new MSRequest(MEETING_B.dates, scheduleTime, MEETING_B.name, roomId);
+        return new MSRequest(MEETING_B.dates, scheduleTime, MEETING_B.name);
     }
 
     public static MSResponse createMSResponseA(Room room) {
