@@ -23,7 +23,6 @@ public class RoomController {
         return ResponseEntity.ok(Map.of("roomId", roomResponse.roomId()));
     }
 
-
     @PatchMapping("/{roomId}")
     public ResponseEntity<?> updateRoom(
             @PathVariable Long roomId,
