@@ -1,6 +1,8 @@
 package org.chzzk.howmeet.infra.oauth.service;
 
 import lombok.RequiredArgsConstructor;
+import org.chzzk.howmeet.infra.oauth.dto.authorize.request.OAuthAuthorizeRequest;
+import org.chzzk.howmeet.infra.oauth.dto.authorize.response.OAuthAuthorizePayload;
 import org.chzzk.howmeet.infra.oauth.dto.token.request.OAuthTokenRequest;
 import org.chzzk.howmeet.infra.oauth.dto.token.response.OAuthTokenResponse;
 import org.chzzk.howmeet.infra.oauth.exception.token.OAuthTokenIssueException;
@@ -16,8 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
 import java.util.Map;
 import java.util.Objects;
 
@@ -29,6 +33,12 @@ public class OAuthClient {
     private final ProfileFailHandler profileFailHandler;
     private final TokenIssueFailHandler tokenIssueFailHandler;
     private final WebClient webClient;
+
+    public OAuthAuthorizePayload getAuthorizePayload(final OAuthProvider oAuthProvider) {
+        final OAuthAuthorizeRequest oAuthAuthorizeRequest = OAuthAuthorizeRequest.from(oAuthProvider);
+        final URI uri = getAuthorizeEntryUri(oAuthProvider, getAuthorizeParams(oAuthAuthorizeRequest));
+        return OAuthAuthorizePayload.of(oAuthProvider, uri);
+    }
 
     public Mono<OAuthProfile> getProfile(final OAuthProvider provider, final String code) {
         return oAuthTimeoutDecorator.decorate(issueToken(provider, code))
@@ -63,6 +73,17 @@ public class OAuthClient {
                 .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> tokenIssueFailHandler.handle4xxError(clientResponse, provider))
                 .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> tokenIssueFailHandler.handle5xxError(clientResponse, provider))
                 .bodyToMono(OAuthTokenResponse.class);
+    }
+
+    private MultiValueMap<String, String> getAuthorizeParams(final OAuthAuthorizeRequest oAuthAuthorizeRequest) {
+        return multiValueMapConverter.convertFrom(oAuthAuthorizeRequest);
+    }
+
+    private URI getAuthorizeEntryUri(final OAuthProvider oAuthProvider, final MultiValueMap<String, String> queryParams) {
+        return UriComponentsBuilder.fromUriString(oAuthProvider.authorizeUrl())
+                .queryParams(queryParams)
+                .build()
+                .toUri();
     }
 
     private boolean failedTokenIssue(final OAuthTokenResponse oAuthTokenResponse) {
