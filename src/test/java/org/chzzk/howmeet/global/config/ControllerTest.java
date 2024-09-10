@@ -14,8 +14,7 @@ import java.lang.annotation.Target;
 
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-@ExtendWith(RestDocumentationExtension.class)
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, RestDocumentationExtension.class})
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @SpringBootTest

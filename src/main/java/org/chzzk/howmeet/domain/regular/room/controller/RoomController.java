@@ -15,7 +15,6 @@ import java.util.Map;
 @RestController
 public class RoomController {
     private final RoomService roomService;
-    private final RoomMemberService roomMemberService;
 
     @PostMapping
     public ResponseEntity<?> createRoom(@RequestBody final RoomRequest roomRequest) {
@@ -30,14 +29,6 @@ public class RoomController {
             @RequestBody final RoomRequest roomRequest) {
         final RoomResponse roomResponse = roomService.updateRoom(roomId, roomRequest);
         return ResponseEntity.ok(roomResponse);
-    }
-
-    @PatchMapping("/{roomId}/members")
-    public ResponseEntity<List<RoomMemberResponse>> updateRoomMembers(
-            @PathVariable Long roomId,
-            @RequestBody final List<RoomMemberRequest> roomMemberRequests) {
-        List<RoomMemberResponse> roomMemberResponses = roomMemberService.updateRoomMembers(roomId, roomMemberRequests);
-        return ResponseEntity.ok(roomMemberResponses);
     }
 
     @GetMapping("/{roomId}")
@@ -56,11 +47,5 @@ public class RoomController {
     public ResponseEntity<?> deleteRoom(@PathVariable Long roomId) {
         roomService.deleteRoom(roomId);
         return ResponseEntity.ok("Room successfully deleted");
-    }
-
-    @DeleteMapping("/{roomId}/members/{roomMemberId}")
-    public ResponseEntity<?> deleteRoomMember(@PathVariable Long roomId, @PathVariable Long roomMemberId) {
-        roomService.deleteRoomMember(roomId, roomMemberId);
-        return ResponseEntity.ok("RoomMember successfully deleted");
     }
 }
