@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @ConfigurationProperties(prefix = "oauth")
 @Getter
@@ -30,15 +31,26 @@ public class OAuthProperties {
         private String id;
         private String secret;
         private String redirectUrl;
+        private Set<String> scopes;
     }
 
     @Getter
     @Setter
     @ToString
     public static class Provider {
+        private Authorize authorize;
         private String name;
         private Token token;
         private Profile profile;
+    }
+
+    @Getter
+    @Setter
+    @ToString
+    public static class Authorize {
+        private String response_type;
+        private String method;
+        private String url;
     }
 
     @Getter

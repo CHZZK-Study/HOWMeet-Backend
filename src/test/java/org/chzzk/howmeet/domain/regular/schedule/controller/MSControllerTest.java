@@ -35,10 +35,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(value = MSController.class, excludeFilters = {
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebConfig.class),
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = AuthenticationInterceptor.class)
-})
 @ControllerTest
 public class MSControllerTest {
 
@@ -90,7 +86,8 @@ public class MSControllerTest {
                         fieldWithPath("name.value").type(STRING).description("회원 일정 이름"),
                         fieldWithPath("dates").type(ARRAY).description("회원 일정 날짜 목록"),
                         fieldWithPath("time.startTime").type(STRING).description("회원 일정 시작 시간"),
-                        fieldWithPath("time.endTime").type(STRING).description("회원 일정 종료 시간")
+                        fieldWithPath("time.endTime").type(STRING).description("회원 일정 종료 시간"),
+                        fieldWithPath("status").type(STRING).description("회원 일정 상태")
                 )
         ));
     }
@@ -123,7 +120,8 @@ public class MSControllerTest {
                         fieldWithPath("name.value").type(STRING).description("회원 일정 이름"),
                         fieldWithPath("dates").type(ARRAY).description("회원 일정 날짜 목록"),
                         fieldWithPath("time.startTime").type(STRING).description("회원 일정 시작 시간"),
-                        fieldWithPath("time.endTime").type(STRING).description("회원 일정 종료 시간")
+                        fieldWithPath("time.endTime").type(STRING).description("회원 일정 종료 시간"),
+                        fieldWithPath("status").type(STRING).description("회원 일정 상태")
                 )
         ));
     }

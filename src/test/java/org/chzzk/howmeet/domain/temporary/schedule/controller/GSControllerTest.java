@@ -34,10 +34,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(value = GSController.class, excludeFilters = {
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebConfig.class),
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = AuthenticationInterceptor.class)
-})
 @ControllerTest
 public class GSControllerTest {
 
@@ -82,14 +78,6 @@ public class GSControllerTest {
                         fieldWithPath("time.startTime").type(STRING).description("비회원 일정 시작 시간"),
                         fieldWithPath("time.endTime").type(STRING).description("비회원 일정 종료 시간"),
                         fieldWithPath("name.value").type(STRING).description("비회원 일정 이름")
-                ),
-                responseFields(
-                        fieldWithPath("guestScheduleId").type(NUMBER).description("비회원 일정 ID"),
-                        fieldWithPath("name").type(STRING).description("비회원 일정 이름"),
-                        fieldWithPath("startDate").type(STRING).description("비회원 일정 시작 날짜"),
-                        fieldWithPath("startTime").type(STRING).description("비회원 일정 시작 시간"),
-                        fieldWithPath("endDate").type(STRING).description("비회원 일정 종료 날짜"),
-                        fieldWithPath("endTime").type(STRING).description("비회원 일정 종료 시간")
                 )
         ));
     }
@@ -118,37 +106,12 @@ public class GSControllerTest {
                         parameterWithName("guestScheduleId").description("비회원 일정 ID")
                 ),
                 responseFields(
-                        fieldWithPath("guestScheduleId").type(NUMBER).description("비회원 일정 ID"),
-                        fieldWithPath("name").type(STRING).description("비회원 일정 이름"),
-                        fieldWithPath("startDate").type(STRING).description("비회원 일정 시작 날짜"),
-                        fieldWithPath("startTime").type(STRING).description("비회원 일정 시작 시간"),
-                        fieldWithPath("endDate").type(STRING).description("비회원 일정 종료 날짜"),
-                        fieldWithPath("endTime").type(STRING).description("비회원 일정 종료 시간")
-                )
-        ));
-    }
-
-    @Test
-    @DisplayName("비회원 일정 삭제")
-    public void deleteGuestSchedule() throws Exception {
-        // given
-        final GuestSchedule guestSchedule = GSFixture.createGuestScheduleA();
-        willDoNothing().given(gsService).deleteGuestSchedule(guestSchedule.getId());
-
-        // when
-        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.delete("/guest-schedule/{guestScheduleId}", guestSchedule.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        // then
-        resultActions.andExpect(status().isOk());
-
-        // restdocs
-        resultActions.andDo(document("비회원 일정 삭제",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
-                pathParameters(
-                        parameterWithName("guestScheduleId").description("비회원 일정 ID")
+                        fieldWithPath("id").type(NUMBER).description("비회원 일정 ID"),
+                        fieldWithPath("name.value").type(STRING).description("비회원 일정 이름"),
+                        fieldWithPath("dates").type(ARRAY).description("비회원 일정 날짜 목록"),
+                        fieldWithPath("time.startTime").type(STRING).description("비회원 일정 시작 시간"),
+                        fieldWithPath("time.endTime").type(STRING).description("비회원 일정 종료 시간"),
+                        fieldWithPath("status").type(STRING).description("비회원 일정 상태")
                 )
         ));
     }

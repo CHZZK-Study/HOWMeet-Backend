@@ -45,4 +45,11 @@ public class Nicknames {
         }
         return nicknames;
     }
+
+    @JsonValue
+    public List<String> toJson() {
+        return List.copyOf(nicknames).stream()
+                .map(Nickname::getValue) // 각 Nickname 객체의 value 값을 추출
+                .collect(Collectors.toList());
+    }
 }

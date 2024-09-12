@@ -18,19 +18,13 @@ public class GSController {
     @PostMapping
     public ResponseEntity<?> createGuestSchedule(@RequestBody final GSRequest gsRequest) {
         final GSResponse gsResponse = gsService.createGuestSchedule(gsRequest);
-        return ResponseEntity.created(URI.create("/guest-schedule/" + gsResponse.guestScheduleId()))
-                .body(gsResponse);
+        return ResponseEntity.created(URI.create("/guest-schedule/" + gsResponse.id()))
+                .build();
     }
 
     @GetMapping("/{guestScheduleId}")
     public ResponseEntity<?> getGuestSchedule(@PathVariable Long guestScheduleId) {
         final GSResponse gsResponse = gsService.getGuestSchedule(guestScheduleId);
         return ResponseEntity.ok(gsResponse);
-    }
-
-    @DeleteMapping("/{guestScheduleId}")
-    public ResponseEntity<String> deleteGuestSchedule(@PathVariable Long guestScheduleId) {
-        gsService.deleteGuestSchedule(guestScheduleId);
-        return ResponseEntity.ok("Guest schedule successfully deleted");
     }
 }

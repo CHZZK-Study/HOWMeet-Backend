@@ -9,8 +9,13 @@ import org.chzzk.howmeet.domain.common.embedded.date.impl.ScheduleTime;
 import org.chzzk.howmeet.domain.common.entity.BaseEntity;
 import org.chzzk.howmeet.domain.common.model.ScheduleName;
 import org.chzzk.howmeet.domain.common.model.converter.ScheduleNameConverter;
+import org.chzzk.howmeet.domain.regular.schedule.entity.ScheduleStatus;
+import org.chzzk.howmeet.domain.temporary.schedule.util.ListToJsonConverter;
 
 import java.util.List;
+
+import static org.chzzk.howmeet.domain.regular.schedule.entity.ScheduleStatus.COMPLETE;
+import static org.chzzk.howmeet.domain.regular.schedule.entity.ScheduleStatus.PROGRESS;
 
 @Entity
 @Getter
@@ -21,8 +26,8 @@ public class GuestSchedule extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ElementCollection
-    @Column(name = "date", nullable = false)
+    @Column(name = "dates", columnDefinition = "json")
+    @Convert(converter = ListToJsonConverter.class)
     private List<String> dates;
 
     @Embedded
@@ -32,10 +37,19 @@ public class GuestSchedule extends BaseEntity {
     @Column(name = "name", nullable = false)
     private ScheduleName name;
 
-    private GuestSchedule(final List<String> dates, final ScheduleTime time, final ScheduleName name) {
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ScheduleStatus status;
+
+    public GuestSchedule(final List<String> dates, final ScheduleTime time, final ScheduleName name) {
         this.dates = dates;
         this.time = time;
         this.name = name;
+        this.status = PROGRESS;
+    }
+
+    public void complete() {
+        this.status = COMPLETE;
     }
 
     // todo : 생성자랑 시그니처가 동일한데 굳이 정적 팩토리 메서드를 사용하는 이유?

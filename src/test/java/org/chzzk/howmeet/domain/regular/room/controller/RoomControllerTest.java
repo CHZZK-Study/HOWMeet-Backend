@@ -1,25 +1,17 @@
 package org.chzzk.howmeet.domain.regular.room.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.chzzk.howmeet.domain.regular.room.dto.RoomMemberRequest;
-import org.chzzk.howmeet.domain.regular.room.dto.RoomMemberResponse;
-import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
-import org.chzzk.howmeet.domain.regular.room.dto.RoomResponse;
+import org.chzzk.howmeet.domain.regular.room.dto.*;
 import org.chzzk.howmeet.domain.regular.room.entity.Room;
 import org.chzzk.howmeet.domain.regular.room.service.RoomMemberService;
 import org.chzzk.howmeet.domain.regular.room.service.RoomService;
 import org.chzzk.howmeet.fixture.RoomFixture;
 import org.chzzk.howmeet.fixture.RoomMemberFixture;
 import org.chzzk.howmeet.global.config.ControllerTest;
-import org.chzzk.howmeet.global.config.WebConfig;
-import org.chzzk.howmeet.global.interceptor.AuthenticationInterceptor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
@@ -39,10 +31,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(value = RoomController.class, excludeFilters = {
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebConfig.class),
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = AuthenticationInterceptor.class)
-})
 @ControllerTest
 public class RoomControllerTest {
 
@@ -54,9 +42,6 @@ public class RoomControllerTest {
 
     @MockBean
     private RoomService roomService;
-
-    @MockBean
-    private RoomMemberService roomMemberService;
 
     @Test
     @DisplayName("방 생성 테스트")
@@ -74,7 +59,7 @@ public class RoomControllerTest {
         );
 
         // then
-        result.andExpect(status().isCreated());
+        result.andExpect(status().isOk());
 
         // restdocs
         result.andDo(document("방 생성",
@@ -82,7 +67,6 @@ public class RoomControllerTest {
                 preprocessResponse(prettyPrint()),
                 requestFields(
                         fieldWithPath("name").type(STRING).description("방 이름"),
-                        fieldWithPath("description").type(STRING).description("방 설명"),
                         fieldWithPath("msRequest.dates").type(ARRAY).description("일정 날짜 목록"),
                         fieldWithPath("msRequest.time.startTime").type(STRING).description("일정 시작 시간"),
                         fieldWithPath("msRequest.time.endTime").type(STRING).description("일정 종료 시간"),
@@ -91,23 +75,7 @@ public class RoomControllerTest {
                         fieldWithPath("leaderMemberId").type(NUMBER).description("리더 멤버 ID")
                 ),
                 responseFields(
-                        fieldWithPath("roomId").type(NUMBER).description("방 ID"),
-                        fieldWithPath("name").type(STRING).description("방 이름"),
-                        fieldWithPath("description").type(STRING).description("방 설명"),
-                        fieldWithPath("roomMembers").type(ARRAY).description("방 멤버 목록").optional(),
-                        fieldWithPath("roomMembers[].id").type(NUMBER).description("방 멤버 ID").optional(),
-                        fieldWithPath("roomMembers[].memberId").type(NUMBER).description("멤버 ID"),
-                        fieldWithPath("roomMembers[].isLeader").type(BOOLEAN).description("리더 여부"),
-                        fieldWithPath("memberSchedules").type(ARRAY).description("방 스케줄 목록").optional(),
-                        fieldWithPath("memberSchedules[].createdAt").type(STRING).description("스케줄 생성일").optional(),
-                        fieldWithPath("memberSchedules[].updatedAt").type(STRING).description("스케줄 수정일").optional(),
-                        fieldWithPath("memberSchedules[].disable").type(BOOLEAN).description("스케줄 비활성화 여부").optional(),
-                        fieldWithPath("memberSchedules[].id").type(NUMBER).description("스케줄 ID"),
-                        fieldWithPath("memberSchedules[].dates").type(ARRAY).description("스케줄 날짜 목록"),
-                        fieldWithPath("memberSchedules[].time.startTime").type(STRING).description("스케줄 시작 시간"),
-                        fieldWithPath("memberSchedules[].time.endTime").type(STRING).description("스케줄 종료 시간"),
-                        fieldWithPath("memberSchedules[].name.value").type(STRING).description("스케줄 이름"),
-                        fieldWithPath("memberSchedules[].status").type(STRING).description("스케줄 상태")
+                        fieldWithPath("roomId").type(NUMBER).description("방 ID")
                 )
         ));
     }
@@ -139,7 +107,6 @@ public class RoomControllerTest {
                 ),
                 requestFields(
                         fieldWithPath("name").type(STRING).description("방 이름"),
-                        fieldWithPath("description").type(STRING).description("방 설명"),
                         fieldWithPath("msRequest.dates").type(ARRAY).description("일정 날짜 목록"),
                         fieldWithPath("msRequest.time.startTime").type(STRING).description("일정 시작 시간"),
                         fieldWithPath("msRequest.time.endTime").type(STRING).description("일정 종료 시간"),
@@ -150,63 +117,21 @@ public class RoomControllerTest {
                 responseFields(
                         fieldWithPath("roomId").type(NUMBER).description("방 ID"),
                         fieldWithPath("name").type(STRING).description("방 이름"),
-                        fieldWithPath("description").type(STRING).description("방 설명"),
                         fieldWithPath("roomMembers").type(ARRAY).description("방 멤버 목록").optional(),
                         fieldWithPath("roomMembers[].id").type(NUMBER).description("방 멤버 ID").optional(),
                         fieldWithPath("roomMembers[].memberId").type(NUMBER).description("멤버 ID"),
                         fieldWithPath("roomMembers[].isLeader").type(BOOLEAN).description("리더 여부"),
-                        fieldWithPath("memberSchedules").type(ARRAY).description("방 스케줄 목록").optional(),
-                        fieldWithPath("memberSchedules[].createdAt").type(STRING).description("스케줄 생성일").optional(),
-                        fieldWithPath("memberSchedules[].updatedAt").type(STRING).description("스케줄 수정일").optional(),
-                        fieldWithPath("memberSchedules[].disable").type(BOOLEAN).description("스케줄 비활성화 여부").optional(),
-                        fieldWithPath("memberSchedules[].id").type(NUMBER).description("스케줄 ID"),
-                        fieldWithPath("memberSchedules[].dates").type(ARRAY).description("스케줄 날짜 목록"),
-                        fieldWithPath("memberSchedules[].time.startTime").type(STRING).description("스케줄 시작 시간"),
-                        fieldWithPath("memberSchedules[].time.endTime").type(STRING).description("스케줄 종료 시간"),
-                        fieldWithPath("memberSchedules[].name.value").type(STRING).description("스케줄 이름"),
-                        fieldWithPath("memberSchedules[].status").type(STRING).description("스케줄 상태")
+                        fieldWithPath("schedules").type(ARRAY).description("진행 중인 스케줄 목록").optional(),
+                        fieldWithPath("schedules[].id").type(NUMBER).description("일정 ID"),
+                        fieldWithPath("schedules[].dates").type(ARRAY).description("일정 날짜 목록"),
+                        fieldWithPath("schedules[].time.startTime").type(STRING).description("일정 시작 시간"),
+                        fieldWithPath("schedules[].time.endTime").type(STRING).description("일정 종료 시간"),
+                        fieldWithPath("schedules[].name.value").type(STRING).description("일정 이름"),
+                        fieldWithPath("schedules[].status").type(STRING).description("일정 상태")
                 )
         ));
     }
 
-    @Test
-    @DisplayName("방 멤버 업데이트 테스트")
-    void updateRoomMembers() throws Exception {
-        // given
-        Room room = RoomFixture.createRoomA();
-        List<RoomMemberRequest> roomMemberRequests = RoomMemberFixture.createRoomMemberRequests(room);
-        List<RoomMemberResponse> roomMemberResponses = RoomMemberFixture.createRoomMemberResponses(room);
-
-        given(roomMemberService.updateRoomMembers(any(Long.class), anyList())).willReturn(roomMemberResponses);
-
-        // when
-        ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.patch("/room/{roomId}/members", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(roomMemberRequests))
-        );
-
-        // then
-        result.andExpect(status().isOk());
-
-        // restdocs
-        result.andDo(document("방 멤버 업데이트",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
-                pathParameters(
-                        parameterWithName("roomId").description("방 ID")
-                ),
-                requestFields(
-                        fieldWithPath("[].memberId").type(NUMBER).description("멤버 ID"),
-                        fieldWithPath("[].roomId").type(NUMBER).description("방 ID"),
-                        fieldWithPath("[].isLeader").type(BOOLEAN).description("리더 여부")
-                ),
-                responseFields(
-                        fieldWithPath("[].id").type(NUMBER).description("방 멤버 ID").optional(),
-                        fieldWithPath("[].memberId").type(NUMBER).description("멤버 ID"),
-                        fieldWithPath("[].isLeader").type(BOOLEAN).description("리더 여부")
-                )
-        ));
-    }
     @Test
     @DisplayName("방 조회 테스트")
     void getRoom() throws Exception {
@@ -233,21 +158,59 @@ public class RoomControllerTest {
                 responseFields(
                         fieldWithPath("roomId").type(NUMBER).description("방 ID"),
                         fieldWithPath("name").type(STRING).description("방 이름"),
-                        fieldWithPath("description").type(STRING).description("방 설명"),
                         fieldWithPath("roomMembers").type(ARRAY).description("방 멤버 목록").optional(),
                         fieldWithPath("roomMembers[].id").type(NUMBER).description("방 멤버 ID").optional(),
                         fieldWithPath("roomMembers[].memberId").type(NUMBER).description("멤버 ID"),
                         fieldWithPath("roomMembers[].isLeader").type(BOOLEAN).description("리더 여부"),
-                        fieldWithPath("memberSchedules").type(ARRAY).description("방 스케줄 목록").optional(),
-                        fieldWithPath("memberSchedules[].createdAt").type(STRING).description("스케줄 생성일").optional(),
-                        fieldWithPath("memberSchedules[].updatedAt").type(STRING).description("스케줄 수정일").optional(),
-                        fieldWithPath("memberSchedules[].disable").type(BOOLEAN).description("스케줄 비활성화 여부").optional(),
-                        fieldWithPath("memberSchedules[].id").type(NUMBER).description("스케줄 ID"),
-                        fieldWithPath("memberSchedules[].dates").type(ARRAY).description("스케줄 날짜 목록"),
-                        fieldWithPath("memberSchedules[].time.startTime").type(STRING).description("스케줄 시작 시간"),
-                        fieldWithPath("memberSchedules[].time.endTime").type(STRING).description("스케줄 종료 시간"),
-                        fieldWithPath("memberSchedules[].name.value").type(STRING).description("스케줄 이름"),
-                        fieldWithPath("memberSchedules[].status").type(STRING).description("스케줄 상태")
+                        fieldWithPath("schedules[]").type(ARRAY).description("일정 목록").optional(),
+                        fieldWithPath("schedules[].id").type(NUMBER).description("일정 ID"),
+                        fieldWithPath("schedules[].dates").type(ARRAY).description("일정 날짜 목록"),
+                        fieldWithPath("schedules[].time.startTime").type(STRING).description("일정 시작 시간"),
+                        fieldWithPath("schedules[].time.endTime").type(STRING).description("일정 종료 시간"),
+                        fieldWithPath("schedules[].name.value").type(STRING).description("일정 이름"),
+                        fieldWithPath("schedules[].status").type(STRING).description("일정 상태")
+                )
+        ));
+    }
+
+    @Test
+    @DisplayName("회원이 참여한 방 목록 조회 테스트")
+    void getJoinedRooms() throws Exception {
+        // given
+        Long memberId = 1L;
+        List<RoomListResponse> joinedRooms = List.of(
+                RoomFixture.createRoomListResponseA(),
+                RoomFixture.createRoomListResponseB()
+        );
+
+        given(roomService.getJoinedRooms(memberId)).willReturn(joinedRooms);
+
+        // when
+        ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.get("/room/joined/{memberId}", memberId)
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        result.andExpect(status().isOk());
+
+        // restdocs
+        result.andDo(document("회원 참여 방 목록 조회",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                pathParameters(
+                        parameterWithName("memberId").description("회원 ID")
+                ),
+                responseFields(
+                        fieldWithPath("[].roomId").type(NUMBER).description("방 ID"),
+                        fieldWithPath("[].name").type(STRING).description("방 이름"),
+                        fieldWithPath("[].memberSummary").type(STRING).description("참여 인원 요약"),
+                        fieldWithPath("[].schedules").type(ARRAY).description("일정 목록").optional(),
+                        fieldWithPath("[].schedules[].id").type(NUMBER).description("일정 ID"),
+                        fieldWithPath("[].schedules[].dates").type(ARRAY).description("일정 날짜 목록"),
+                        fieldWithPath("[].schedules[].time.startTime").type(STRING).description("일정 시작 시간"),
+                        fieldWithPath("[].schedules[].time.endTime").type(STRING).description("일정 종료 시간"),
+                        fieldWithPath("[].schedules[].name.value").type(STRING).description("일정 이름"),
+                        fieldWithPath("[].schedules[].status").type(STRING).description("일정 상태")
                 )
         ));
     }
@@ -272,31 +235,6 @@ public class RoomControllerTest {
                 preprocessResponse(prettyPrint()),
                 pathParameters(
                         parameterWithName("roomId").description("방 ID")
-                )
-        ));
-    }
-
-    @Test
-    @DisplayName("방 멤버 삭제 테스트")
-    void deleteRoomMember() throws Exception {
-        // given
-        willDoNothing().given(roomService).deleteRoomMember(any(Long.class), any(Long.class));
-
-        // when
-        ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.delete("/room/{roomId}/members/{roomMemberId}", 1L, 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        // then
-        result.andExpect(status().isOk());
-
-        // restdocs
-        result.andDo(document("방 멤버 삭제",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()),
-                pathParameters(
-                        parameterWithName("roomId").description("방 ID"),
-                        parameterWithName("roomMemberId").description("방 멤버 ID")
                 )
         ));
     }

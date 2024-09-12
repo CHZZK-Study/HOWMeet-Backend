@@ -23,9 +23,9 @@ public class TokenProvider {
     private final Key key;
     private final ObjectMapper objectMapper;
 
-    public TokenProvider(@Value("${auth.expiration}") final Long expiration,
+    public TokenProvider(@Value("${auth.access-token.expiration}") final Long expiration,
                          final ObjectMapper objectMapper,
-                         @Value("${auth.secret-key}") final String secretKey) {
+                         @Value("${auth.access-token.secret-key}") final String secretKey) {
         this.expiration = expiration;
         this.objectMapper = objectMapper;
         this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
@@ -64,6 +64,7 @@ public class TokenProvider {
                     .getExpiration()
                     .before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
+            log.info("JWT 검증 실패 : {}", e.getMessage());
             return false;
         }
     }

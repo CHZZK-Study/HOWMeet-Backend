@@ -12,15 +12,12 @@ import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 import org.chzzk.howmeet.fixture.MSFixture;
 import org.chzzk.howmeet.fixture.MemberFixture;
 import org.chzzk.howmeet.fixture.RoomFixture;
-import org.chzzk.howmeet.global.config.TestConfig;
+import org.chzzk.howmeet.global.config.RepositoryTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 
-@DataJpaTest
-@Import(TestConfig.class)
+@RepositoryTest
 public class MSRecordRepositoryTest {
 
     @Autowired
