@@ -5,10 +5,10 @@ import org.chzzk.howmeet.domain.common.model.Nicknames;
 import org.chzzk.howmeet.domain.common.model.SelectionDetail;
 
 public record GSRecordGetResponse(Long gsId, Nicknames totalPersonnel, Nicknames participatedPersonnel,
-                                  List<SelectionDetail> selectTime) {
+                                  List<SelectionDetail> time) {
 
     public static GSRecordGetResponse of(final Long gsId, final Nicknames totalPersonnel,
-            final Nicknames participatedPersonnel, final List<SelectionDetail> selectTime) {
-        return new GSRecordGetResponse(gsId, totalPersonnel, participatedPersonnel, selectTime);
+            final Nicknames participatedPersonnel, final List<SelectionDetail> time) {
+        return new GSRecordGetResponse(gsId, totalPersonnel, participatedPersonnel, time);
     }
 }
