@@ -48,6 +48,7 @@ public class OAuthProperties {
     @Setter
     @ToString
     public static class Authorize {
+        private String response_type;
         private String method;
         private String url;
     }

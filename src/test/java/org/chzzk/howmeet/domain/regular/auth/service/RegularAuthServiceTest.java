@@ -10,6 +10,7 @@ import org.chzzk.howmeet.domain.regular.auth.entity.RefreshToken;
 import org.chzzk.howmeet.domain.regular.auth.exception.RefreshTokenException;
 import org.chzzk.howmeet.domain.regular.member.entity.Member;
 import org.chzzk.howmeet.global.util.TokenProvider;
+import org.chzzk.howmeet.infra.oauth.dto.authorize.response.OAuthAuthorizePayload;
 import org.chzzk.howmeet.infra.oauth.model.OAuthProvider;
 import org.chzzk.howmeet.infra.oauth.model.profile.OAuthProfile;
 import org.chzzk.howmeet.infra.oauth.model.profile.OAuthProfileFactory;
@@ -26,6 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpMethod;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
@@ -76,12 +78,15 @@ class RegularAuthServiceTest {
     public void authorize(final String providerName) throws Exception {
         // given
         final MemberAuthorizeRequest memberAuthorizeRequest = new MemberAuthorizeRequest(providerName);
+        final OAuthAuthorizePayload oAuthAuthorizePayload = new OAuthAuthorizePayload(HttpMethod.GET, URI.create("authorizeURL"));
         final OAuthProvider oAuthProvider = getOAuthProvider(providerName);
-        final MemberAuthorizeResponse expect = MemberAuthorizeResponse.from(oAuthProvider);
+        final MemberAuthorizeResponse expect = MemberAuthorizeResponse.from(oAuthAuthorizePayload);
 
         // when
         doReturn(oAuthProvider).when(inMemoryOAuthProviderRepository)
                 .findByProviderName(providerName);
+        doReturn(oAuthAuthorizePayload).when(oAuthClient)
+                .getAuthorizePayload(oAuthProvider);
         final MemberAuthorizeResponse actual = regularAuthService.authorize(memberAuthorizeRequest);
 
         // then

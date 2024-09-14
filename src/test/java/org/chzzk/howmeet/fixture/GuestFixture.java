@@ -2,6 +2,7 @@ package org.chzzk.howmeet.fixture;
 
 import org.chzzk.howmeet.domain.common.model.EncodedPassword;
 import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
+import org.springframework.test.util.ReflectionTestUtils;
 
 public enum GuestFixture {
     KIM("김민우", "qwer1234");
@@ -14,7 +15,17 @@ public enum GuestFixture {
     }
 
     public Guest 생성() {
-        return Guest.of(1L, nickname, EncodedPassword.from(password));
+        return 생성(null, 1L);
+    }
+
+    public Guest 생성(final Long id) {
+        return 생성(id, 1L);
+    }
+
+    public Guest 생성(final Long id, final Long guestScheduleId) {
+        final Guest guest = Guest.of(guestScheduleId, nickname, EncodedPassword.from(password));
+        ReflectionTestUtils.setField(guest, "id", id);// Reflection 을 사용하여 PK 설정
+        return guest;
     }
 
     public String getNickname() {

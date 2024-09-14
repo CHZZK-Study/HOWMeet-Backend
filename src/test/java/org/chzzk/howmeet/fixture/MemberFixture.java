@@ -1,6 +1,7 @@
 package org.chzzk.howmeet.fixture;
 
 import org.chzzk.howmeet.domain.regular.member.entity.Member;
+import org.springframework.test.util.ReflectionTestUtils;
 
 public enum MemberFixture {
     KIM("김민우", "프로필 사진 URL", "123");
@@ -15,6 +16,12 @@ public enum MemberFixture {
     }
 
     public Member 생성() {
-        return Member.of(nickname, profileImage, socialId);
+        return 생성(null);
+    }
+
+    public Member 생성(final Long id) {
+        final Member member = Member.of(nickname, profileImage, socialId);
+        ReflectionTestUtils.setField(member, "id", id);   // Reflection 을 사용하여 PK 설정
+        return member;
     }
 }
