@@ -10,6 +10,7 @@ import org.chzzk.howmeet.domain.regular.auth.dto.reissue.MemberReissueResult;
 import org.chzzk.howmeet.domain.regular.auth.entity.RefreshToken;
 import org.chzzk.howmeet.domain.regular.member.entity.Member;
 import org.chzzk.howmeet.global.util.TokenProvider;
+import org.chzzk.howmeet.infra.oauth.dto.authorize.response.OAuthAuthorizePayload;
 import org.chzzk.howmeet.infra.oauth.model.OAuthProvider;
 import org.chzzk.howmeet.infra.oauth.repository.InMemoryOAuthProviderRepository;
 import org.chzzk.howmeet.infra.oauth.service.OAuthClient;
@@ -28,7 +29,8 @@ public class RegularAuthService {
     public MemberAuthorizeResponse authorize(final MemberAuthorizeRequest memberAuthorizeRequest) {
         final String providerName = memberAuthorizeRequest.providerName();
         final OAuthProvider oAuthProvider = inMemoryOAuthProviderRepository.findByProviderName(providerName);
-        return MemberAuthorizeResponse.from(oAuthProvider);
+        final OAuthAuthorizePayload oAuthAuthorizePayload = oAuthClient.getAuthorizePayload(oAuthProvider);
+        return MemberAuthorizeResponse.from(oAuthAuthorizePayload);
     }
 
     public MemberLoginResult login(final MemberLoginRequest memberLoginRequest) {

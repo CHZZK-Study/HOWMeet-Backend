@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -20,10 +21,17 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @Slf4j
 public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception exception) {
+    public ResponseEntity<ErrorResponse> handleException(final Exception exception) {
         log.error("예상치 못한 에러입니다. ", exception);
         return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                 .body(ErrorResponse.of(INTERNAL_SERVER_ERROR, "예상하지 못한 에러입니다."));
+    }
+
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<ErrorResponse> handleSQLException(final SQLException exception) {
+        log.error("SQL 예외 발생. ", exception);
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR)
+                .body(ErrorResponse.of(INTERNAL_SERVER_ERROR, "SQL 오류입니다."));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
