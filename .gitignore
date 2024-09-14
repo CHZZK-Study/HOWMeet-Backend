@@ -35,9 +35,7 @@ out/
 ### Yaml ###
 /src/main/resources/yaml
 src/test/resources/*.yml
+src/test/resources/yaml
 
 ### VS Code ###
 .vscode/
-
-### Yaml ###
-/src/main/resources/yaml
