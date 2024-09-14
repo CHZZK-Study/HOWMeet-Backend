@@ -18,8 +18,8 @@ public class RoomController {
 
     @PostMapping
     public ResponseEntity<?> createRoom(@RequestBody final RoomRequest roomRequest) {
-        final RoomResponse roomResponse = roomService.createRoom(roomRequest);
-        return ResponseEntity.ok(Map.of("roomId", roomResponse.roomId()));
+        final Long roomId = roomService.createRoom(roomRequest);
+        return ResponseEntity.ok(Map.of("roomId", roomId));
     }
 
     @PatchMapping("/{roomId}")

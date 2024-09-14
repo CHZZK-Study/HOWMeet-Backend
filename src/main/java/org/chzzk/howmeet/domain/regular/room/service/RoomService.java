@@ -33,22 +33,12 @@ public class RoomService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public RoomResponse createRoom(final RoomRequest roomRequest) {
+    public Long createRoom(final RoomRequest roomRequest) {
         Room room = roomRequest.toEntity();
         Room savedRoom = roomRepository.save(room);
         RoomMember leader = RoomMember.createLeaderRoomMember(roomRequest.leaderMemberId(), savedRoom);
         roomMemberRepository.save(leader);
-
-        MSRequest msRequest = roomRequest.msRequest();
-        MemberSchedule memberSchedule = MemberSchedule.of(
-                msRequest.dates(),
-                msRequest.time(),
-                msRequest.name(),
-                savedRoom
-        );
-
-        msRepository.save(memberSchedule);
-        return RoomResponse.of(savedRoom, List.of(leader), List.of(memberSchedule));
+        return savedRoom.getId();
     }
 
     public RoomResponse getRoom(final Long roomId) {
