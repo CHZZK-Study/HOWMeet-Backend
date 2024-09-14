@@ -108,7 +108,7 @@ class RegularAuthControllerTest {
         // given
         final MemberAuthorizeRequest memberAuthorizeRequest = new MemberAuthorizeRequest(providerName);
         final OAuthProvider oAuthProvider = getOAuthProvider(providerName);
-        final OAuthAuthorizePayload oAuthAuthorizePayload = OAuthAuthorizePayload.of(oAuthProvider, URI.create(oAuthProvider.authorizeUrl() + "?client_id=CLIENT_ID&response_type=RESPONSE_TYPE&scope=SCOPE"));
+        final OAuthAuthorizePayload oAuthAuthorizePayload = OAuthAuthorizePayload.of(oAuthProvider, URI.create(oAuthProvider.authorizeUrl() + "?client_id=CLIENT_ID&response_type=RESPONSE_TYPE&scope=SCOPE&redirect_uri=REDIRECT_URL"));
         final MemberAuthorizeResponse memberAuthorizeResponse = MemberAuthorizeResponse.from(oAuthAuthorizePayload);
 
         // when
