@@ -82,7 +82,7 @@ public class OAuthClient {
     private URI getAuthorizeEntryUri(final OAuthProvider oAuthProvider, final MultiValueMap<String, String> queryParams) {
         return UriComponentsBuilder.fromUriString(oAuthProvider.authorizeUrl())
                 .queryParams(queryParams)
-                .build()
+                .build(true)
                 .toUri();
     }
 
