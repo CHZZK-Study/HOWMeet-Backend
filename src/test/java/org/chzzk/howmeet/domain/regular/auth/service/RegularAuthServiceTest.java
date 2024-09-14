@@ -231,6 +231,7 @@ class RegularAuthServiceTest {
                 providerName,
                 "clientId",
                 "clientSecret",
+                "code",
                 "authorizeUrl",
                 "responseType",
                 HttpMethod.GET,
