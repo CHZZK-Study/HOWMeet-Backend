@@ -16,6 +16,7 @@ import org.chzzk.howmeet.global.config.ControllerTest;
 import org.chzzk.howmeet.global.interceptor.AuthenticationInterceptor;
 import org.chzzk.howmeet.global.interceptor.MemberAuthorityInterceptor;
 import org.chzzk.howmeet.global.resolver.AuthPrincipalResolver;
+import org.chzzk.howmeet.infra.oauth.dto.authorize.response.OAuthAuthorizePayload;
 import org.chzzk.howmeet.infra.oauth.model.OAuthAdapter;
 import org.chzzk.howmeet.infra.oauth.model.OAuthProperties;
 import org.chzzk.howmeet.infra.oauth.model.OAuthProvider;
@@ -31,6 +32,8 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+
+import java.net.URI;
 
 import static org.chzzk.howmeet.fixture.MemberFixture.KIM;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,7 +52,6 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -105,8 +107,8 @@ class RegularAuthControllerTest {
     public void authorize(final String providerName) throws Exception {
         // given
         final MemberAuthorizeRequest memberAuthorizeRequest = new MemberAuthorizeRequest(providerName);
-        final OAuthProvider oAuthProvider = getOAuthProvider(providerName);
-        final MemberAuthorizeResponse memberAuthorizeResponse = MemberAuthorizeResponse.from(oAuthProvider);
+        final OAuthAuthorizePayload oAuthAuthorizePayload = getOAuthAuthorizePayload(providerName);
+        final MemberAuthorizeResponse memberAuthorizeResponse = MemberAuthorizeResponse.from(oAuthAuthorizePayload);
 
         // when
         doReturn(memberAuthorizeResponse).when(regularAuthService).authorize(memberAuthorizeRequest);
@@ -127,10 +129,6 @@ class RegularAuthControllerTest {
                         parameterWithName("providerName").description("소셜 이름")
                 ),
                 responseFields(
-                        fieldWithPath("clientId").type(STRING)
-                                .description(providerName + " 클라이언트 ID"),
-                        fieldWithPath("scopes").type(ARRAY)
-                                .description(providerName + " 허용된 리소스 범위"),
                         fieldWithPath("method").type(STRING)
                                 .description(providerName + " 인가 코드 요청 메소드"),
                         fieldWithPath("url")
@@ -249,6 +247,10 @@ class RegularAuthControllerTest {
                         fieldWithPath("accessToken").type(STRING).description("엑세스 토큰")
                 )
         ));
+    }
+
+    private OAuthAuthorizePayload getOAuthAuthorizePayload(final String providerName) {
+        return OAuthAuthorizePayload.of(getOAuthProvider(providerName), URI.create("authorizeUrl"));
     }
 
     private OAuthProvider getOAuthProvider(final String providerName) {
