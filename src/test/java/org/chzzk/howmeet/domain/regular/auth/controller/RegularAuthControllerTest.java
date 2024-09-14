@@ -16,6 +16,7 @@ import org.chzzk.howmeet.global.config.ControllerTest;
 import org.chzzk.howmeet.global.interceptor.AuthenticationInterceptor;
 import org.chzzk.howmeet.global.interceptor.MemberAuthorityInterceptor;
 import org.chzzk.howmeet.global.resolver.AuthPrincipalResolver;
+import org.chzzk.howmeet.infra.oauth.dto.authorize.response.OAuthAuthorizePayload;
 import org.chzzk.howmeet.infra.oauth.model.OAuthAdapter;
 import org.chzzk.howmeet.infra.oauth.model.OAuthProperties;
 import org.chzzk.howmeet.infra.oauth.model.OAuthProvider;
@@ -31,6 +32,8 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+
+import java.net.URI;
 
 import static org.chzzk.howmeet.fixture.MemberFixture.KIM;
 import static org.mockito.ArgumentMatchers.any;
@@ -106,7 +109,8 @@ class RegularAuthControllerTest {
         // given
         final MemberAuthorizeRequest memberAuthorizeRequest = new MemberAuthorizeRequest(providerName);
         final OAuthProvider oAuthProvider = getOAuthProvider(providerName);
-        final MemberAuthorizeResponse memberAuthorizeResponse = MemberAuthorizeResponse.from(oAuthProvider);
+        final OAuthAuthorizePayload oAuthAuthorizePayload = getoAuthAuthorizePayload(oAuthProvider);
+        final MemberAuthorizeResponse memberAuthorizeResponse = MemberAuthorizeResponse.from(oAuthAuthorizePayload);
 
         // when
         doReturn(memberAuthorizeResponse).when(regularAuthService).authorize(memberAuthorizeRequest);
@@ -249,6 +253,13 @@ class RegularAuthControllerTest {
                         fieldWithPath("accessToken").type(STRING).description("엑세스 토큰")
                 )
         ));
+    }
+
+    private OAuthAuthorizePayload getoAuthAuthorizePayload(final OAuthProvider oAuthProvider) {
+        return OAuthAuthorizePayload.of(oAuthProvider, URI.create(
+                oAuthProvider.authorizeUrl() + "?client_id=CLIENT_ID&response_type=RESPONSE_TYPE&scope=SCOPE" +
+                        "&redirect_uri=ENCODED_REDIRECT_URI")
+        );
     }
 
     private OAuthProvider getOAuthProvider(final String providerName) {
