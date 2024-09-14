@@ -188,7 +188,6 @@ public class GSRecordServiceTest {
         assertEquals(GUEST_NOT_FOUND.getStatus(), exception.getStatus());
     }
 
-
     @Test
     @DisplayName("GuestScheduleRecord 조회")
     public void getMSRecord() {
