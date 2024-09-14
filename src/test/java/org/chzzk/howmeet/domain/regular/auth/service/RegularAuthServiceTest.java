@@ -231,6 +231,7 @@ class RegularAuthServiceTest {
                 providerName,
                 "clientId",
                 "clientSecret",
+                "code",
                 "authorizeUrl",
                 HttpMethod.GET,
                 List.of("profile", "image"),
