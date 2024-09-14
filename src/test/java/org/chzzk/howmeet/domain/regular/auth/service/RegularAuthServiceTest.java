@@ -233,7 +233,6 @@ class RegularAuthServiceTest {
                 "clientSecret",
                 "code",
                 "authorizeUrl",
-                "responseType",
                 HttpMethod.GET,
                 List.of("profile", "image"),
                 "redirectUrl",
