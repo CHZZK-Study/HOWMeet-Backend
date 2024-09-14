@@ -52,6 +52,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -108,7 +109,7 @@ class RegularAuthControllerTest {
         // given
         final MemberAuthorizeRequest memberAuthorizeRequest = new MemberAuthorizeRequest(providerName);
         final OAuthProvider oAuthProvider = getOAuthProvider(providerName);
-        final OAuthAuthorizePayload oAuthAuthorizePayload = OAuthAuthorizePayload.of(oAuthProvider, URI.create(oAuthProvider.authorizeUrl() + "?client_id=CLIENT_ID&response_type=RESPONSE_TYPE&scope=SCOPE"));
+        final OAuthAuthorizePayload oAuthAuthorizePayload = getoAuthAuthorizePayload(oAuthProvider);
         final MemberAuthorizeResponse memberAuthorizeResponse = MemberAuthorizeResponse.from(oAuthAuthorizePayload);
 
         // when
@@ -130,6 +131,10 @@ class RegularAuthControllerTest {
                         parameterWithName("providerName").description("소셜 이름")
                 ),
                 responseFields(
+                        fieldWithPath("clientId").type(STRING)
+                                .description(providerName + " 클라이언트 ID"),
+                        fieldWithPath("scopes").type(ARRAY)
+                                .description(providerName + " 허용된 리소스 범위"),
                         fieldWithPath("method").type(STRING)
                                 .description(providerName + " 인가 코드 요청 메소드"),
                         fieldWithPath("url")
@@ -248,6 +253,13 @@ class RegularAuthControllerTest {
                         fieldWithPath("accessToken").type(STRING).description("엑세스 토큰")
                 )
         ));
+    }
+
+    private OAuthAuthorizePayload getoAuthAuthorizePayload(final OAuthProvider oAuthProvider) {
+        return OAuthAuthorizePayload.of(oAuthProvider, URI.create(
+                oAuthProvider.authorizeUrl() + "?client_id=CLIENT_ID&response_type=RESPONSE_TYPE&scope=SCOPE" +
+                        "&redirect_uri=ENCODED_REDIRECT_URI")
+        );
     }
 
     private OAuthProvider getOAuthProvider(final String providerName) {
