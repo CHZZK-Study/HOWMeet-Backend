@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface MSRepository extends JpaRepository<MemberSchedule, Long> {
-    Optional<MemberSchedule> findByIdAndRoom(Long id, Room room);
+    Optional<MemberSchedule> findByIdAndRoomId(Long msId, Long roomId);
 }
