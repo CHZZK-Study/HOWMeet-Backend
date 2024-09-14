@@ -33,24 +33,20 @@ public class MSService {
     }
 
     public MSResponse getMemberSchedule(final Long roomId, final Long msId) {
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new MSException(ROOM_NOT_FOUND));
-
-        MemberSchedule memberSchedule = findMemberScheduleByIdAndRoom(msId, room);
+        MemberSchedule memberSchedule = findMemberScheduleByRoomIdAndMsId(roomId, msId);
         return MSResponse.from(memberSchedule);
     }
 
     @Transactional
     public void deleteMemberSchedule(final Long roomId, final Long msId) {
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new MSException(ROOM_NOT_FOUND));
-        MemberSchedule memberSchedule = findMemberScheduleByIdAndRoom(msId, room);
+        MemberSchedule memberSchedule = findMemberScheduleByRoomIdAndMsId(roomId, msId);
         memberSchedule.deactivate();
         msRepository.save(memberSchedule);
     }
 
-    private MemberSchedule findMemberScheduleByIdAndRoom(Long memberScheduleId, Room room) {
-        return msRepository.findByIdAndRoom(memberScheduleId, room)
+    private MemberSchedule findMemberScheduleByRoomIdAndMsId(Long roomId, Long msId) {
+        return msRepository.findByIdAndRoomId(msId, roomId)
                 .orElseThrow(() -> new MSException(SCHEDULE_NOT_FOUND));
     }
 }
+
