@@ -107,7 +107,8 @@ class RegularAuthControllerTest {
     public void authorize(final String providerName) throws Exception {
         // given
         final MemberAuthorizeRequest memberAuthorizeRequest = new MemberAuthorizeRequest(providerName);
-        final OAuthAuthorizePayload oAuthAuthorizePayload = getOAuthAuthorizePayload(providerName);
+        final OAuthProvider oAuthProvider = getOAuthProvider(providerName);
+        final OAuthAuthorizePayload oAuthAuthorizePayload = OAuthAuthorizePayload.of(oAuthProvider, URI.create(oAuthProvider.authorizeUrl() + "?client_id=CLIENT_ID&response_type=RESPONSE_TYPE&scope=SCOPE"));
         final MemberAuthorizeResponse memberAuthorizeResponse = MemberAuthorizeResponse.from(oAuthAuthorizePayload);
 
         // when
@@ -247,10 +248,6 @@ class RegularAuthControllerTest {
                         fieldWithPath("accessToken").type(STRING).description("엑세스 토큰")
                 )
         ));
-    }
-
-    private OAuthAuthorizePayload getOAuthAuthorizePayload(final String providerName) {
-        return OAuthAuthorizePayload.of(getOAuthProvider(providerName), URI.create("authorizeUrl"));
     }
 
     private OAuthProvider getOAuthProvider(final String providerName) {
