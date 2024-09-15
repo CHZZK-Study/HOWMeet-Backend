@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.regular.room.dto.*;
 import org.chzzk.howmeet.domain.regular.room.service.RoomMemberService;
 import org.chzzk.howmeet.domain.regular.room.service.RoomService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,9 +39,14 @@ public class RoomController {
     }
 
     @GetMapping("/joined/{memberId}")
-    public ResponseEntity<List<RoomListResponse>> getJoinedRooms(@PathVariable Long memberId) {
-        List<RoomListResponse> joinedRooms = roomService.getJoinedRooms(memberId);
-        return ResponseEntity.ok(joinedRooms);
+    public ResponseEntity<?> getJoinedRooms(
+            @PathVariable Long memberId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        PaginatedResponse response = roomService.getJoinedRooms(memberId, pageable);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{roomId}")

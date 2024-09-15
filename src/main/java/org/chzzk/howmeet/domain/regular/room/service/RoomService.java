@@ -3,6 +3,7 @@ package org.chzzk.howmeet.domain.regular.room.service;
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.regular.member.dto.nickname.dto.MemberNicknameDto;
 import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
+import org.chzzk.howmeet.domain.regular.room.dto.PaginatedResponse;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomListResponse;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomResponse;
@@ -15,6 +16,8 @@ import org.chzzk.howmeet.domain.regular.room.util.RoomListMapper;
 import org.chzzk.howmeet.domain.regular.schedule.dto.MSRequest;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 import org.chzzk.howmeet.domain.regular.schedule.repository.MSRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,12 +51,19 @@ public class RoomService {
         return RoomResponse.of(room, roomMembers, memberSchedules);
     }
 
-    public List<RoomListResponse> getJoinedRooms(final Long memberId) {
-        List<RoomMember> roomMembers = roomMemberRepository.findByMemberId(memberId);
+    public PaginatedResponse getJoinedRooms(final Long memberId, final Pageable pageable) {
+        Page<RoomMember> roomMembersPage = roomMemberRepository.findByMemberId(memberId, pageable);
 
-        return roomMembers.stream()
+        List<RoomListResponse> roomListResponses = roomMembersPage.getContent().stream()
                 .map(this::mapToRoomListResponse)
                 .collect(Collectors.toList());
+
+        return PaginatedResponse.of(
+                roomListResponses,
+                pageable.getPageNumber(),
+                roomMembersPage.getTotalPages(),
+                roomMembersPage.hasNext()
+        );
     }
 
     @Transactional
@@ -68,7 +78,7 @@ public class RoomService {
     }
 
     @Transactional
-    public void deleteRoom(Long roomId) {
+    public void deleteRoom(final Long roomId) {
         Room room = getRoomById(roomId);
         roomRepository.delete(room);
     }
