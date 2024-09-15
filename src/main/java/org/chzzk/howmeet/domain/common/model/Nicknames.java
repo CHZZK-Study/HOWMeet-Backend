@@ -33,10 +33,6 @@ public class Nicknames {
         this.nicknames.addAll(nickNameSet);
     }
 
-    public List<Nickname> getNicknames() {
-        return List.copyOf(nicknames);
-    }
-
     public static Nicknames convertNicknameProvidersList(final List<? extends NicknameProvider> nicknameProviders) {
         Nicknames nicknames = Nicknames.create();
 
