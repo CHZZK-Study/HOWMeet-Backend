@@ -118,8 +118,6 @@ public class GSRecordServiceTest {
         Guest guest = GuestFixture.KIM.생성();
         GuestSchedule guestSchedule = GSFixture.createGuestScheduleA();
         List<LocalDateTime> selectTimes = Arrays.asList(
-//                LocalDateTime.of(2023, 1, 1, 10, 30),
-//                LocalDateTime.of(2023, 1, 1, 9, 0),
                 LocalDateTime.of(2023, 1, 1, 17, 00)
         );
 
@@ -203,6 +201,7 @@ public class GSRecordServiceTest {
 
         when(tmpGuestRepository.findByGuestScheduleId(gsId)).thenReturn(guestList);
         when(gsRecordRepository.findByGuestScheduleId(gsId)).thenReturn(gsRecords);
+        when(gsRepository.findById(gsId)).thenReturn(Optional.of(guestSchedule));
 
         GSRecordGetResponse gsRecordGetResponse = gsRecordService.getGSRecord(gsId);
 
