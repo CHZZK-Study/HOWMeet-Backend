@@ -9,7 +9,10 @@ import org.chzzk.howmeet.domain.temporary.record.service.GSRecordService;
 import org.chzzk.howmeet.fixture.GSRecordFixture;
 import org.chzzk.howmeet.fixture.GuestFixture;
 import org.chzzk.howmeet.global.config.ControllerTest;
+import org.chzzk.howmeet.global.interceptor.AuthenticationInterceptor;
+import org.chzzk.howmeet.global.interceptor.GuestAuthorityInterceptor;
 import org.chzzk.howmeet.global.resolver.AuthPrincipalResolver;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -44,15 +51,25 @@ public class GSRecordControllerTest {
     private GSRecordService gsRecordService;
 
     @MockBean
-    private AuthPrincipalResolver resolver;
+    private AuthenticationInterceptor authenticationInterceptor;
 
-    void setup() {
-        createAuthPrincipal();
-    }
+    @MockBean
+    private GuestAuthorityInterceptor guestAuthorityInterceptor;
 
-    private AuthPrincipal createAuthPrincipal() {
-        Guest guest = GuestFixture.KIM.생성();
-        return new AuthPrincipal(1L, guest.getNickname().getValue(), guest.getRole());
+    @MockBean
+    private AuthPrincipalResolver authPrincipalResolver;
+
+    private final Guest guest = GuestFixture.KIM.생성();
+
+    private final AuthPrincipal authPrincipal = AuthPrincipal.from(guest);
+    private final String accessToken = "accessTokenValue";
+
+    @BeforeEach
+    public void setUp() throws Exception {
+        doReturn(true).when(authenticationInterceptor).preHandle(any(), any(), any());
+        doReturn(true).when(guestAuthorityInterceptor).preHandle(any(), any(), any());
+        doReturn(true).when(authPrincipalResolver).supportsParameter(any());
+        doReturn(authPrincipal).when(authPrincipalResolver).resolveArgument(any(), any(), any(), any());
     }
 
     @Test
@@ -67,10 +84,10 @@ public class GSRecordControllerTest {
 
         ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.post("/gs-record")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer " + accessToken)
                 .content(objectMapper.writeValueAsString(request))
                 .principal(() -> String.valueOf(authPrincipal))
         );
-
 
         // then
         result.andExpect(status().isCreated());
@@ -79,6 +96,9 @@ public class GSRecordControllerTest {
         result.andDo(document("비회원 일정 조율: 일정 생성",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
+                requestHeaders(
+                        headerWithName(AUTHORIZATION).description("엑세스 토큰")
+                ),
                 requestFields(
                         fieldWithPath("gsId").type(NUMBER).description("일정 ID"),
                         fieldWithPath("selectTime[]").type(ARRAY).description("선택한 시간 목록")
@@ -99,6 +119,7 @@ public class GSRecordControllerTest {
         // when
         ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.get("/gs-record/{gsId}", gsId)
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(AUTHORIZATION, "Bearer " + accessToken)
         );
 
         // then
@@ -108,6 +129,9 @@ public class GSRecordControllerTest {
         result.andDo(document("비회원 일정 조율: 회원 일정 조회",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
+                requestHeaders(
+                        headerWithName(AUTHORIZATION).description("엑세스 토큰")
+                ),
                 pathParameters(
                         parameterWithName("gsId").description("일정 ID")
                 ),
