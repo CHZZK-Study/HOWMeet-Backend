@@ -7,7 +7,6 @@ import static org.chzzk.howmeet.domain.regular.schedule.exception.MSErrorCode.SC
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.AssertionErrors.assertFalse;
@@ -114,8 +113,6 @@ public class MSRecordServiceTest {
         MemberSchedule memberSchedule = MSFixture.createMemberScheduleA(RoomFixture.createRoomA());
         List<LocalDateTime> selectTimes = Arrays.asList(
                 LocalDateTime.of(2023, 1, 1, 8, 30)
-//                LocalDateTime.of(2023, 1, 1, 11, 0),
-//                LocalDateTime.of(2020, 1, 1, 11, 30)
         );
 
         MSRecordPostRequest msRecordPostRequest = new MSRecordPostRequest(memberSchedule.getId(), selectTimes);
@@ -176,6 +173,27 @@ public class MSRecordServiceTest {
     }
 
     @Test
+    @DisplayName("존재하지 않는 일정으로 예외 발생")
+    public void postMSRecord_InvalidSchedule() {
+        Member member = MemberFixture.KIM.생성();
+        List<LocalDateTime> selectTimes = Arrays.asList(
+                LocalDateTime.of(2023, 1, 1, 9, 30)
+        );
+        MSRecordPostRequest msRecordPostRequest = new MSRecordPostRequest(999L, selectTimes); // 존재하지 않는 일정 ID
+        AuthPrincipal authPrincipal = new AuthPrincipal(1L, member.getNickname().getValue(), member.getRole());
+
+        // 일정이 존재하지 않음을 시뮬레이션
+        when(msRepository.findById(msRecordPostRequest.msId())).thenReturn(Optional.empty());
+
+        MSException exception = assertThrows(MSException.class, () -> {
+            msRecordService.postMSRecord(msRecordPostRequest, authPrincipal);
+        });
+
+        assertEquals(SCHEDULE_NOT_FOUND.getMessage(), exception.getMessage());
+        assertEquals(SCHEDULE_NOT_FOUND.getStatus(), exception.getStatus());
+    }
+
+    @Test
     @DisplayName("MemberScheduleRecord 조회")
     public void getMSRecord() {
         Long msId = 1L;
@@ -209,10 +227,5 @@ public class MSRecordServiceTest {
         assertFalse("선택 시간 목록이 비어있습니다.", msRecordGetResponse.time().isEmpty());
 
     }
-
-    // 존재하지 않는 룸
-    // 존재하지 않는 일정
-    // 리더 권한이 없는 유저의 get 조회
-
 
 }
