@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.infra.oauth.util;
+package org.chzzk.howmeet.infra.oauth.util.converter;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

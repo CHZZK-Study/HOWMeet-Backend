@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.infra.oauth.dto.authorize.request.OAuthAuthorizeRequest;
 import org.chzzk.howmeet.infra.oauth.dto.token.request.OAuthTokenRequest;
 import org.chzzk.howmeet.infra.oauth.model.OAuthProvider;
-import org.chzzk.howmeet.infra.oauth.util.MultiValueMapConverter;
 import org.chzzk.howmeet.infra.oauth.util.mapper.OAuthObjectMapperFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
