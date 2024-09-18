@@ -31,7 +31,7 @@ public class OAuthProperties {
         private String id;
         private String secret;
         private String redirectUrl;
-        private Set<String> scopes;
+        private Set<String> scope;
     }
 
     @Getter
