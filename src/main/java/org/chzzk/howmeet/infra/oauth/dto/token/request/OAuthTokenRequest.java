@@ -8,6 +8,6 @@ public record OAuthTokenRequest(String grant_type,
                                 String code,
                                 String client_secret) {
     public static OAuthTokenRequest of(final OAuthProvider provider, final String code) {
-        return new OAuthTokenRequest(provider.grantType(), provider.clientId(), provider.redirectUrl(), code, provider.clientSecret());
+        return new OAuthTokenRequest(provider.grantType(), provider.clientId(), provider.redirectUri(), code, provider.clientSecret());
     }
 }

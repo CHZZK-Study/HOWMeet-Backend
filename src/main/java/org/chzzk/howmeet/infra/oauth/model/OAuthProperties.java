@@ -30,7 +30,7 @@ public class OAuthProperties {
     public static class Client {
         private String id;
         private String secret;
-        private String redirectUrl;
+        private String redirectUri;
         private Set<String> scope;
     }
 
