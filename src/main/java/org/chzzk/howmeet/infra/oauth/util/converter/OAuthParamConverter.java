@@ -14,12 +14,12 @@ import org.springframework.util.MultiValueMap;
 public class OAuthParamConverter {
     public MultiValueMap<String, String> convertToAuthorizeParams(final OAuthProvider oAuthProvider) {
         final ObjectMapper objectMapper = OAuthObjectMapperFactory.getFrom(oAuthProvider.name());
-        return MultiValueMapConverter.convertFrom(objectMapper, OAuthAuthorizeRequest.from(oAuthProvider));
+        return MultiValueMapConverter.convertFrom(objectMapper, OAuthAuthorizeRequest.from(oAuthProvider), TransformationStrategy.ENCODE);
     }
 
     public MultiValueMap<String, String> convertToTokenParams(final OAuthProvider oAuthProvider,
                                                               final String code) {
         final ObjectMapper objectMapper = OAuthObjectMapperFactory.getFrom(oAuthProvider.name());
-        return MultiValueMapConverter.convertFrom(objectMapper, OAuthTokenRequest.of(oAuthProvider, code));
+        return MultiValueMapConverter.convertFrom(objectMapper, OAuthTokenRequest.of(oAuthProvider, code), TransformationStrategy.DECODE);
     }
 }
