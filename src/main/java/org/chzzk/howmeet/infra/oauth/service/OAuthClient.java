@@ -72,7 +72,7 @@ public class OAuthClient {
                 .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> tokenIssueFailHandler.handle5xxError(clientResponse, provider))
                 .bodyToMono(OAuthTokenResponse.class);
     }
-
+  
     private boolean failedTokenIssue(final OAuthTokenResponse oAuthTokenResponse) {
         return Objects.isNull(oAuthTokenResponse) || StringUtils.isNullOrEmpty(oAuthTokenResponse.access_token());
     }
