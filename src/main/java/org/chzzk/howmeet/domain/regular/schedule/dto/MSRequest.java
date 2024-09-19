@@ -7,7 +7,7 @@ import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 
 import java.util.List;
 
-public record MSRequest(List<String> dates, ScheduleTime time, ScheduleName name, Long roomId) {
+public record MSRequest(List<String> dates, ScheduleTime time, ScheduleName name) {
     public MemberSchedule toEntity(final Room room) {
         return MemberSchedule.of(dates, time, name, room);
     }
