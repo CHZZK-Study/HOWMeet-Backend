@@ -1,17 +1,17 @@
 package org.chzzk.howmeet.domain.regular.room.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.chzzk.howmeet.domain.regular.room.dto.*;
-import org.chzzk.howmeet.domain.regular.room.entity.Room;
-import org.chzzk.howmeet.domain.regular.room.service.RoomMemberService;
+import org.chzzk.howmeet.domain.regular.room.dto.PaginatedResponse;
+import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
+import org.chzzk.howmeet.domain.regular.room.dto.RoomResponse;
 import org.chzzk.howmeet.domain.regular.room.service.RoomService;
 import org.chzzk.howmeet.fixture.RoomFixture;
-import org.chzzk.howmeet.fixture.RoomMemberFixture;
 import org.chzzk.howmeet.global.config.ControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,7 +21,6 @@ import java.util.List;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -50,7 +49,7 @@ public class RoomControllerTest {
         RoomRequest roomRequest = RoomFixture.createRoomRequestA();
         RoomResponse roomResponse = RoomFixture.createRoomResponseA();
 
-        given(roomService.createRoom(any(RoomRequest.class))).willReturn(roomResponse);
+        given(roomService.createRoom(any(RoomRequest.class))).willReturn(roomResponse.roomId());
 
         // when
         ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.post("/room")
@@ -67,11 +66,6 @@ public class RoomControllerTest {
                 preprocessResponse(prettyPrint()),
                 requestFields(
                         fieldWithPath("name").type(STRING).description("방 이름"),
-                        fieldWithPath("msRequest.dates").type(ARRAY).description("일정 날짜 목록"),
-                        fieldWithPath("msRequest.time.startTime").type(STRING).description("일정 시작 시간"),
-                        fieldWithPath("msRequest.time.endTime").type(STRING).description("일정 종료 시간"),
-                        fieldWithPath("msRequest.name.value").type(STRING).description("일정 이름"),
-                        fieldWithPath("msRequest.roomId").type(NUMBER).description("방 ID").optional(),
                         fieldWithPath("leaderMemberId").type(NUMBER).description("리더 멤버 ID")
                 ),
                 responseFields(
@@ -107,11 +101,6 @@ public class RoomControllerTest {
                 ),
                 requestFields(
                         fieldWithPath("name").type(STRING).description("방 이름"),
-                        fieldWithPath("msRequest.dates").type(ARRAY).description("일정 날짜 목록"),
-                        fieldWithPath("msRequest.time.startTime").type(STRING).description("일정 시작 시간"),
-                        fieldWithPath("msRequest.time.endTime").type(STRING).description("일정 종료 시간"),
-                        fieldWithPath("msRequest.name.value").type(STRING).description("일정 이름"),
-                        fieldWithPath("msRequest.roomId").type(NUMBER).description("방 ID").optional(),
                         fieldWithPath("leaderMemberId").type(NUMBER).description("리더 멤버 ID")
                 ),
                 responseFields(
@@ -178,15 +167,19 @@ public class RoomControllerTest {
     void getJoinedRooms() throws Exception {
         // given
         Long memberId = 1L;
-        List<RoomListResponse> joinedRooms = List.of(
-                RoomFixture.createRoomListResponseA(),
-                RoomFixture.createRoomListResponseB()
+        PaginatedResponse paginatedResponse = new PaginatedResponse(
+                List.of(RoomFixture.createRoomListResponseA(), RoomFixture.createRoomListResponseB()),
+                0,
+                1,
+                false
         );
 
-        given(roomService.getJoinedRooms(memberId)).willReturn(joinedRooms);
+        given(roomService.getJoinedRooms(any(Long.class), any(Pageable.class))).willReturn(paginatedResponse);
 
         // when
         ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.get("/room/joined/{memberId}", memberId)
+                .param("page", "0")
+                .param("size", "6")
                 .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -201,16 +194,19 @@ public class RoomControllerTest {
                         parameterWithName("memberId").description("회원 ID")
                 ),
                 responseFields(
-                        fieldWithPath("[].roomId").type(NUMBER).description("방 ID"),
-                        fieldWithPath("[].name").type(STRING).description("방 이름"),
-                        fieldWithPath("[].memberSummary").type(STRING).description("참여 인원 요약"),
-                        fieldWithPath("[].schedules").type(ARRAY).description("일정 목록").optional(),
-                        fieldWithPath("[].schedules[].id").type(NUMBER).description("일정 ID"),
-                        fieldWithPath("[].schedules[].dates").type(ARRAY).description("일정 날짜 목록"),
-                        fieldWithPath("[].schedules[].time.startTime").type(STRING).description("일정 시작 시간"),
-                        fieldWithPath("[].schedules[].time.endTime").type(STRING).description("일정 종료 시간"),
-                        fieldWithPath("[].schedules[].name.value").type(STRING).description("일정 이름"),
-                        fieldWithPath("[].schedules[].status").type(STRING).description("일정 상태")
+                        fieldWithPath("roomList[].roomId").type(NUMBER).description("방 ID"),
+                        fieldWithPath("roomList[].name").type(STRING).description("방 이름"),
+                        fieldWithPath("roomList[].memberSummary").type(STRING).description("참여 인원 요약").optional(),
+                        fieldWithPath("roomList[].schedules").type(ARRAY).description("일정 목록").optional(),
+                        fieldWithPath("roomList[].schedules[].id").type(NUMBER).description("일정 ID"),
+                        fieldWithPath("roomList[].schedules[].dates").type(ARRAY).description("일정 날짜 목록"),
+                        fieldWithPath("roomList[].schedules[].time.startTime").type(STRING).description("일정 시작 시간"),
+                        fieldWithPath("roomList[].schedules[].time.endTime").type(STRING).description("일정 종료 시간"),
+                        fieldWithPath("roomList[].schedules[].name.value").type(STRING).description("일정 이름"),
+                        fieldWithPath("roomList[].schedules[].status").type(STRING).description("일정 상태"),
+                        fieldWithPath("currentPage").type(NUMBER).description("현재 페이지 번호"),
+                        fieldWithPath("totalPages").type(NUMBER).description("총 페이지 수"),
+                        fieldWithPath("hasNextPage").type(BOOLEAN).description("다음 페이지 여부")
                 )
         ));
     }

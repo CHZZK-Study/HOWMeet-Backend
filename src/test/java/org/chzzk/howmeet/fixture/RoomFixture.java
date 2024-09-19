@@ -57,7 +57,6 @@ public enum RoomFixture {
     public static RoomRequest createRoomRequestA() {
         return new RoomRequest(
                 RoomName.from(ROOM_A.name),
-                MSFixture.createMSRequestA(),
                 1L
         );
     }
@@ -65,7 +64,6 @@ public enum RoomFixture {
     public static RoomRequest createRoomRequestB() {
         return new RoomRequest(
                 RoomName.from(ROOM_B.name),
-                MSFixture.createMSRequestB(),
                 1L
         );
     }
