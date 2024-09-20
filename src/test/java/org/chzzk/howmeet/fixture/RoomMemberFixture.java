@@ -25,7 +25,7 @@ public enum RoomMemberFixture {
     }
 
     public RoomMemberRequest createRequest(Room room) {
-        return new RoomMemberRequest(memberId, room.getId(), isLeader);
+        return new RoomMemberRequest(memberId, isLeader);
     }
 
     public RoomMemberResponse createResponse(Room room, String nickname) {

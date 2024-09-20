@@ -130,7 +130,6 @@ class RoomMemberControllerTest {
                 ),
                 requestFields(
                         fieldWithPath("[].memberId").type(NUMBER).description("멤버 ID"),
-                        fieldWithPath("[].roomId").type(NUMBER).description("방 ID"),
                         fieldWithPath("[].isLeader").type(BOOLEAN).description("리더 여부")
                 )
         ));
