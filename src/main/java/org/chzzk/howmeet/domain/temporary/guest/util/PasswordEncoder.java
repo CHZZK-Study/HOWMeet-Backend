@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.domain.temporary.auth.util;
+package org.chzzk.howmeet.domain.temporary.guest.util;
 
 public interface PasswordEncoder {
     String encode(final String password);

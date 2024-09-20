@@ -1,9 +1,9 @@
-package org.chzzk.howmeet.domain.temporary.auth.service;
+package org.chzzk.howmeet.domain.temporary.guest.service;
 
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.model.Nickname;
-import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
-import org.chzzk.howmeet.domain.temporary.auth.repository.GuestRepository;
+import org.chzzk.howmeet.domain.temporary.guest.entity.Guest;
+import org.chzzk.howmeet.domain.temporary.guest.repository.GuestRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

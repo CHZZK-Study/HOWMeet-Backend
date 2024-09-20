@@ -3,8 +3,8 @@ package org.chzzk.howmeet.domain.temporary.auth.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.chzzk.howmeet.domain.temporary.auth.dto.login.request.GuestLoginRequest;
 import org.chzzk.howmeet.domain.temporary.auth.dto.login.response.GuestLoginResponse;
-import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
-import org.chzzk.howmeet.domain.temporary.auth.service.GuestService;
+import org.chzzk.howmeet.domain.temporary.auth.service.TemporaryAuthService;
+import org.chzzk.howmeet.domain.temporary.guest.entity.Guest;
 import org.chzzk.howmeet.global.config.ControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ControllerTest
-class GuestControllerTest {
+class TemporaryAuthControllerTest {
     @Autowired
     MockMvc mockMvc;
 
@@ -37,7 +37,7 @@ class GuestControllerTest {
     ObjectMapper objectMapper;
 
     @MockBean
-    GuestService guestService;
+    TemporaryAuthService temporaryAuthService;
 
     String accessToken = "accessToken";
     Long guestScheduleId = 1L;
@@ -53,7 +53,7 @@ class GuestControllerTest {
         final GuestLoginResponse guestLoginResponse = GuestLoginResponse.of(accessToken, guest);
 
         // when
-        doReturn(guestLoginResponse).when(guestService)
+        doReturn(guestLoginResponse).when(temporaryAuthService)
                 .login(guestLoginRequest);
         final ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
