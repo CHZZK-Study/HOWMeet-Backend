@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.global.config;
+package org.chzzk.howmeet.infra.config;
 
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;

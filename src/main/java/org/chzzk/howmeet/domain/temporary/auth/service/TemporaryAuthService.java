@@ -5,14 +5,16 @@ import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.common.model.EncodedPassword;
 import org.chzzk.howmeet.domain.temporary.auth.dto.login.request.GuestLoginRequest;
 import org.chzzk.howmeet.domain.temporary.auth.dto.login.response.GuestLoginResponse;
-import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
-import org.chzzk.howmeet.domain.temporary.auth.util.PasswordEncoder;
+import org.chzzk.howmeet.domain.temporary.guest.entity.Guest;
+import org.chzzk.howmeet.domain.temporary.guest.util.PasswordEncoder;
+import org.chzzk.howmeet.domain.temporary.guest.service.GuestFindService;
+import org.chzzk.howmeet.domain.temporary.guest.service.GuestSaveService;
 import org.chzzk.howmeet.domain.common.auth.util.TokenProvider;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class GuestService {
+public class TemporaryAuthService {
     private final GuestFindService guestFindService;
     private final GuestSaveService guestSaveService;
     private final PasswordEncoder passwordEncoder;

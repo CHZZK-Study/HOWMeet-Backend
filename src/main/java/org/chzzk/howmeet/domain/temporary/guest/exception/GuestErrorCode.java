@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.domain.temporary.auth.exception;
+package org.chzzk.howmeet.domain.temporary.guest.exception;
 
 import lombok.Getter;
 import org.chzzk.howmeet.domain.common.error.DomainErrorCode;

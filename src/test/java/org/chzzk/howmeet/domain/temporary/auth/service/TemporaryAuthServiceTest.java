@@ -4,9 +4,11 @@ import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.common.model.EncodedPassword;
 import org.chzzk.howmeet.domain.temporary.auth.dto.login.request.GuestLoginRequest;
 import org.chzzk.howmeet.domain.temporary.auth.dto.login.response.GuestLoginResponse;
-import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
-import org.chzzk.howmeet.domain.temporary.auth.exception.GuestException;
-import org.chzzk.howmeet.domain.temporary.auth.util.PasswordEncoder;
+import org.chzzk.howmeet.domain.temporary.guest.entity.Guest;
+import org.chzzk.howmeet.domain.temporary.guest.exception.GuestException;
+import org.chzzk.howmeet.domain.temporary.guest.service.GuestFindService;
+import org.chzzk.howmeet.domain.temporary.guest.service.GuestSaveService;
+import org.chzzk.howmeet.domain.temporary.guest.util.PasswordEncoder;
 import org.chzzk.howmeet.domain.common.auth.util.TokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,15 +21,15 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.INVALID_PASSWORD;
-import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.NOT_MATCHED_PASSWORD;
+import static org.chzzk.howmeet.domain.temporary.guest.exception.GuestErrorCode.INVALID_PASSWORD;
+import static org.chzzk.howmeet.domain.temporary.guest.exception.GuestErrorCode.NOT_MATCHED_PASSWORD;
 import static org.chzzk.howmeet.fixture.GuestFixture.KIM;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
-class GuestServiceTest {
+class TemporaryAuthServiceTest {
     @Mock
     GuestFindService guestFindService;
 
@@ -44,7 +46,7 @@ class GuestServiceTest {
     TokenProvider tokenProvider;
 
     @InjectMocks
-    GuestService guestService;
+    TemporaryAuthService temporaryAuthService;
 
     Guest guest = KIM.생성();
     EncodedPassword encodedPassword = guest.getPassword();
@@ -69,7 +71,7 @@ class GuestServiceTest {
                 .find(guestLoginRequest.guestScheduleId(), guestLoginRequest.nickname());
         doReturn(accessToken).when(tokenProvider)
                 .createToken(AuthPrincipal.from(guest));
-        final GuestLoginResponse actual = guestService.login(guestLoginRequest);
+        final GuestLoginResponse actual = temporaryAuthService.login(guestLoginRequest);
 
         // then
         assertThat(actual).isEqualTo(expect);
@@ -83,7 +85,7 @@ class GuestServiceTest {
                 .validate(password);
 
         // then
-        assertThatThrownBy(() -> guestService.login(guestLoginRequest))
+        assertThatThrownBy(() -> temporaryAuthService.login(guestLoginRequest))
                 .isInstanceOf(GuestException.class)
                 .hasMessageContaining(INVALID_PASSWORD.getMessage());
     }
@@ -100,7 +102,7 @@ class GuestServiceTest {
                 .matches(password, encodedPassword.getValue());
 
         // then
-        assertThatThrownBy(() -> guestService.login(guestLoginRequest))
+        assertThatThrownBy(() -> temporaryAuthService.login(guestLoginRequest))
                 .isInstanceOf(GuestException.class)
                 .hasMessageContaining(NOT_MATCHED_PASSWORD.getMessage());
     }
@@ -124,7 +126,7 @@ class GuestServiceTest {
                         .createToken(AuthPrincipal.from(guest));
         doReturn(guest).when(guestSaveService)
                 .save(guestLoginRequest.guestScheduleId(), guestLoginRequest.nickname(), encodedPassword);
-        final GuestLoginResponse actual = guestService.login(guestLoginRequest);
+        final GuestLoginResponse actual = temporaryAuthService.login(guestLoginRequest);
 
         // then
         assertThat(actual).isEqualTo(expect);

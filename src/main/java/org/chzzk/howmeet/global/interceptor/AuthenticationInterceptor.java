@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.chzzk.howmeet.domain.common.auth.exception.AuthenticationException;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
-import org.chzzk.howmeet.domain.temporary.auth.repository.GuestRepository;
+import org.chzzk.howmeet.domain.temporary.guest.repository.GuestRepository;
 import org.chzzk.howmeet.domain.common.auth.util.TokenProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

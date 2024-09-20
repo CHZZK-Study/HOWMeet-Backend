@@ -1,7 +1,7 @@
-package org.chzzk.howmeet.domain.temporary.auth.repository;
+package org.chzzk.howmeet.domain.temporary.guest.repository;
 
 import org.chzzk.howmeet.domain.common.model.Nickname;
-import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
+import org.chzzk.howmeet.domain.temporary.guest.entity.Guest;
 import org.chzzk.howmeet.global.config.RepositoryTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;

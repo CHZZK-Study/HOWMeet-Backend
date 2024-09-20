@@ -1,25 +1,21 @@
 package org.chzzk.howmeet.fixture;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.chzzk.howmeet.domain.common.model.Nickname;
+import org.chzzk.howmeet.domain.common.model.Nicknames;
+import org.chzzk.howmeet.domain.common.model.SelectionDetail;
+import org.chzzk.howmeet.domain.temporary.guest.entity.Guest;
+import org.chzzk.howmeet.domain.temporary.record.dto.get.response.GSRecordGetResponse;
+import org.chzzk.howmeet.domain.temporary.record.dto.post.request.GSRecordPostRequest;
+import org.chzzk.howmeet.domain.temporary.record.entity.GuestScheduleRecord;
+import org.chzzk.howmeet.domain.temporary.schedule.entity.GuestSchedule;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.chzzk.howmeet.domain.common.model.EncodedPassword;
-import org.chzzk.howmeet.domain.common.model.Nickname;
-import org.chzzk.howmeet.domain.common.model.Nicknames;
-import org.chzzk.howmeet.domain.common.model.SelectionDetail;
-import org.chzzk.howmeet.domain.regular.record.dto.get.MSRecordGetResponse;
-import org.chzzk.howmeet.domain.regular.record.dto.post.MSRecordPostRequest;
-import org.chzzk.howmeet.domain.regular.room.model.RoomName;
-import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
-import org.chzzk.howmeet.domain.temporary.record.dto.get.response.GSRecordGetResponse;
-import org.chzzk.howmeet.domain.temporary.record.dto.post.request.GSRecordPostRequest;
-import org.chzzk.howmeet.domain.temporary.record.entity.GuestScheduleRecord;
-import org.chzzk.howmeet.domain.temporary.schedule.entity.GuestSchedule;
+
+import static org.mockito.Mockito.mock;
 
 public enum GSRecordFixture {
 
