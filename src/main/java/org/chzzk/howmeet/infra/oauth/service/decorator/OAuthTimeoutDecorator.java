@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.infra.oauth.service;
+package org.chzzk.howmeet.infra.oauth.service.decorator;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
