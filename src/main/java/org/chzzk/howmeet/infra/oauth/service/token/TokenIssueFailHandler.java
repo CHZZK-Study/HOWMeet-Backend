@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.infra.oauth.service;
+package org.chzzk.howmeet.infra.oauth.service.token;
 
 import org.chzzk.howmeet.infra.oauth.exception.OAuthErrorResponseFactory;
 import org.chzzk.howmeet.infra.oauth.exception.OAuthServerException;
