@@ -113,7 +113,6 @@ public class MSRecordService {
 
     public MSRecordGetResponse getMSRecord(final Long roomId, final Long msId,
             final AuthPrincipal authPrincipal) {
-        checkLeaderAuthority(authPrincipal.id(), roomId);
 
         List<Member> memberList = findMemberByRoomId(roomId);
         Room room = findRoomByRoomId(roomId);
