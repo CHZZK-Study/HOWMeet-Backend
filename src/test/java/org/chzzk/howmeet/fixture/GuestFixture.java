@@ -1,8 +1,8 @@
 package org.chzzk.howmeet.fixture;
 
 import org.chzzk.howmeet.domain.common.model.EncodedPassword;
-import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.chzzk.howmeet.domain.temporary.guest.entity.Guest;
 
 public enum GuestFixture {
     KIM("김민우", "qwer1234");

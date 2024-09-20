@@ -4,7 +4,7 @@ package org.chzzk.howmeet.domain.temporary.record.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
+import org.chzzk.howmeet.domain.temporary.guest.entity.Guest;
 import org.chzzk.howmeet.domain.temporary.record.entity.GuestScheduleRecord;
 import org.chzzk.howmeet.domain.temporary.schedule.entity.GuestSchedule;
 import org.chzzk.howmeet.domain.temporary.schedule.repository.GSRepository;

@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.domain.temporary.auth.exception;
+package org.chzzk.howmeet.domain.temporary.guest.exception;
 
 import org.chzzk.howmeet.domain.common.error.DomainException;
 
