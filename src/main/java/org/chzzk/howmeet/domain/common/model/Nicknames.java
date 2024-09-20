@@ -43,7 +43,7 @@ public class Nicknames {
     }
 
     @JsonValue
-    public List<String> getNicknames() {
+    public List<String> getValue() {
         return List.copyOf(nicknames).stream()
                 .map(Nickname::getValue)
                 .collect(Collectors.toList());
