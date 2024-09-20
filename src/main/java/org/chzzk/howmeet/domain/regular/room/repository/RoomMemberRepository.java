@@ -13,4 +13,5 @@ public interface RoomMemberRepository extends JpaRepository<RoomMember, Long> {
     List<RoomMember> findByRoomId(final Long roomId);
     Page<RoomMember> findByMemberId(Long memberId, Pageable pageable);
     Optional<RoomMember> findByRoomIdAndMemberId(@Param("roomId") final Long roomId, @Param("memberId") final Long memberId);
+    boolean existsByRoomIdAndMemberId(Long roomId, Long memberId);
 }
