@@ -1,7 +1,7 @@
 package org.chzzk.howmeet.domain.regular.room.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.chzzk.howmeet.domain.regular.room.dto.PaginatedResponse;
+import org.chzzk.howmeet.domain.regular.room.dto.PageResponse;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomResponse;
 import org.chzzk.howmeet.domain.regular.room.service.RoomService;
@@ -153,14 +153,14 @@ public class RoomControllerTest {
     void getJoinedRooms() throws Exception {
         // given
         Long memberId = 1L;
-        PaginatedResponse paginatedResponse = new PaginatedResponse(
+        PageResponse pageResponse = new PageResponse(
                 List.of(RoomFixture.createRoomListResponseA(), RoomFixture.createRoomListResponseB()),
                 0,
                 1,
                 false
         );
 
-        given(roomService.getJoinedRooms(any(Long.class), any(Pageable.class))).willReturn(paginatedResponse);
+        given(roomService.getJoinedRooms(any(Long.class), any(Pageable.class))).willReturn(pageResponse);
 
         // when
         ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.get("/room/joined/{memberId}", memberId)
