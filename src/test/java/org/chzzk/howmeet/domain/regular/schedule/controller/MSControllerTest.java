@@ -9,16 +9,11 @@ import org.chzzk.howmeet.domain.regular.schedule.service.MSService;
 import org.chzzk.howmeet.fixture.MSFixture;
 import org.chzzk.howmeet.fixture.RoomFixture;
 import org.chzzk.howmeet.global.config.ControllerTest;
-import org.chzzk.howmeet.global.config.WebConfig;
-import org.chzzk.howmeet.global.interceptor.AuthenticationInterceptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
@@ -56,13 +51,13 @@ public class MSControllerTest {
     @DisplayName("회원 일정 생성")
     public void createMemberSchedule() throws Exception {
         // given
-        final MSRequest msRequest = MSFixture.createMSRequestA(1L);
+        final MSRequest msRequest = MSFixture.createMSRequestA();
         final MSResponse expectedResponse = MSFixture.createMSResponseA(RoomFixture.createRoomA());
 
-        given(msService.createMemberSchedule(any(MSRequest.class))).willReturn(expectedResponse);
+        given(msService.createMemberSchedule(any(Long.class), any(MSRequest.class))).willReturn(expectedResponse);
 
         // when
-        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.post("/member-schedule")
+        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.post("/room/{roomId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(msRequest))
         );
@@ -74,20 +69,14 @@ public class MSControllerTest {
         resultActions.andDo(document("회원 일정 생성",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
+                pathParameters(
+                        parameterWithName("roomId").description("룸 ID")
+                ),
                 requestFields(
                         fieldWithPath("dates").type(ARRAY).description("회원 일정 날짜 목록"),
                         fieldWithPath("time.startTime").type(STRING).description("회원 일정 시작 시간"),
                         fieldWithPath("time.endTime").type(STRING).description("회원 일정 종료 시간"),
-                        fieldWithPath("name.value").type(STRING).description("회원 일정 이름"),
-                        fieldWithPath("roomId").type(NUMBER).description("룸 ID")
-                ),
-                responseFields(
-                        fieldWithPath("id").type(NUMBER).description("회원 일정 ID"),
-                        fieldWithPath("name.value").type(STRING).description("회원 일정 이름"),
-                        fieldWithPath("dates").type(ARRAY).description("회원 일정 날짜 목록"),
-                        fieldWithPath("time.startTime").type(STRING).description("회원 일정 시작 시간"),
-                        fieldWithPath("time.endTime").type(STRING).description("회원 일정 종료 시간"),
-                        fieldWithPath("status").type(STRING).description("회원 일정 상태")
+                        fieldWithPath("name.value").type(STRING).description("회원 일정 이름")
                 )
         ));
     }
@@ -98,10 +87,10 @@ public class MSControllerTest {
         // given
         final MSResponse expectedResponse = MSFixture.createMSResponseA(RoomFixture.createRoomA());
         final MemberSchedule memberSchedule = MSFixture.createMemberScheduleA(RoomFixture.createRoomA());
-        given(msService.getMemberSchedule(memberSchedule.getId())).willReturn(expectedResponse);
+        given(msService.getMemberSchedule(any(Long.class), any(Long.class))).willReturn(expectedResponse);
 
         // when
-        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.get("/member-schedule/{memberScheduleId}", memberSchedule.getId())
+        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.get("/room/{roomId}/{memberScheduleId}", 1L, memberSchedule.getId())
                 .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -113,6 +102,7 @@ public class MSControllerTest {
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 pathParameters(
+                        parameterWithName("roomId").description("룸 ID"),
                         parameterWithName("memberScheduleId").description("회원 일정 ID")
                 ),
                 responseFields(
@@ -131,10 +121,10 @@ public class MSControllerTest {
     public void deleteMemberSchedule() throws Exception {
         // given
         final MemberSchedule memberSchedule = MSFixture.createMemberScheduleA(RoomFixture.createRoomA());
-        willDoNothing().given(msService).deleteMemberSchedule(memberSchedule.getId());
+        willDoNothing().given(msService).deleteMemberSchedule(any(Long.class), any(Long.class));
 
         // when
-        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.delete("/member-schedule/{memberScheduleId}", memberSchedule.getId())
+        ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.delete("/room/{roomId}/{memberScheduleId}", 1L, memberSchedule.getId())
                 .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -146,6 +136,7 @@ public class MSControllerTest {
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 pathParameters(
+                        parameterWithName("roomId").description("룸 ID"),
                         parameterWithName("memberScheduleId").description("회원 일정 ID")
                 )
         ));
