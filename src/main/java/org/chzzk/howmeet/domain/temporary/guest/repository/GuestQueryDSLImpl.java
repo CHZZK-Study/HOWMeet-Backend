@@ -4,7 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.model.Nickname;
 
-import static org.chzzk.howmeet.domain.temporary.auth.entity.QGuest.guest;
+import static org.chzzk.howmeet.domain.temporary.guest.entity.QGuest.guest;
 
 @RequiredArgsConstructor
 public class GuestQueryDSLImpl implements GuestQueryDSL {
