@@ -1,9 +1,8 @@
-package org.chzzk.howmeet.domain.temporary.auth.service;
+package org.chzzk.howmeet.domain.temporary.guest.service;
 
 import org.chzzk.howmeet.domain.common.model.Nickname;
 import org.chzzk.howmeet.domain.temporary.guest.entity.Guest;
 import org.chzzk.howmeet.domain.temporary.guest.repository.GuestRepository;
-import org.chzzk.howmeet.domain.temporary.guest.service.GuestFindService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

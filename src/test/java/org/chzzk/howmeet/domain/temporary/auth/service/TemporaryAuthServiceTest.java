@@ -8,10 +8,9 @@ import org.chzzk.howmeet.domain.temporary.auth.dto.login.request.GuestLoginReque
 import org.chzzk.howmeet.domain.temporary.auth.dto.login.response.GuestLoginResponse;
 import org.chzzk.howmeet.domain.temporary.guest.entity.Guest;
 import org.chzzk.howmeet.domain.temporary.guest.exception.GuestException;
-import org.chzzk.howmeet.domain.temporary.guest.util.PasswordEncoder;
 import org.chzzk.howmeet.domain.temporary.guest.service.GuestFindService;
 import org.chzzk.howmeet.domain.temporary.guest.service.GuestSaveService;
-import org.chzzk.howmeet.domain.temporary.schedule.repository.GSRepository;
+import org.chzzk.howmeet.domain.temporary.guest.util.PasswordEncoder;
 import org.chzzk.howmeet.global.util.TokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,9 +48,6 @@ class TemporaryAuthServiceTest extends RestDocsTest {
 
     @Mock
     GuestSaveService guestSaveService;
-
-    @Mock
-    GSRepository gsRepository;
 
     @Mock
     PasswordEncoder passwordEncoder;
