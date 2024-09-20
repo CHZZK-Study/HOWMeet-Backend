@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.domain.temporary.auth.repository;
+package org.chzzk.howmeet.domain.temporary.guest.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
