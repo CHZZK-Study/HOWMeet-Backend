@@ -2,7 +2,6 @@ package org.chzzk.howmeet.domain.regular.room.service;
 
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.model.Nickname;
-import org.chzzk.howmeet.domain.regular.member.dto.nickname.dto.MemberNicknameDto;
 import org.chzzk.howmeet.domain.regular.member.entity.Member;
 import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
 import org.chzzk.howmeet.domain.regular.room.dto.*;
@@ -12,7 +11,6 @@ import org.chzzk.howmeet.domain.regular.room.exception.RoomException;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomMemberRepository;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomRepository;
 import org.chzzk.howmeet.domain.regular.room.util.RoomListMapper;
-import org.chzzk.howmeet.domain.regular.schedule.dto.MSRequest;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 import org.chzzk.howmeet.domain.regular.schedule.repository.MSRepository;
 import org.springframework.data.domain.Page;
@@ -52,21 +50,21 @@ public class RoomService {
                     Nickname nickname = memberRepository.findById(roomMember.getMemberId())
                             .map(Member::getNickname)
                             .orElse(Nickname.from("Unknown"));
-                    return RoomMemberResponse.from(roomMember, nickname.getValue());
+                    return RoomMemberResponse.of(roomMember, nickname.getValue());
                 })
                 .toList();
         List<MemberSchedule> memberSchedules = room.getSchedules();
         return RoomResponse.of(room, roomMemberResponses, memberSchedules);
     }
 
-    public PaginatedResponse getJoinedRooms(final Long memberId, final Pageable pageable) {
+    public PageResponse getJoinedRooms(final Long memberId, final Pageable pageable) {
         Page<RoomMember> roomMembersPage = roomMemberRepository.findByMemberId(memberId, pageable);
 
         List<RoomListResponse> roomListResponses = roomMembersPage.getContent().stream()
                 .map(this::mapToRoomListResponse)
                 .collect(Collectors.toList());
 
-        return PaginatedResponse.of(
+        return PageResponse.of(
                 roomListResponses,
                 pageable.getPageNumber(),
                 roomMembersPage.getTotalPages(),

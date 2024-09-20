@@ -30,7 +30,7 @@ public enum RoomMemberFixture {
 
     public RoomMemberResponse createResponse(Room room, String nickname) {
         RoomMember roomMember = RoomMember.of(memberId, room, isLeader);
-        return RoomMemberResponse.from(roomMember, nickname);
+        return RoomMemberResponse.of(roomMember, nickname);
     }
 
     public static List<RoomMemberRequest> createRoomMemberRequests(Room room) {
