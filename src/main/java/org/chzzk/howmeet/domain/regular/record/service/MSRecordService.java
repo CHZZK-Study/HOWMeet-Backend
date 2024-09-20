@@ -136,18 +136,6 @@ public class MSRecordService {
                 .orElseThrow(() -> new RoomException(ROOM_NOT_FOUND));
     }
 
-    private void checkLeaderAuthority(final Long memberId, final Long roomId) {
-        Member member = findMemberByMemberId(memberId);
-
-        List<RoomMember> roomMembers = roomMemberRepository.findByRoomId(roomId);
-        RoomMember loginMember = roomMembers.stream().filter(roomMember -> roomMember.getMemberId().equals(memberId))
-                .findFirst().orElseThrow(() -> new RoomException(INVALID_ROOM_MEMBER));
-
-        if (!loginMember.getIsLeader()) {
-            throw new MSRecordException(ROOM_LEADER_UNAUTHORIZED);
-        }
-    }
-
     private List<Member> findMemberByRoomId(final Long roomId) {
         List<RoomMember> roomMembers = roomMemberRepository.findByRoomId(roomId);
         if (roomMembers == null) {
