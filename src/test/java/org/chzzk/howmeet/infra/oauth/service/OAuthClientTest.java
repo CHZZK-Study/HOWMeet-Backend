@@ -2,6 +2,7 @@ package org.chzzk.howmeet.infra.oauth.service;
 
 import org.chzzk.howmeet.infra.oauth.dto.authorize.response.OAuthAuthorizePayload;
 import org.chzzk.howmeet.infra.oauth.dto.token.response.OAuthTokenResponse;
+import org.chzzk.howmeet.infra.oauth.exception.param.OAuthParamException;
 import org.chzzk.howmeet.infra.oauth.fixture.OAuthProviderFixture;
 import org.chzzk.howmeet.infra.oauth.model.OAuthProvider;
 import org.chzzk.howmeet.infra.oauth.model.profile.OAuthProfile;
@@ -25,6 +26,8 @@ import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.chzzk.howmeet.infra.oauth.exception.param.OAuthParamErrorCode.INVALID_AUTHORIZATION_CODE;
+import static org.chzzk.howmeet.infra.oauth.exception.param.OAuthParamErrorCode.INVALID_PROVIDER_NAME;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
@@ -72,7 +75,8 @@ class OAuthClientTest {
     @ValueSource(strings = {"", " "})
     public void getAuthorizePayloadWhenInvalidProviderName(final String providerName) throws Exception {
         assertThatThrownBy(() -> oAuthClient.getAuthorizePayload(providerName))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OAuthParamException.class)
+                .hasMessageContaining(INVALID_PROVIDER_NAME.getMessage());
     }
 
     @ParameterizedTest
@@ -101,10 +105,11 @@ class OAuthClientTest {
     @DisplayName("프로필 조회시 소셜 이름이 공백이나 널이면 예외 발생")
     @NullSource
     @ValueSource(strings = {"", " "})
-    public void getProfileWhenInvalidProviderName(final String code) throws Exception {
-        final String providerName = "naver";
+    public void getProfileWhenInvalidProviderName(final String providerName) throws Exception {
+        final String code = "code";
         assertThatThrownBy(() -> oAuthClient.getProfile(providerName, code))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OAuthParamException.class)
+                .hasMessageContaining(INVALID_PROVIDER_NAME.getMessage());
     }
 
     @ParameterizedTest
@@ -114,7 +119,8 @@ class OAuthClientTest {
     public void getProfileWhenInvalidCode(final String code) throws Exception {
         final String providerName = "naver";
         assertThatThrownBy(() -> oAuthClient.getProfile(providerName, code))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OAuthParamException.class)
+                .hasMessageContaining(INVALID_AUTHORIZATION_CODE.getMessage());
     }
 
     private OAuthProfile getOAuthProfile(final OAuthProvider oAuthProvider) {
