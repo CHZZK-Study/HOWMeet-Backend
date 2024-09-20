@@ -1,9 +1,9 @@
 package org.chzzk.howmeet.domain.temporary.auth.service;
 
-import org.chzzk.howmeet.domain.temporary.auth.exception.GuestException;
+import org.chzzk.howmeet.domain.temporary.guest.exception.GuestException;
 import org.springframework.stereotype.Component;
 
-import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.INVALID_PASSWORD;
+import static org.chzzk.howmeet.domain.temporary.guest.exception.GuestErrorCode.INVALID_PASSWORD;
 
 @Component
 public class PasswordValidator {

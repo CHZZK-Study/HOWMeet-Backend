@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.domain.temporary.auth.repository;
+package org.chzzk.howmeet.domain.temporary.guest.repository;
 
 import org.chzzk.howmeet.domain.common.model.Nickname;
 import org.springframework.data.repository.query.Param;

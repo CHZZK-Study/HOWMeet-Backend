@@ -1,9 +1,9 @@
-package org.chzzk.howmeet.domain.temporary.auth.service;
+package org.chzzk.howmeet.domain.temporary.guest.service;
 
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.model.EncodedPassword;
-import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
-import org.chzzk.howmeet.domain.temporary.auth.repository.GuestRepository;
+import org.chzzk.howmeet.domain.temporary.guest.entity.Guest;
+import org.chzzk.howmeet.domain.temporary.guest.repository.GuestRepository;
 import org.chzzk.howmeet.domain.temporary.schedule.exception.GSException;
 import org.chzzk.howmeet.domain.temporary.schedule.repository.GSRepository;
 import org.springframework.stereotype.Service;

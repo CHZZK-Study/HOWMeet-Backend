@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.domain.temporary.auth.util;
+package org.chzzk.howmeet.domain.temporary.guest.util;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Component;
