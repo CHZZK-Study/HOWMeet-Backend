@@ -7,7 +7,7 @@ import org.chzzk.howmeet.domain.temporary.auth.dto.login.request.GuestLoginReque
 import org.chzzk.howmeet.domain.temporary.auth.dto.login.response.GuestLoginResponse;
 import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
 import org.chzzk.howmeet.domain.temporary.auth.util.PasswordEncoder;
-import org.chzzk.howmeet.global.util.TokenProvider;
+import org.chzzk.howmeet.domain.common.auth.util.TokenProvider;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor

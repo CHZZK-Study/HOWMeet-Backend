@@ -10,7 +10,7 @@ import org.chzzk.howmeet.domain.common.auth.exception.AuthenticationException;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
 import org.chzzk.howmeet.domain.temporary.auth.repository.GuestRepository;
-import org.chzzk.howmeet.global.util.TokenProvider;
+import org.chzzk.howmeet.domain.common.auth.util.TokenProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;

@@ -1,6 +1,7 @@
 package org.chzzk.howmeet.domain.regular.auth.service;
 
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
+import org.chzzk.howmeet.domain.common.auth.util.TokenProvider;
 import org.chzzk.howmeet.domain.regular.auth.dto.authorize.request.MemberAuthorizeRequest;
 import org.chzzk.howmeet.domain.regular.auth.dto.authorize.response.MemberAuthorizeResponse;
 import org.chzzk.howmeet.domain.regular.auth.dto.login.MemberLoginResult;
@@ -9,7 +10,6 @@ import org.chzzk.howmeet.domain.regular.auth.dto.reissue.MemberReissueResult;
 import org.chzzk.howmeet.domain.regular.auth.entity.RefreshToken;
 import org.chzzk.howmeet.domain.regular.auth.exception.RefreshTokenException;
 import org.chzzk.howmeet.domain.regular.member.entity.Member;
-import org.chzzk.howmeet.global.util.TokenProvider;
 import org.chzzk.howmeet.infra.oauth.dto.authorize.response.OAuthAuthorizePayload;
 import org.chzzk.howmeet.infra.oauth.model.OAuthProvider;
 import org.chzzk.howmeet.infra.oauth.model.profile.OAuthProfile;

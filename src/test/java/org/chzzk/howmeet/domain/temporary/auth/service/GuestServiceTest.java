@@ -7,7 +7,7 @@ import org.chzzk.howmeet.domain.temporary.auth.dto.login.response.GuestLoginResp
 import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
 import org.chzzk.howmeet.domain.temporary.auth.exception.GuestException;
 import org.chzzk.howmeet.domain.temporary.auth.util.PasswordEncoder;
-import org.chzzk.howmeet.global.util.TokenProvider;
+import org.chzzk.howmeet.domain.common.auth.util.TokenProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
