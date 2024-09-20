@@ -8,7 +8,6 @@ import org.chzzk.howmeet.infra.oauth.repository.InMemoryOAuthProviderRepository;
 import org.chzzk.howmeet.infra.oauth.service.authorize.OAuthAuthorizeService;
 import org.chzzk.howmeet.infra.oauth.service.profile.OAuthProfileService;
 import org.chzzk.howmeet.infra.oauth.service.token.OAuthTokenService;
-import org.h2.util.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -39,13 +38,13 @@ public class OAuthClient {
     }
 
     private void validateAuthorizationCode(final String code) {
-        if (StringUtils.isNullOrEmpty(code)) {
+        if (code == null || code.isBlank()) {
             throw new IllegalArgumentException();   // 예외 처리 커스텀 예정
         }
     }
 
     private void validateProviderName(final String providerName) {
-        if (StringUtils.isNullOrEmpty(providerName)) {
+        if (providerName == null || providerName.isBlank()) {
             throw new IllegalArgumentException();   // 예외 처리 커스텀 예정
         }
     }
