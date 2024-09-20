@@ -1,7 +1,9 @@
 package org.chzzk.howmeet.domain.regular.room.service;
 
 import lombok.RequiredArgsConstructor;
+import org.chzzk.howmeet.domain.common.entity.BaseEntity;
 import org.chzzk.howmeet.domain.common.model.Nickname;
+import org.chzzk.howmeet.domain.regular.member.dto.nickname.dto.MemberNicknameDto;
 import org.chzzk.howmeet.domain.regular.member.entity.Member;
 import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
 import org.chzzk.howmeet.domain.regular.room.dto.*;
@@ -13,16 +15,17 @@ import org.chzzk.howmeet.domain.regular.room.repository.RoomRepository;
 import org.chzzk.howmeet.domain.regular.room.util.RoomListMapper;
 import org.chzzk.howmeet.domain.regular.schedule.dto.MSResponse;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
-import org.chzzk.howmeet.domain.regular.schedule.repository.MSRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.chzzk.howmeet.domain.regular.room.exception.RoomErrorCode.*;
+import static org.chzzk.howmeet.domain.regular.room.exception.RoomErrorCode.ROOM_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
@@ -30,7 +33,6 @@ import static org.chzzk.howmeet.domain.regular.room.exception.RoomErrorCode.*;
 public class RoomService {
     private final RoomRepository roomRepository;
     private final RoomMemberRepository roomMemberRepository;
-    private final MSRepository msRepository;
     private final MemberRepository memberRepository;
 
     @Transactional
@@ -43,20 +45,30 @@ public class RoomService {
     }
 
     public RoomResponse getRoom(final Long roomId) {
-        Room room = getRoomById(roomId);
-        List<RoomMember> roomMembers = roomMemberRepository.findByRoomId(roomId);
-        List<RoomMemberResponse> roomMemberResponses = roomMembers.stream()
-                .map(roomMember -> {
-                    Nickname nickname = memberRepository.findById(roomMember.getMemberId())
-                            .map(Member::getNickname)
-                            .orElse(null);
-                    return RoomMemberResponse.of(roomMember, nickname.getValue());
-                })
+        Room room = roomRepository.findRoomWithMembersAndNicknames(roomId)
+                .orElseThrow(() -> new RoomException(ROOM_NOT_FOUND));
+
+        List<Long> memberIds = room.getMembers().stream()
+                .map(RoomMember::getMemberId)
                 .toList();
+
+        List<MemberNicknameDto> memberNicknames = memberRepository.findNicknamesByMemberIds(memberIds);
+
+        Map<Long, String> memberIdToNicknameMap = memberNicknames.stream()
+                .collect(Collectors.toMap(
+                        MemberNicknameDto::id,
+                        dto -> dto.nickname().getValue()
+                ));
+
+        List<RoomMemberResponse> roomMemberResponses = room.getMembers().stream()
+                .map(roomMember -> RoomMemberResponse.of(roomMember, memberIdToNicknameMap.get(roomMember.getMemberId())))
+                .collect(Collectors.toList());
+
         List<MSResponse> schedules = room.getSchedules().stream()
-                .sorted((a, b) -> a.getCreatedAt().compareTo(b.getCreatedAt()))
+                .sorted(Comparator.comparing(BaseEntity::getCreatedAt))
                 .map(MSResponse::from)
                 .toList();
+
         return RoomResponse.of(room, roomMemberResponses, schedules);
     }
 
