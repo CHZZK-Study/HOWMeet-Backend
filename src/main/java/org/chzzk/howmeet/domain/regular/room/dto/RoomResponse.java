@@ -14,13 +14,7 @@ public record RoomResponse(Long roomId,
                            List<RoomMemberResponse> roomMembers,
                            List<MSResponse> schedules) {
 
-    public static RoomResponse of(final Room room, final List<RoomMemberResponse> roomMemberResponse, final List<MemberSchedule> memberSchedules) {
-
-        List<MSResponse> schedules = memberSchedules.stream()
-                .sorted((a, b) -> a.getCreatedAt().compareTo(b.getCreatedAt()))
-                .map(MSResponse::from)
-                .toList();
-
+    public static RoomResponse of(final Room room, final List<RoomMemberResponse> roomMemberResponse, final List<MSResponse> schedules) {
         return new RoomResponse(
                 room.getId(),
                 room.getName().getValue(),

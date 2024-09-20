@@ -11,6 +11,7 @@ import org.chzzk.howmeet.domain.regular.room.exception.RoomException;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomMemberRepository;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomRepository;
 import org.chzzk.howmeet.domain.regular.room.util.RoomListMapper;
+import org.chzzk.howmeet.domain.regular.schedule.dto.MSResponse;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 import org.chzzk.howmeet.domain.regular.schedule.repository.MSRepository;
 import org.springframework.data.domain.Page;
@@ -46,15 +47,17 @@ public class RoomService {
         List<RoomMember> roomMembers = roomMemberRepository.findByRoomId(roomId);
         List<RoomMemberResponse> roomMemberResponses = roomMembers.stream()
                 .map(roomMember -> {
-                    // memberId를 사용하여 Member 엔티티에서 nickname 조회
                     Nickname nickname = memberRepository.findById(roomMember.getMemberId())
                             .map(Member::getNickname)
-                            .orElse(Nickname.from("Unknown"));
+                            .orElse(null);
                     return RoomMemberResponse.of(roomMember, nickname.getValue());
                 })
                 .toList();
-        List<MemberSchedule> memberSchedules = room.getSchedules();
-        return RoomResponse.of(room, roomMemberResponses, memberSchedules);
+        List<MSResponse> schedules = room.getSchedules().stream()
+                .sorted((a, b) -> a.getCreatedAt().compareTo(b.getCreatedAt()))
+                .map(MSResponse::from)
+                .toList();
+        return RoomResponse.of(room, roomMemberResponses, schedules);
     }
 
     public PageResponse getJoinedRooms(final Long memberId, final Pageable pageable) {
