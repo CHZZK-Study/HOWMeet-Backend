@@ -1,10 +1,7 @@
 package org.chzzk.howmeet.domain.regular.record.service;
 
-import static org.chzzk.howmeet.domain.regular.member.exception.MemberErrorCode.MEMBER_NOT_FOUND;
 import static org.chzzk.howmeet.domain.regular.record.exception.MSRecordErrorCode.DATE_INVALID_SELECT;
-import static org.chzzk.howmeet.domain.regular.record.exception.MSRecordErrorCode.ROOM_LEADER_UNAUTHORIZED;
 import static org.chzzk.howmeet.domain.regular.record.exception.MSRecordErrorCode.TIME_INVALID_SELECT;
-import static org.chzzk.howmeet.domain.regular.room.exception.RoomErrorCode.INVALID_ROOM_MEMBER;
 import static org.chzzk.howmeet.domain.regular.room.exception.RoomErrorCode.ROOM_MEMBER_NOT_FOUND;
 import static org.chzzk.howmeet.domain.regular.room.exception.RoomErrorCode.ROOM_NOT_FOUND;
 import static org.chzzk.howmeet.domain.regular.schedule.exception.MSErrorCode.SCHEDULE_NOT_FOUND;
@@ -15,6 +12,7 @@ import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
@@ -22,8 +20,8 @@ import org.chzzk.howmeet.domain.common.model.Nickname;
 import org.chzzk.howmeet.domain.common.model.Nicknames;
 import org.chzzk.howmeet.domain.common.model.SelectionDetail;
 import org.chzzk.howmeet.domain.regular.member.entity.Member;
-import org.chzzk.howmeet.domain.regular.member.exception.MemberException;
 import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
+import org.chzzk.howmeet.domain.regular.fcm.service.FcmService;
 import org.chzzk.howmeet.domain.regular.record.dto.get.MSRecordGetResponse;
 import org.chzzk.howmeet.domain.regular.record.dto.post.MSRecordPostRequest;
 import org.chzzk.howmeet.domain.regular.record.entity.MemberScheduleRecord;
@@ -52,6 +50,7 @@ public class MSRecordService {
     private final MSRepository msRepository;
     private final RoomMemberRepository roomMemberRepository;
     private final RoomRepository roomRepository;
+    private final FcmService fcmService;
 
 
     @Transactional
@@ -63,6 +62,12 @@ public class MSRecordService {
         List<LocalDateTime> selectTimes = msRecordPostRequest.selectTime();
         List<MemberScheduleRecord> msRecords = convertSeletTimesToMSRecords(selectTimes, ms, authPrincipal.id());
         msRecordRepository.saveAll(msRecords);
+
+        if(validateAllMemberMSRecord(ms)){
+            final List<RoomMember> members = roomMemberRepository.findByRoomId(ms.getRoom().getId());
+
+            fcmService.sendToLeader(members, ms);
+        }
     }
 
     private void vaildateRoomMember(final MemberSchedule ms, final Long memberId){
@@ -76,9 +81,9 @@ public class MSRecordService {
     private List<MemberScheduleRecord> convertSeletTimesToMSRecords(final List<LocalDateTime> selectTimes,
             final MemberSchedule ms, final Long memberId) {
 
-        List<String> dates = ms.getDates();
-        LocalTime startTime = ms.getTime().getStartTime();
-        LocalTime endTime = ms.getTime().getEndTime();
+        final List<String> dates = ms.getDates();
+        final LocalTime startTime = ms.getTime().getStartTime();
+        final LocalTime endTime = ms.getTime().getEndTime();
 
         return selectTimes.stream().map(selectTime -> {
             validateSelectTime(selectTime, dates, startTime, endTime);
@@ -89,8 +94,8 @@ public class MSRecordService {
     private void validateSelectTime(final LocalDateTime selectTime, final List<String> dates, final LocalTime startTime,
             final LocalTime endTime) {
 
-        LocalDate selectDate = selectTime.toLocalDate();
-        LocalTime selectHour = selectTime.toLocalTime();
+        final LocalDate selectDate = selectTime.toLocalDate();
+        final LocalTime selectHour = selectTime.toLocalTime();
 
         if (!dates.contains(selectDate.toString())) {
             throw new MSRecordException(DATE_INVALID_SELECT);
@@ -102,13 +107,21 @@ public class MSRecordService {
         }
     }
 
-    private MemberSchedule findMSByMSId(final Long msId) {
-        return msRepository.findById(msId).orElseThrow(() -> new MSException(SCHEDULE_NOT_FOUND));
+    private boolean validateAllMemberMSRecord(MemberSchedule ms) {
+        final List<MemberScheduleRecord> msRecords = findMSRecordByMSId(ms.getId());
+        final List<RoomMember> members = roomMemberRepository.findByRoomId(ms.getRoom().getId());
+
+        final Set<Long> msRecordMemberIdSet = msRecords.stream()
+                .map(MemberScheduleRecord::getMemberId)
+                .collect(Collectors.toSet());
+
+        return members.stream()
+                .map(RoomMember::getMemberId)
+                .allMatch(msRecordMemberIdSet::contains);
     }
 
-    private Member findMemberByMemberId(final Long memberId) {
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
+    private MemberSchedule findMSByMSId(final Long msId) {
+        return msRepository.findById(msId).orElseThrow(() -> new MSException(SCHEDULE_NOT_FOUND));
     }
 
     public MSRecordGetResponse getMSRecord(final Long roomId, final Long msId,
