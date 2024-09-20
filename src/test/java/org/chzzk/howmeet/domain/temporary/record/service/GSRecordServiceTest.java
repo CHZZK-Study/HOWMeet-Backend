@@ -1,5 +1,9 @@
 package org.chzzk.howmeet.domain.temporary.record.service;
 
+import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.GUEST_NOT_FOUND;
+import static org.chzzk.howmeet.domain.temporary.record.exception.GSRecordErrorCode.DATE_INVALID_SELECT;
+import static org.chzzk.howmeet.domain.temporary.record.exception.GSRecordErrorCode.TIME_INVALID_SELECT;
+import static org.chzzk.howmeet.domain.temporary.schedule.exception.GSErrorCode.SCHEDULE_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -15,14 +19,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
-import org.chzzk.howmeet.domain.temporary.guest.entity.Guest;
-import org.chzzk.howmeet.domain.temporary.guest.repository.GuestRepository;
+import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
+import org.chzzk.howmeet.domain.temporary.auth.exception.GuestException;
+import org.chzzk.howmeet.domain.temporary.auth.repository.GuestRepository;
 import org.chzzk.howmeet.domain.temporary.record.dto.get.response.GSRecordGetResponse;
 import org.chzzk.howmeet.domain.temporary.record.dto.post.request.GSRecordPostRequest;
 import org.chzzk.howmeet.domain.temporary.record.entity.GuestScheduleRecord;
+import org.chzzk.howmeet.domain.temporary.record.exception.GSRecordException;
 import org.chzzk.howmeet.domain.temporary.record.repository.GSRecordRepository;
 import org.chzzk.howmeet.domain.temporary.record.repository.TmpGuestRepository;
 import org.chzzk.howmeet.domain.temporary.schedule.entity.GuestSchedule;
+import org.chzzk.howmeet.domain.temporary.schedule.exception.GSException;
 import org.chzzk.howmeet.domain.temporary.schedule.repository.GSRepository;
 import org.chzzk.howmeet.fixture.GSFixture;
 import org.chzzk.howmeet.fixture.GuestFixture;
@@ -75,8 +82,8 @@ public class GSRecordServiceTest {
     }
 
     @Test
-    @DisplayName("잘못된 일정의 GuestScheduleRecord 입력으로 예외 발생")
-    public void postGSRecord_InvalidTime() throws Exception {
+    @DisplayName("잘못된 일정의 GuestScheduleRecord의 날짜 입력으로 예외 발생")
+    public void postGSRecord_InvalidDATE() throws Exception {
 
         Guest guest = GuestFixture.KIM.생성();
         GuestSchedule guestSchedule = GSFixture.createGuestScheduleA();
@@ -95,11 +102,88 @@ public class GSRecordServiceTest {
             return Optional.of(Guest.of(1L, "Kim", guest.getPassword()));
         });
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+        GSRecordException exception = assertThrows(GSRecordException.class, () -> {
             gsRecordService.postGSRecord(gsRecordPostRequest, authPrincipal);
         });
 
-        assertEquals("선택할 수 없는 날짜를 선택하셨습니다.", exception.getMessage());
+        assertEquals(DATE_INVALID_SELECT.getMessage(), exception.getMessage());
+        assertEquals(DATE_INVALID_SELECT.getStatus(), exception.getStatus());
+    }
+
+
+    @Test
+    @DisplayName("잘못된 일정의 GuestScheduleRecord의 시간 입력으로 예외 발생")
+    public void postGSRecord_InvalidTime() throws Exception {
+
+        Guest guest = GuestFixture.KIM.생성();
+        GuestSchedule guestSchedule = GSFixture.createGuestScheduleA();
+        List<LocalDateTime> selectTimes = Arrays.asList(
+                LocalDateTime.of(2023, 1, 1, 17, 00)
+        );
+
+        GSRecordPostRequest gsRecordPostRequest = new GSRecordPostRequest(1L, selectTimes);
+        AuthPrincipal authPrincipal = new AuthPrincipal(1L, guest.getNickname().getValue(), guest.getRole());
+
+        when(gsRepository.findById(guestSchedule.getId())).thenReturn(Optional.of(guestSchedule));
+        when(guestRepository.findById(anyLong())).thenAnswer(invocation -> {
+            Long id = invocation.getArgument(0);
+            return Optional.of(Guest.of(1L, "Kim", guest.getPassword()));
+        });
+
+        GSRecordException exception = assertThrows(GSRecordException.class, () -> {
+            gsRecordService.postGSRecord(gsRecordPostRequest, authPrincipal);
+        });
+
+        assertEquals(TIME_INVALID_SELECT.getMessage(), exception.getMessage());
+        assertEquals(TIME_INVALID_SELECT.getStatus(), exception.getStatus());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 GuestSchedule에 대한 예외 발생")
+    public void postGSRecord_GuestScheduleNotFound() throws Exception {
+        Guest guest = GuestFixture.KIM.생성();
+        List<LocalDateTime> selectTimes = Arrays.asList(
+                LocalDateTime.of(2023, 1, 1, 10, 30),
+                LocalDateTime.of(2023, 1, 1, 11, 0),
+                LocalDateTime.of(2023, 1, 1, 11, 30)
+        );
+
+        GSRecordPostRequest gsRecordPostRequest = new GSRecordPostRequest(529L, selectTimes);
+        AuthPrincipal authPrincipal = new AuthPrincipal(1L, guest.getNickname().getValue(), guest.getRole());
+
+        when(gsRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(guestRepository.findById(anyLong())).thenReturn(Optional.of(guest));
+
+        GSException exception = assertThrows(GSException.class, () -> {
+            gsRecordService.postGSRecord(gsRecordPostRequest, authPrincipal);
+        });
+
+        assertEquals(SCHEDULE_NOT_FOUND.getMessage(), exception.getMessage());
+        assertEquals(SCHEDULE_NOT_FOUND.getStatus(), exception.getStatus());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 Guest에 대한 예외 발생")
+    public void postGSRecord_GuestNotFound() throws Exception {
+        Guest guest = GuestFixture.KIM.생성();
+        GuestSchedule guestSchedule = GSFixture.createGuestScheduleA();
+        List<LocalDateTime> selectTimes = Arrays.asList(
+                LocalDateTime.of(2023, 1, 1, 10, 30),
+                LocalDateTime.of(2023, 1, 1, 11, 00),
+                LocalDateTime.of(2023, 1, 1, 11, 30)
+        );
+
+        GSRecordPostRequest gsRecordPostRequest = new GSRecordPostRequest(1L, selectTimes);
+        AuthPrincipal authPrincipal = new AuthPrincipal(320L, guest.getNickname().getValue(), guest.getRole());
+
+        when(guestRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        GuestException exception = assertThrows(GuestException.class, () -> {
+            gsRecordService.postGSRecord(gsRecordPostRequest, authPrincipal);
+        });
+
+        assertEquals(GUEST_NOT_FOUND.getMessage(), exception.getMessage());
+        assertEquals(GUEST_NOT_FOUND.getStatus(), exception.getStatus());
     }
 
     @Test
@@ -117,6 +201,7 @@ public class GSRecordServiceTest {
 
         when(tmpGuestRepository.findByGuestScheduleId(gsId)).thenReturn(guestList);
         when(gsRecordRepository.findByGuestScheduleId(gsId)).thenReturn(gsRecords);
+        when(gsRepository.findById(gsId)).thenReturn(Optional.of(guestSchedule));
 
         GSRecordGetResponse gsRecordGetResponse = gsRecordService.getGSRecord(gsId);
 
