@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.domain.temporary.auth.entity;
+package org.chzzk.howmeet.domain.temporary.guest.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -18,10 +18,10 @@ import org.chzzk.howmeet.domain.common.model.Nickname;
 import org.chzzk.howmeet.domain.common.model.NicknameProvider;
 import org.chzzk.howmeet.domain.common.model.converter.EncodedPasswordConverter;
 import org.chzzk.howmeet.domain.common.model.converter.NicknameConverter;
-import org.chzzk.howmeet.domain.temporary.auth.exception.GuestException;
-import org.chzzk.howmeet.domain.temporary.auth.util.PasswordEncoder;
+import org.chzzk.howmeet.domain.temporary.guest.exception.GuestException;
+import org.chzzk.howmeet.domain.temporary.guest.util.PasswordEncoder;
 
-import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.NOT_MATCHED_PASSWORD;
+import static org.chzzk.howmeet.domain.temporary.guest.exception.GuestErrorCode.NOT_MATCHED_PASSWORD;
 
 @Entity
 @Getter

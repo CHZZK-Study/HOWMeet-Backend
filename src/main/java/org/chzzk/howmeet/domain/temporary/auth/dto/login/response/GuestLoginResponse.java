@@ -1,6 +1,6 @@
 package org.chzzk.howmeet.domain.temporary.auth.dto.login.response;
 
-import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
+import org.chzzk.howmeet.domain.temporary.guest.entity.Guest;
 
 public record GuestLoginResponse(String accessToken, Long guestId, String nickname) {
     public static GuestLoginResponse of(final String accessToken, final Guest guest) {
