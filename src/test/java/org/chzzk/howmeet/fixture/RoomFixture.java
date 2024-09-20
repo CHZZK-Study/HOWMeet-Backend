@@ -70,12 +70,12 @@ public enum RoomFixture {
 
     public static RoomResponse createRoomResponseA() {
         Room room = createRoomA();
-        return RoomResponse.of(room, room.getMembers(), room.getSchedules());
+        return RoomResponse.of(room, RoomMemberFixture.createRoomMemberResponses(room), room.getSchedules());
     }
 
     public static RoomResponse createRoomResponseB() {
         Room room = createRoomB();
-        return RoomResponse.of(room, room.getMembers(), room.getSchedules());
+        return RoomResponse.of(room, RoomMemberFixture.createRoomMemberResponses(room), room.getSchedules());
     }
 
     public static RoomListResponse createRoomListResponseA() {
@@ -92,3 +92,4 @@ public enum RoomFixture {
         return RoomListMapper.toRoomListResponse(room, memberSchedules, leader.getNickname().toString());
     }
 }
+

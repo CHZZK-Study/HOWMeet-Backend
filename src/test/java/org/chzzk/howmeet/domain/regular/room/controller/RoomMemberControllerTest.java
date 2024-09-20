@@ -3,7 +3,6 @@ package org.chzzk.howmeet.domain.regular.room.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomMemberRequest;
-import org.chzzk.howmeet.domain.regular.room.dto.RoomMemberResponse;
 import org.chzzk.howmeet.domain.regular.room.dto.get.response.RoomMemberGetResponse;
 import org.chzzk.howmeet.domain.regular.room.entity.Room;
 import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
@@ -30,22 +29,16 @@ import static org.chzzk.howmeet.fixture.MemberFixture.KIM;
 import static org.chzzk.howmeet.fixture.RoomFixture.createRoomA;
 import static org.chzzk.howmeet.fixture.RoomMemberFixture.MEMBER_1;
 import static org.chzzk.howmeet.fixture.RoomMemberFixture.createRoomMemberRequests;
-import static org.chzzk.howmeet.fixture.RoomMemberFixture.createRoomMemberResponses;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -116,9 +109,8 @@ class RoomMemberControllerTest {
         // given
         Room room = createRoomA();
         List<RoomMemberRequest> roomMemberRequests = createRoomMemberRequests(room);
-        List<RoomMemberResponse> roomMemberResponses = createRoomMemberResponses(room);
 
-        given(roomMemberService.updateRoomMembers(any(Long.class), anyList())).willReturn(roomMemberResponses);
+        willDoNothing().given(roomMemberService).updateRoomMembers(any(Long.class), anyList());
 
         // when
         ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.patch("/room/{roomId}/members", 1L)
@@ -139,11 +131,6 @@ class RoomMemberControllerTest {
                 requestFields(
                         fieldWithPath("[].memberId").type(NUMBER).description("멤버 ID"),
                         fieldWithPath("[].roomId").type(NUMBER).description("방 ID"),
-                        fieldWithPath("[].isLeader").type(BOOLEAN).description("리더 여부")
-                ),
-                responseFields(
-                        fieldWithPath("[].id").type(NUMBER).description("방 멤버 ID").optional(),
-                        fieldWithPath("[].memberId").type(NUMBER).description("멤버 ID"),
                         fieldWithPath("[].isLeader").type(BOOLEAN).description("리더 여부")
                 )
         ));
