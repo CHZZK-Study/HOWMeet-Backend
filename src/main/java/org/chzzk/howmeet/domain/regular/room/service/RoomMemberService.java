@@ -43,7 +43,7 @@ public class RoomMemberService {
     }
 
     @Transactional
-    public List<RoomMemberResponse> updateRoomMembers(final Long roomId, final List<RoomMemberRequest> roomMemberRequests) {
+    public void updateRoomMembers(final Long roomId, final List<RoomMemberRequest> roomMemberRequests) {
         Room room = findRoomById(roomId);
 
         List<RoomMember> newRoomMembers = roomMemberRequests.stream()
@@ -52,10 +52,6 @@ public class RoomMemberService {
         roomMemberRepository.saveAll(newRoomMembers);
 
         List<RoomMember> allRoomMembers = roomMemberRepository.findByRoomId(roomId);
-
-        return allRoomMembers.stream()
-                .map(RoomMemberResponse::from)
-                .collect(Collectors.toList());
     }
 
     private Room findRoomById(final Long roomId) {

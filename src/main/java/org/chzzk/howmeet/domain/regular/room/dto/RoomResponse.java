@@ -14,13 +14,10 @@ public record RoomResponse(Long roomId,
                            List<RoomMemberResponse> roomMembers,
                            List<MSResponse> schedules) {
 
-    public static RoomResponse of(final Room room, final List<RoomMember> roomMembers, final List<MemberSchedule> memberSchedules) {
-        List<RoomMemberResponse> roomMemberResponse = roomMembers.stream()
-                .map(RoomMemberResponse::from)
-                .collect(Collectors.toList());
+    public static RoomResponse of(final Room room, final List<RoomMemberResponse> roomMemberResponse, final List<MemberSchedule> memberSchedules) {
 
         List<MSResponse> schedules = memberSchedules.stream()
-                .sorted((a, b) -> a.getCreatedAt().compareTo(b.getCreatedAt())) // 생성 순서대로 정렬
+                .sorted((a, b) -> a.getCreatedAt().compareTo(b.getCreatedAt()))
                 .map(MSResponse::from)
                 .toList();
 

@@ -1,12 +1,11 @@
 package org.chzzk.howmeet.domain.regular.room.service;
 
 import lombok.RequiredArgsConstructor;
+import org.chzzk.howmeet.domain.common.model.Nickname;
 import org.chzzk.howmeet.domain.regular.member.dto.nickname.dto.MemberNicknameDto;
+import org.chzzk.howmeet.domain.regular.member.entity.Member;
 import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
-import org.chzzk.howmeet.domain.regular.room.dto.PaginatedResponse;
-import org.chzzk.howmeet.domain.regular.room.dto.RoomListResponse;
-import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
-import org.chzzk.howmeet.domain.regular.room.dto.RoomResponse;
+import org.chzzk.howmeet.domain.regular.room.dto.*;
 import org.chzzk.howmeet.domain.regular.room.entity.Room;
 import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
 import org.chzzk.howmeet.domain.regular.room.exception.RoomException;
@@ -47,8 +46,17 @@ public class RoomService {
     public RoomResponse getRoom(final Long roomId) {
         Room room = getRoomById(roomId);
         List<RoomMember> roomMembers = roomMemberRepository.findByRoomId(roomId);
+        List<RoomMemberResponse> roomMemberResponses = roomMembers.stream()
+                .map(roomMember -> {
+                    // memberId를 사용하여 Member 엔티티에서 nickname 조회
+                    Nickname nickname = memberRepository.findById(roomMember.getMemberId())
+                            .map(Member::getNickname)
+                            .orElse(Nickname.from("Unknown"));
+                    return RoomMemberResponse.from(roomMember, nickname.getValue());
+                })
+                .toList();
         List<MemberSchedule> memberSchedules = room.getSchedules();
-        return RoomResponse.of(room, roomMembers, memberSchedules);
+        return RoomResponse.of(room, roomMemberResponses, memberSchedules);
     }
 
     public PaginatedResponse getJoinedRooms(final Long memberId, final Pageable pageable) {
@@ -67,14 +75,10 @@ public class RoomService {
     }
 
     @Transactional
-    public RoomResponse updateRoom(final Long roomId, final RoomRequest roomRequest) {
+    public void updateRoom(final Long roomId, final RoomRequest roomRequest) {
         Room room = getRoomById(roomId);
         room.updateName(roomRequest.name());
         roomRepository.save(room);
-
-        List<RoomMember> roomMembers = roomMemberRepository.findByRoomId(roomId);
-        List<MemberSchedule> memberSchedules = room.getSchedules();
-        return RoomResponse.of(room, roomMembers, memberSchedules);
     }
 
     @Transactional

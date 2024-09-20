@@ -44,7 +44,7 @@ public class RoomMemberController {
     public ResponseEntity<List<RoomMemberResponse>> updateRoomMembers(
             @PathVariable(name = "roomId") Long roomId,
             @RequestBody final List<RoomMemberRequest> roomMemberRequests) {
-        List<RoomMemberResponse> roomMemberResponses = roomMemberService.updateRoomMembers(roomId, roomMemberRequests);
-        return ResponseEntity.ok(roomMemberResponses);
+        roomMemberService.updateRoomMembers(roomId, roomMemberRequests);
+        return ResponseEntity.ok().build();
     }
 }

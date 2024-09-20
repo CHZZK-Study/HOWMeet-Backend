@@ -46,11 +46,6 @@ public class GSControllerTest {
     @MockBean
     private GSService gsService;
 
-    @BeforeEach
-    public void setUp() {
-        objectMapper.registerModule(new JavaTimeModule());
-    }
-
     @Test
     @DisplayName("비회원 일정 생성")
     public void createGuestSchedule() throws Exception {

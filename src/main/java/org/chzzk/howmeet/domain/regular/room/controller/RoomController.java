@@ -28,8 +28,8 @@ public class RoomController {
     public ResponseEntity<?> updateRoom(
             @PathVariable Long roomId,
             @RequestBody final RoomRequest roomRequest) {
-        final RoomResponse roomResponse = roomService.updateRoom(roomId, roomRequest);
-        return ResponseEntity.ok(roomResponse);
+        roomService.updateRoom(roomId, roomRequest);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{roomId}")
