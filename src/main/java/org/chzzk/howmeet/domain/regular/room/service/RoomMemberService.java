@@ -50,8 +50,6 @@ public class RoomMemberService {
                 .map(request -> RoomMember.of(request.memberId(), room, request.isLeader()))
                 .collect(Collectors.toList());
         roomMemberRepository.saveAll(newRoomMembers);
-
-        List<RoomMember> allRoomMembers = roomMemberRepository.findByRoomId(roomId);
     }
 
     private Room findRoomById(final Long roomId) {
