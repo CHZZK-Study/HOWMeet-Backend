@@ -2,6 +2,7 @@ package org.chzzk.howmeet.domain.regular.room.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.chzzk.howmeet.domain.regular.room.dto.PageResponse;
+import org.chzzk.howmeet.domain.regular.room.dto.RoomCreateResponse;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomResponse;
 import org.chzzk.howmeet.domain.regular.room.service.RoomService;
@@ -47,9 +48,9 @@ public class RoomControllerTest {
     void createRoom() throws Exception {
         // given
         RoomRequest roomRequest = RoomFixture.createRoomRequestA();
-        RoomResponse roomResponse = RoomFixture.createRoomResponseA();
-
-        given(roomService.createRoom(any(RoomRequest.class))).willReturn(roomResponse.roomId());
+        RoomCreateResponse roomCreateResponse = new RoomCreateResponse(1L);
+        
+        given(roomService.createRoom(any(RoomRequest.class))).willReturn(roomCreateResponse);
 
         // when
         ResultActions result = mockMvc.perform(RestDocumentationRequestBuilders.post("/room")

@@ -2,6 +2,7 @@ package org.chzzk.howmeet.fixture;
 
 import org.chzzk.howmeet.domain.regular.member.entity.Member;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomListResponse;
+import org.chzzk.howmeet.domain.regular.room.dto.RoomMemberResponse;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomRequest;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomResponse;
 import org.chzzk.howmeet.domain.regular.room.entity.Room;
@@ -9,10 +10,12 @@ import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
 import org.chzzk.howmeet.domain.regular.room.model.RoomDescription;
 import org.chzzk.howmeet.domain.regular.room.model.RoomName;
 import org.chzzk.howmeet.domain.regular.room.util.RoomListMapper;
+import org.chzzk.howmeet.domain.regular.schedule.dto.MSResponse;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.chzzk.howmeet.fixture.MemberFixture.KIM;
 
@@ -70,12 +73,22 @@ public enum RoomFixture {
 
     public static RoomResponse createRoomResponseA() {
         Room room = createRoomA();
-        return RoomResponse.of(room, RoomMemberFixture.createRoomMemberResponses(room), room.getSchedules());
+        List<RoomMemberResponse> roomMemberResponses = RoomMemberFixture.createRoomMemberResponses(room);
+        List<MSResponse> msResponses = room.getSchedules().stream()
+                .map(MSResponse::from)
+                .collect(Collectors.toList());
+
+        return RoomResponse.of(room, roomMemberResponses, msResponses);
     }
 
     public static RoomResponse createRoomResponseB() {
         Room room = createRoomB();
-        return RoomResponse.of(room, RoomMemberFixture.createRoomMemberResponses(room), room.getSchedules());
+        List<RoomMemberResponse> roomMemberResponses = RoomMemberFixture.createRoomMemberResponses(room);
+        List<MSResponse> msResponses = room.getSchedules().stream()
+                .map(MSResponse::from)
+                .collect(Collectors.toList());
+
+        return RoomResponse.of(room, roomMemberResponses, msResponses);
     }
 
     public static RoomListResponse createRoomListResponseA() {

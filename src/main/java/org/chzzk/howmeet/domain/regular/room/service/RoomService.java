@@ -34,12 +34,12 @@ public class RoomService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Long createRoom(final RoomRequest roomRequest) {
+    public RoomCreateResponse createRoom(final RoomRequest roomRequest) {
         Room room = roomRequest.toEntity();
         roomRepository.save(room);
         RoomMember leader = RoomMember.createLeaderRoomMember(roomRequest.leaderMemberId(), room);
         roomMemberRepository.save(leader);
-        return room.getId();
+        return RoomCreateResponse.from(room);
     }
 
     public RoomResponse getRoom(final Long roomId) {
