@@ -1,5 +1,14 @@
 package org.chzzk.howmeet.domain.regular.record.service;
 
+import static org.chzzk.howmeet.domain.regular.member.exception.MemberErrorCode.MEMBER_NOT_FOUND;
+import static org.chzzk.howmeet.domain.regular.record.exception.MSRecordErrorCode.DATE_INVALID_SELECT;
+import static org.chzzk.howmeet.domain.regular.record.exception.MSRecordErrorCode.ROOM_LEADER_UNAUTHORIZED;
+import static org.chzzk.howmeet.domain.regular.record.exception.MSRecordErrorCode.TIME_INVALID_SELECT;
+import static org.chzzk.howmeet.domain.regular.room.exception.RoomErrorCode.INVALID_ROOM_MEMBER;
+import static org.chzzk.howmeet.domain.regular.room.exception.RoomErrorCode.ROOM_MEMBER_NOT_FOUND;
+import static org.chzzk.howmeet.domain.regular.room.exception.RoomErrorCode.ROOM_NOT_FOUND;
+import static org.chzzk.howmeet.domain.regular.schedule.exception.MSErrorCode.SCHEDULE_NOT_FOUND;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -13,18 +22,22 @@ import org.chzzk.howmeet.domain.common.model.Nickname;
 import org.chzzk.howmeet.domain.common.model.Nicknames;
 import org.chzzk.howmeet.domain.common.model.SelectionDetail;
 import org.chzzk.howmeet.domain.regular.member.entity.Member;
+import org.chzzk.howmeet.domain.regular.member.exception.MemberException;
 import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
 import org.chzzk.howmeet.domain.regular.record.dto.get.MSRecordGetResponse;
 import org.chzzk.howmeet.domain.regular.record.dto.post.MSRecordPostRequest;
 import org.chzzk.howmeet.domain.regular.record.entity.MemberScheduleRecord;
+import org.chzzk.howmeet.domain.regular.record.exception.MSRecordException;
 import org.chzzk.howmeet.domain.regular.record.model.MSRecordNicknames;
 import org.chzzk.howmeet.domain.regular.record.model.MSRecordSelectionDetail;
 import org.chzzk.howmeet.domain.regular.record.repository.MSRecordRepository;
 import org.chzzk.howmeet.domain.regular.room.entity.Room;
 import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
+import org.chzzk.howmeet.domain.regular.room.exception.RoomException;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomMemberRepository;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomRepository;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
+import org.chzzk.howmeet.domain.regular.schedule.exception.MSException;
 import org.chzzk.howmeet.domain.regular.schedule.repository.MSRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,12 +57,20 @@ public class MSRecordService {
     @Transactional
     public void postMSRecord(final MSRecordPostRequest msRecordPostRequest, final AuthPrincipal authPrincipal) {
         MemberSchedule ms = findMSByMSId(msRecordPostRequest.msId());
-
+        vaildateRoomMember(ms, authPrincipal.id());
         msRecordRepository.deleteByMemberScheduleIdAndMemberId(ms.getId(), authPrincipal.id());
 
         List<LocalDateTime> selectTimes = msRecordPostRequest.selectTime();
         List<MemberScheduleRecord> msRecords = convertSeletTimesToMSRecords(selectTimes, ms, authPrincipal.id());
         msRecordRepository.saveAll(msRecords);
+    }
+
+    private void vaildateRoomMember(final MemberSchedule ms, final Long memberId){
+        Room room = ms.getRoom();
+        room.getMembers().stream()
+                .filter(roomMember -> roomMember.getMemberId().equals(memberId))
+                .findFirst()
+                .orElseThrow(() -> new RoomException(ROOM_MEMBER_NOT_FOUND));
     }
 
     private List<MemberScheduleRecord> convertSeletTimesToMSRecords(final List<LocalDateTime> selectTimes,
@@ -72,27 +93,26 @@ public class MSRecordService {
         LocalTime selectHour = selectTime.toLocalTime();
 
         if (!dates.contains(selectDate.toString())) {
-            throw new IllegalArgumentException("선택할 수 없는 날짜를 선택하셨습니다.");
+            throw new MSRecordException(DATE_INVALID_SELECT);
         }
 
         if (selectHour.isBefore(startTime) || selectHour.isAfter(
                 endTime.minusMinutes(30))) {
-            throw new IllegalArgumentException("유효하지 않은 시간을 선택하셨습니다.");
+            throw new MSRecordException(TIME_INVALID_SELECT);
         }
     }
 
     private MemberSchedule findMSByMSId(final Long msId) {
-        return msRepository.findById(msId).orElseThrow(() -> new IllegalArgumentException("일치하는 일정을 찾을 수 없습니다."));
+        return msRepository.findById(msId).orElseThrow(() -> new MSException(SCHEDULE_NOT_FOUND));
     }
 
     private Member findMemberByMemberId(final Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("일치하는 회원 id를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND));
     }
 
     public MSRecordGetResponse getMSRecord(final Long roomId, final Long msId,
             final AuthPrincipal authPrincipal) {
-        checkLeaderAuthority(authPrincipal.id(), roomId);
 
         List<Member> memberList = findMemberByRoomId(roomId);
         Room room = findRoomByRoomId(roomId);
@@ -113,19 +133,7 @@ public class MSRecordService {
 
     private Room findRoomByRoomId(final Long roomId) {
         return roomRepository.findById(roomId)
-                .orElseThrow(() -> new IllegalArgumentException("일치하는 방 정보를 확인할 수 없습니다."));
-    }
-
-    private void checkLeaderAuthority(final Long memberId, final Long roomId) {
-        Member member = findMemberByMemberId(memberId);
-
-        List<RoomMember> roomMembers = roomMemberRepository.findByRoomId(roomId);
-        RoomMember loginMember = roomMembers.stream().filter(roomMember -> roomMember.getMemberId().equals(memberId))
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("일치하는 방회원 정보를 찾을 수 없습니다."));
-
-        if (!loginMember.getIsLeader()) {
-            throw new IllegalArgumentException("방장 권한이 없어 해당 일정 내역을 조회할 수 없습니다.");
-        }
+                .orElseThrow(() -> new RoomException(ROOM_NOT_FOUND));
     }
 
     private List<Member> findMemberByRoomId(final Long roomId) {
@@ -135,7 +143,7 @@ public class MSRecordService {
         }
 
         return roomMembers.stream().map(roomMember -> memberRepository.findById(roomMember.getMemberId())
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원이 방에 포함되어 있습니다.")))
+                        .orElseThrow(() -> new RoomException(ROOM_MEMBER_NOT_FOUND)))
                 .collect(Collectors.toList());
     }
 
