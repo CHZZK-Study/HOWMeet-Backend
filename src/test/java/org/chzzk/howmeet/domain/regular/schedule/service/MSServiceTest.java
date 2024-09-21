@@ -36,11 +36,8 @@ class MSServiceTest {
         Long roomId = 1L;
         Long invalidId = 999L;
 
-        Room room = mock(Room.class);
-        doReturn(Optional.of(room)).when(roomRepository).findById(roomId);
-
         // when
-        doReturn(Optional.empty()).when(msRepository).findByIdAndRoom(invalidId, room);
+        doReturn(Optional.empty()).when(msRepository).findByIdAndRoomId(invalidId, roomId);
 
         // then
         assertThatThrownBy(() -> msService.getMemberSchedule(roomId, invalidId))
@@ -56,11 +53,8 @@ class MSServiceTest {
         Long roomId = 1L;
         Long invalidId = 999L;
 
-        Room room = mock(Room.class);
-        doReturn(Optional.of(room)).when(roomRepository).findById(roomId);
-
         // when
-        doReturn(Optional.empty()).when(msRepository).findByIdAndRoom(invalidId, room);
+        doReturn(Optional.empty()).when(msRepository).findByIdAndRoomId(invalidId, roomId);
 
         // then
         assertThatThrownBy(() -> msService.deleteMemberSchedule(roomId, invalidId))

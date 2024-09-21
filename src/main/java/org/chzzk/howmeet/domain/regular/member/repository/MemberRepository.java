@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long>, MemberQueryDSL {
@@ -21,4 +22,9 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberQue
             "FROM Member m " +
             "WHERE m.id = :id")
     Optional<MemberNicknameDto> findIdAndNicknameById(@Param("id") final Long id);
+
+    @Query("SELECT NEW org.chzzk.howmeet.domain.regular.member.dto.nickname.dto.MemberNicknameDto(m.id, m.nickname) " +
+            "FROM Member m " +
+            "WHERE m.id IN :memberIds")
+    List<MemberNicknameDto> findNicknamesByMemberIds(@Param("memberIds") List<Long> memberIds);
 }

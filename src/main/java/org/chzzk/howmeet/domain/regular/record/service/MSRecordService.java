@@ -57,20 +57,14 @@ public class MSRecordService {
     @Transactional
     public void postMSRecord(final MSRecordPostRequest msRecordPostRequest, final AuthPrincipal authPrincipal) {
         MemberSchedule ms = findMSByMSId(msRecordPostRequest.msId());
-        vaildateRoomMember(ms, authPrincipal.id());
+        if (!roomMemberRepository.existsByRoomIdAndMemberId(ms.getRoom().getId(), authPrincipal.id())) {
+            throw new RoomException(ROOM_MEMBER_NOT_FOUND);
+        }
         msRecordRepository.deleteByMemberScheduleIdAndMemberId(ms.getId(), authPrincipal.id());
 
         List<LocalDateTime> selectTimes = msRecordPostRequest.selectTime();
         List<MemberScheduleRecord> msRecords = convertSeletTimesToMSRecords(selectTimes, ms, authPrincipal.id());
         msRecordRepository.saveAll(msRecords);
-    }
-
-    private void vaildateRoomMember(final MemberSchedule ms, final Long memberId){
-        Room room = ms.getRoom();
-        room.getMembers().stream()
-                .filter(roomMember -> roomMember.getMemberId().equals(memberId))
-                .findFirst()
-                .orElseThrow(() -> new RoomException(ROOM_MEMBER_NOT_FOUND));
     }
 
     private List<MemberScheduleRecord> convertSeletTimesToMSRecords(final List<LocalDateTime> selectTimes,
