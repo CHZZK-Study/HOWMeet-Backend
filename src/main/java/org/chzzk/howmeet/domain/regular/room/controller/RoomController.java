@@ -2,12 +2,12 @@ package org.chzzk.howmeet.domain.regular.room.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.regular.room.dto.*;
-import org.chzzk.howmeet.domain.regular.room.service.RoomMemberService;
 import org.chzzk.howmeet.domain.regular.room.service.RoomService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -18,16 +18,16 @@ public class RoomController {
 
     @PostMapping
     public ResponseEntity<?> createRoom(@RequestBody final RoomRequest roomRequest) {
-        final RoomResponse roomResponse = roomService.createRoom(roomRequest);
-        return ResponseEntity.ok(Map.of("roomId", roomResponse.roomId()));
+        final RoomCreateResponse roomCreateResponse = roomService.createRoom(roomRequest);
+        return ResponseEntity.ok(roomCreateResponse);
     }
 
     @PatchMapping("/{roomId}")
     public ResponseEntity<?> updateRoom(
             @PathVariable Long roomId,
             @RequestBody final RoomRequest roomRequest) {
-        final RoomResponse roomResponse = roomService.updateRoom(roomId, roomRequest);
-        return ResponseEntity.ok(roomResponse);
+        roomService.updateRoom(roomId, roomRequest);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{roomId}")
@@ -37,9 +37,12 @@ public class RoomController {
     }
 
     @GetMapping("/joined/{memberId}")
-    public ResponseEntity<List<RoomListResponse>> getJoinedRooms(@PathVariable Long memberId) {
-        List<RoomListResponse> joinedRooms = roomService.getJoinedRooms(memberId);
-        return ResponseEntity.ok(joinedRooms);
+    public ResponseEntity<?> getJoinedRooms(
+            @PathVariable Long memberId,
+            @PageableDefault(size = 6) Pageable pageable) {
+
+        PageResponse response = roomService.getJoinedRooms(memberId, pageable);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{roomId}")

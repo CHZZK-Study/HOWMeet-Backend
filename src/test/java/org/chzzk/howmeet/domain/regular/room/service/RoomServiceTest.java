@@ -41,7 +41,7 @@ public class RoomServiceTest {
 
         // then
         assertThatThrownBy(() -> roomService.getRoom(invalidId))
-                .isInstanceOf(RoomException.class)  // 여기 수정: 예외를 RoomException으로 수정
+                .isInstanceOf(RoomException.class)
                 .hasMessage(ROOM_NOT_FOUND.getMessage());
     }
 

@@ -1,5 +1,10 @@
 package org.chzzk.howmeet.domain.temporary.record.service;
 
+import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.GUEST_NOT_FOUND;
+import static org.chzzk.howmeet.domain.temporary.record.exception.GSRecordErrorCode.DATE_INVALID_SELECT;
+import static org.chzzk.howmeet.domain.temporary.record.exception.GSRecordErrorCode.TIME_INVALID_SELECT;
+import static org.chzzk.howmeet.domain.temporary.schedule.exception.GSErrorCode.SCHEDULE_NOT_FOUND;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -12,16 +17,19 @@ import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.common.model.Nickname;
 import org.chzzk.howmeet.domain.common.model.Nicknames;
 import org.chzzk.howmeet.domain.common.model.SelectionDetail;
-import org.chzzk.howmeet.domain.temporary.guest.entity.Guest;
-import org.chzzk.howmeet.domain.temporary.guest.repository.GuestRepository;
+import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
+import org.chzzk.howmeet.domain.temporary.auth.exception.GuestException;
+import org.chzzk.howmeet.domain.temporary.auth.repository.GuestRepository;
 import org.chzzk.howmeet.domain.temporary.record.dto.get.response.GSRecordGetResponse;
 import org.chzzk.howmeet.domain.temporary.record.dto.post.request.GSRecordPostRequest;
 import org.chzzk.howmeet.domain.temporary.record.entity.GuestScheduleRecord;
+import org.chzzk.howmeet.domain.temporary.record.exception.GSRecordException;
 import org.chzzk.howmeet.domain.temporary.record.model.GSRecordNicknames;
 import org.chzzk.howmeet.domain.temporary.record.model.GSRecordSelectionDetail;
 import org.chzzk.howmeet.domain.temporary.record.repository.GSRecordRepository;
 import org.chzzk.howmeet.domain.temporary.record.repository.TmpGuestRepository;
 import org.chzzk.howmeet.domain.temporary.schedule.entity.GuestSchedule;
+import org.chzzk.howmeet.domain.temporary.schedule.exception.GSException;
 import org.chzzk.howmeet.domain.temporary.schedule.repository.GSRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,45 +77,47 @@ public class GSRecordService {
         LocalTime selectHour = selectTime.toLocalTime();
 
         if (!dates.contains(selectDate.toString())) {
-            throw new IllegalArgumentException("선택할 수 없는 날짜를 선택하셨습니다.");
+            throw new GSRecordException(DATE_INVALID_SELECT);
         }
         if (selectHour.isBefore(startTime) || selectHour.isAfter(
                 endTime.minusMinutes(30))) {
-            throw new IllegalArgumentException("유효하지 않은 시간을 선택하셨습니다.");
+            throw new GSRecordException(TIME_INVALID_SELECT);
         }
     }
 
     public GSRecordGetResponse getGSRecord(final Long gsId) {
-        List<Guest> guestList = tmpGuestRepository.findByGuestScheduleId(gsId);
-        Map<Long, Nickname> nickNameMap = guestList.stream()
+        GuestSchedule guestSchedule = findGSByGSId(gsId);
+        List<Guest> guests = tmpGuestRepository.findByGuestScheduleId(guestSchedule.getId());
+
+        Map<Long, Nickname> nickNameMap = guests.stream()
                 .collect(Collectors.toMap(Guest::getId, Guest::getNickname));
 
-        List<GuestScheduleRecord> gsRecords = findGSRecordByGSId(gsId);
+        List<GuestScheduleRecord> gsRecords = findGSRecordByGSId(guestSchedule.getId());
 
-        Nicknames allNickname = GSRecordNicknames.convertNicknameProvidersList(guestList);
+        Nicknames allNickname = GSRecordNicknames.convertNicknameProvidersList(guests);
 
         Nicknames participants = GSRecordNicknames.distinctNicknames(gsRecords, nickNameMap);
         List<SelectionDetail> selectedInfoList = GSRecordSelectionDetail.convertMapToSelectionDetail(gsRecords,
                 nickNameMap);
 
-        return GSRecordGetResponse.of(gsId, allNickname, participants, selectedInfoList);
+        return GSRecordGetResponse.of(guestSchedule.getId(), allNickname, participants, selectedInfoList);
     }
 
 
     private List<GuestScheduleRecord> findGSRecordByGSId(final Long gsId) {
         final List<GuestScheduleRecord> gsRecords = gsRecordRepository.findByGuestScheduleId(gsId);
-        if (gsRecords == null) {
+        if (gsRecords.isEmpty()) {
             return Collections.emptyList();
         }
         return gsRecords;
     }
 
     private GuestSchedule findGSByGSId(final Long gsId) {
-        return gsRepository.findById(gsId).orElseThrow(() -> new IllegalArgumentException("일치하는 일정을 찾을 수 없습니다."));
+        return gsRepository.findById(gsId).orElseThrow(() -> new GSException(SCHEDULE_NOT_FOUND));
     }
 
     private Guest findGuestByGuestId(final Long guestId) {
         return guestRepository.findById(guestId)
-                .orElseThrow(() -> new IllegalArgumentException("일치하는 비회원 id를 찾을 수 없습니다."));
+                .orElseThrow(() -> new GuestException(GUEST_NOT_FOUND));
     }
 }
