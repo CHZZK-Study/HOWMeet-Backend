@@ -1,6 +1,6 @@
 package org.chzzk.howmeet.domain.temporary.record.service;
 
-import static org.chzzk.howmeet.domain.temporary.auth.exception.GuestErrorCode.GUEST_NOT_FOUND;
+import static org.chzzk.howmeet.domain.temporary.guest.exception.GuestErrorCode.GUEST_NOT_FOUND;
 import static org.chzzk.howmeet.domain.temporary.record.exception.GSRecordErrorCode.DATE_INVALID_SELECT;
 import static org.chzzk.howmeet.domain.temporary.record.exception.GSRecordErrorCode.TIME_INVALID_SELECT;
 import static org.chzzk.howmeet.domain.temporary.schedule.exception.GSErrorCode.SCHEDULE_NOT_FOUND;
@@ -19,9 +19,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
-import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
-import org.chzzk.howmeet.domain.temporary.auth.exception.GuestException;
-import org.chzzk.howmeet.domain.temporary.auth.repository.GuestRepository;
+import org.chzzk.howmeet.domain.temporary.guest.entity.Guest;
+import org.chzzk.howmeet.domain.temporary.guest.exception.GuestException;
+import org.chzzk.howmeet.domain.temporary.guest.repository.GuestRepository;
 import org.chzzk.howmeet.domain.temporary.record.dto.get.response.GSRecordGetResponse;
 import org.chzzk.howmeet.domain.temporary.record.dto.post.request.GSRecordPostRequest;
 import org.chzzk.howmeet.domain.temporary.record.entity.GuestScheduleRecord;
