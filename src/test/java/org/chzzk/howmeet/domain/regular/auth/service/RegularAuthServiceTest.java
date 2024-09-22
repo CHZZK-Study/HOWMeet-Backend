@@ -1,6 +1,7 @@
 package org.chzzk.howmeet.domain.regular.auth.service;
 
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
+import org.chzzk.howmeet.domain.common.auth.util.TokenProvider;
 import org.chzzk.howmeet.domain.regular.auth.dto.authorize.request.MemberAuthorizeRequest;
 import org.chzzk.howmeet.domain.regular.auth.dto.authorize.response.MemberAuthorizeResponse;
 import org.chzzk.howmeet.domain.regular.auth.dto.login.MemberLoginResult;
@@ -9,12 +10,10 @@ import org.chzzk.howmeet.domain.regular.auth.dto.reissue.MemberReissueResult;
 import org.chzzk.howmeet.domain.regular.auth.entity.RefreshToken;
 import org.chzzk.howmeet.domain.regular.auth.exception.RefreshTokenException;
 import org.chzzk.howmeet.domain.regular.member.entity.Member;
-import org.chzzk.howmeet.global.util.TokenProvider;
 import org.chzzk.howmeet.infra.oauth.dto.authorize.response.OAuthAuthorizePayload;
 import org.chzzk.howmeet.infra.oauth.model.OAuthProvider;
 import org.chzzk.howmeet.infra.oauth.model.profile.OAuthProfile;
 import org.chzzk.howmeet.infra.oauth.model.profile.OAuthProfileFactory;
-import org.chzzk.howmeet.infra.oauth.repository.InMemoryOAuthProviderRepository;
 import org.chzzk.howmeet.infra.oauth.service.OAuthClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,9 +42,6 @@ import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 class RegularAuthServiceTest {
-    @Mock
-    InMemoryOAuthProviderRepository inMemoryOAuthProviderRepository;
-
     @Mock
     OAuthClient oAuthClient;
 
@@ -79,14 +75,11 @@ class RegularAuthServiceTest {
         // given
         final MemberAuthorizeRequest memberAuthorizeRequest = new MemberAuthorizeRequest(providerName);
         final OAuthAuthorizePayload oAuthAuthorizePayload = new OAuthAuthorizePayload(HttpMethod.GET, URI.create("authorizeURL"));
-        final OAuthProvider oAuthProvider = getOAuthProvider(providerName);
         final MemberAuthorizeResponse expect = MemberAuthorizeResponse.from(oAuthAuthorizePayload);
 
         // when
-        doReturn(oAuthProvider).when(inMemoryOAuthProviderRepository)
-                .findByProviderName(providerName);
         doReturn(oAuthAuthorizePayload).when(oAuthClient)
-                .getAuthorizePayload(oAuthProvider);
+                .getAuthorizePayload(providerName);
         final MemberAuthorizeResponse actual = regularAuthService.authorize(memberAuthorizeRequest);
 
         // then
@@ -103,10 +96,8 @@ class RegularAuthServiceTest {
         final OAuthProfile oAuthProfile = getOAuthProfile(oAuthProvider);
 
         // when
-        doReturn(oAuthProvider).when(inMemoryOAuthProviderRepository)
-                .findByProviderName(providerName);
         doReturn(Mono.just(oAuthProfile)).when(oAuthClient)
-                .getProfile(oAuthProvider, code);
+                .getProfile(providerName, code);
         doReturn(member).when(oAuthResultHandler)
                 .saveOrGet(oAuthProfile);
         doReturn(accessToken).when(tokenProvider)
@@ -126,11 +117,10 @@ class RegularAuthServiceTest {
     public void loginWhenInvalidAuthenticateCode(final String providerName) throws Exception {
         // given
         final MemberLoginRequest memberLoginRequest = new MemberLoginRequest(providerName, code);
-        final OAuthProvider oAuthProvider = getOAuthProvider(providerName);
 
         // when
         doThrow(new RuntimeException()).when(oAuthClient)
-                .getProfile(oAuthProvider, code);
+                .getProfile(providerName, code);
 
         // then
         assertThatThrownBy(() -> regularAuthService.login(memberLoginRequest))

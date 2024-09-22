@@ -9,7 +9,7 @@ import org.chzzk.howmeet.domain.temporary.guest.entity.Guest;
 import org.chzzk.howmeet.domain.temporary.guest.util.PasswordEncoder;
 import org.chzzk.howmeet.domain.temporary.guest.service.GuestFindService;
 import org.chzzk.howmeet.domain.temporary.guest.service.GuestSaveService;
-import org.chzzk.howmeet.global.util.TokenProvider;
+import org.chzzk.howmeet.domain.common.auth.util.TokenProvider;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor

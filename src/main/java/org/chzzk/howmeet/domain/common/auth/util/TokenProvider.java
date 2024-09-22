@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.global.util;
+package org.chzzk.howmeet.domain.common.auth.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

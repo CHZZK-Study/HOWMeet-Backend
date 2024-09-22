@@ -1,4 +1,4 @@
-package org.chzzk.howmeet.infra.oauth.service;
+package org.chzzk.howmeet.infra.oauth.service.authorize;
 
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.infra.oauth.model.OAuthProvider;
