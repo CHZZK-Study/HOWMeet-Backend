@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
+import org.chzzk.howmeet.domain.regular.fcm.service.FcmService;
 import org.chzzk.howmeet.domain.regular.member.entity.Member;
 import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
 import org.chzzk.howmeet.domain.regular.record.dto.get.MSRecordGetResponse;
@@ -57,6 +58,8 @@ public class MSRecordServiceTest {
     RoomMemberRepository roomMemberRepository;
     @Mock
     RoomRepository roomRepository;
+    @Mock
+    FcmService fcmService;
     @InjectMocks
     private MSRecordService msRecordService;
 
