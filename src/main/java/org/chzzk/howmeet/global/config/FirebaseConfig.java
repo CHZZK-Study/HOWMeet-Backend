@@ -21,12 +21,14 @@ public class FirebaseConfig {
     @PostConstruct
     public void initialize() {
         try {
-            ClassPathResource resource = new ClassPathResource(firebaseSdkPath);
-            InputStream serviceAccount = resource.getInputStream();
-            FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .build();
-            FirebaseApp.initializeApp(options);
+            if (FirebaseApp.getApps().isEmpty()) {
+                ClassPathResource resource = new ClassPathResource(firebaseSdkPath);
+                InputStream serviceAccount = resource.getInputStream();
+                FirebaseOptions options = FirebaseOptions.builder()
+                        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                        .build();
+                FirebaseApp.initializeApp(options);
+            }
         } catch (FileNotFoundException e) {
             System.out.println("Firebase ServiceAccountKey FileNotFoundException" + e.getMessage());
         } catch (IOException e) {
