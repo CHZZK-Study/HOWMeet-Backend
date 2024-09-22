@@ -7,6 +7,7 @@ import static org.chzzk.howmeet.domain.regular.schedule.exception.MSErrorCode.SC
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.AssertionErrors.assertFalse;
@@ -78,6 +79,7 @@ public class MSRecordServiceTest {
         AuthPrincipal authPrincipal = new AuthPrincipal(1L, member.getNickname().getValue(), member.getRole());
 
         when(msRepository.findById(memberSchedule.getId())).thenReturn(Optional.of(memberSchedule));
+        when(roomMemberRepository.existsByRoomIdAndMemberId(anyLong(), anyLong())).thenReturn(true);
 
         msRecordService.postMSRecord(msRecordPostRequest, authPrincipal);
 
@@ -89,7 +91,9 @@ public class MSRecordServiceTest {
     @DisplayName("잘못된 일정의 MemberScheduleRecord의 날짜 입력으로 예외 발생")
     void postMSRecord_InvalidDate() {
         Member member = MemberFixture.KIM.생성();
-        MemberSchedule memberSchedule = MSFixture.createMemberScheduleA(RoomFixture.createRoomA());
+        Room room = RoomFixture.createRoomA();
+        RoomMember roomMember = RoomMemberFixture.MEMBER_1.create(room);
+        MemberSchedule memberSchedule = MSFixture.createMemberScheduleA(room);
         List<LocalDateTime> selectTimes = Arrays.asList(
                 LocalDateTime.of(2020, 1, 1, 10, 30),
                 LocalDateTime.of(2020, 1, 1, 11, 0),
@@ -100,6 +104,8 @@ public class MSRecordServiceTest {
         AuthPrincipal authPrincipal = new AuthPrincipal(1L, member.getNickname().getValue(), member.getRole());
 
         when(msRepository.findById(memberSchedule.getId())).thenReturn(Optional.of(memberSchedule));
+        when(roomMemberRepository.existsByRoomIdAndMemberId(anyLong(), anyLong())).thenReturn(true);
+
 
         MSRecordException exception = assertThrows(MSRecordException.class, () -> {
             msRecordService.postMSRecord(msRecordPostRequest, authPrincipal);
@@ -122,6 +128,7 @@ public class MSRecordServiceTest {
         AuthPrincipal authPrincipal = new AuthPrincipal(1L, member.getNickname().getValue(), member.getRole());
 
         when(msRepository.findById(memberSchedule.getId())).thenReturn(Optional.of(memberSchedule));
+        when(roomMemberRepository.existsByRoomIdAndMemberId(anyLong(), anyLong())).thenReturn(true);
 
         MSRecordException exception = assertThrows(MSRecordException.class, () -> {
             msRecordService.postMSRecord(msRecordPostRequest, authPrincipal);
