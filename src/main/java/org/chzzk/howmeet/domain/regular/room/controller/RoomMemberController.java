@@ -1,5 +1,6 @@
 package org.chzzk.howmeet.domain.regular.room.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.auth.annotation.Authenticated;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
@@ -43,8 +44,8 @@ public class RoomMemberController {
     @PatchMapping
     public ResponseEntity<List<RoomMemberResponse>> updateRoomMembers(
             @PathVariable(name = "roomId") Long roomId,
-            @RequestBody final List<RoomMemberRequest> roomMemberRequests) {
-        List<RoomMemberResponse> roomMemberResponses = roomMemberService.updateRoomMembers(roomId, roomMemberRequests);
-        return ResponseEntity.ok(roomMemberResponses);
+            @Valid @RequestBody final List<RoomMemberRequest> roomMemberRequests) {
+        roomMemberService.updateRoomMembers(roomId, roomMemberRequests);
+        return ResponseEntity.ok().build();
     }
 }

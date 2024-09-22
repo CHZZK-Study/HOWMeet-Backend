@@ -25,20 +25,27 @@ public enum RoomMemberFixture {
     }
 
     public RoomMemberRequest createRequest(Room room) {
-        return new RoomMemberRequest(memberId, room.getId(), isLeader);
+        return new RoomMemberRequest(memberId, isLeader);
     }
 
-    public RoomMemberResponse createResponse(Room room) {
+    public RoomMemberResponse createResponse(Room room, String nickname) {
         RoomMember roomMember = RoomMember.of(memberId, room, isLeader);
-        return RoomMemberResponse.from(roomMember);
+        return RoomMemberResponse.of(roomMember, nickname);
     }
 
     public static List<RoomMemberRequest> createRoomMemberRequests(Room room) {
-        return List.of(MEMBER_1.createRequest(room), MEMBER_2.createRequest(room), MEMBER_3.createRequest(room));
+        return List.of(
+                MEMBER_1.createRequest(room),
+                MEMBER_2.createRequest(room),
+                MEMBER_3.createRequest(room)
+        );
     }
 
     public static List<RoomMemberResponse> createRoomMemberResponses(Room room) {
-        return List.of(MEMBER_1.createResponse(room), MEMBER_2.createResponse(room), MEMBER_3.createResponse(room));
+        return List.of(
+                MEMBER_1.createResponse(room, "Kim"),
+                MEMBER_2.createResponse(room, "Lee"),
+                MEMBER_3.createResponse(room, "Park")
+        );
     }
-
 }
