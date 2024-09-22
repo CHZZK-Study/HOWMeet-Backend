@@ -3,15 +3,20 @@ package org.chzzk.howmeet.domain.regular.confirm.service;
 import static org.chzzk.howmeet.domain.regular.room.exception.RoomErrorCode.ROOM_MEMBER_NOT_FOUND;
 import static org.chzzk.howmeet.domain.regular.schedule.exception.MSErrorCode.SCHEDULE_NOT_FOUND;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
+import org.chzzk.howmeet.domain.common.model.SelectionDetail;
+import org.chzzk.howmeet.domain.regular.confirm.dto.SelectTimeCount;
 import org.chzzk.howmeet.domain.regular.fcm.service.FcmService;
 import org.chzzk.howmeet.domain.regular.confirm.dto.ConfirmScheduleResponse;
 import org.chzzk.howmeet.domain.regular.confirm.dto.ConfirmScheduleRequest;
 import org.chzzk.howmeet.domain.regular.confirm.entity.ConfirmSchedule;
 import org.chzzk.howmeet.domain.regular.confirm.repository.ConfirmRepository;
-import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
+import org.chzzk.howmeet.domain.regular.record.entity.MemberScheduleRecord;
+import org.chzzk.howmeet.domain.regular.record.repository.MSRecordRepository;
 import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
 import org.chzzk.howmeet.domain.regular.room.exception.RoomException;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomMemberRepository;
@@ -29,13 +34,12 @@ public class ConfirmService {
 
     private final MSRepository msRepository;
     private final RoomMemberRepository roomMemberRepository;
-    private final MemberRepository memberRepository;
     private final ConfirmRepository confirmRepository;
+    private final MSRecordRepository msRecordRepository;
     private final FcmService fcmService;
 
     @Transactional
-    public Long postConfirmSchedule(final ConfirmScheduleRequest confirmSchedulePostRequest, final AuthPrincipal authPrincipal)
-            throws Exception {
+    public Long postConfirmSchedule(final ConfirmScheduleRequest confirmSchedulePostRequest, final AuthPrincipal authPrincipal) {
         MemberSchedule ms = findMSByMSId(confirmSchedulePostRequest.msId());
         checkLeaderAuthority(authPrincipal.id(), ms.getRoom().getId());
 
@@ -63,13 +67,30 @@ public class ConfirmService {
         return msRepository.findById(msId).orElseThrow(() -> new MSException(SCHEDULE_NOT_FOUND));
     }
 
-    public ConfirmScheduleResponse getConfirmSchedule(final Long confirmScheduleId){
-        ConfirmSchedule confirmSchedule = findConfirmScheduleById(confirmScheduleId);
+    public ConfirmScheduleResponse getConfirmSchedule(final Long roomId, final Long msId){
+        ConfirmSchedule confirmSchedule = findConfirmScheduleByMsId(msId);
+        List<MemberScheduleRecord> msRecords = findMSRecordByMSId(msId);
 
-        return ConfirmScheduleResponse.from(confirmSchedule);
+        Integer roomMemberCount = findRoomMembersize(roomId);
+        List<SelectTimeCount> timeCountList = SelectionDetail.convertToSelectionTimeCount(msRecords);
+
+
+        return ConfirmScheduleResponse.of(confirmSchedule, roomMemberCount, timeCountList);
     }
 
-    private ConfirmSchedule findConfirmScheduleById(final Long confirmScheudleId){
-        return confirmRepository.findById(confirmScheudleId).orElseThrow(() -> new IllegalArgumentException("일치하는 일정 결과를 찾을 수 없습니다."));
+    private Integer findRoomMembersize(final Long roomId){
+        return Optional.ofNullable(roomMemberRepository.findByRoomId(roomId)).orElse(Collections.emptyList()).size();
+    }
+
+    private List<MemberScheduleRecord> findMSRecordByMSId(final Long msId){
+        List<MemberScheduleRecord> msRecords = msRecordRepository.findByMemberScheduleId(msId);
+        if(msRecords == null) {
+            return Collections.emptyList();
+        }
+        return msRecords;
+    }
+
+    private ConfirmSchedule findConfirmScheduleByMsId(final Long msId){
+        return confirmRepository.findByMsId(msId).orElseThrow(() -> new IllegalArgumentException("일치하는 일정 결과를 찾을 수 없습니다."));
     }
 }

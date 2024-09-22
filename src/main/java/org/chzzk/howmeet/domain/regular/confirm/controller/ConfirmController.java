@@ -29,8 +29,8 @@ public class ConfirmController {
         return ResponseEntity.created(URI.create("/confirm/" + confirmScheduleId)).build();
     }
 
-    @GetMapping("/{confirmScheduleId}")
-    public ResponseEntity<?> getConfirmRecord(@PathVariable final Long confirmScheduleId){
-        return ResponseEntity.ok(confirmService.getConfirmSchedule(confirmScheduleId));
+    @GetMapping("/{roomId}/{msId}")
+    public ResponseEntity<?> getConfirmRecord(@PathVariable final Long roomId, @PathVariable final Long msId){
+        return ResponseEntity.ok(confirmService.getConfirmSchedule(roomId, msId));
     }
 }
