@@ -40,7 +40,7 @@ public class RoomMemberServiceTest {
         // given
         Long invalidRoomId = 999L;
         Room room = RoomFixture.createRoomA();
-        RoomMemberRequest memberRequest1 = new RoomMemberRequest(RoomMemberFixture.MEMBER_1.create(room).getMemberId(), invalidRoomId, true);
+        RoomMemberRequest memberRequest1 = new RoomMemberRequest(RoomMemberFixture.MEMBER_1.create(room).getMemberId(), true);
         List<RoomMemberRequest> roomMemberRequests = List.of(memberRequest1);
 
         when(roomRepository.findById(invalidRoomId)).thenReturn(Optional.empty());

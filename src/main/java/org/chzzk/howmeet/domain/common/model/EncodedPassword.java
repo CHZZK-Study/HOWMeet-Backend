@@ -3,7 +3,7 @@ package org.chzzk.howmeet.domain.common.model;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import org.chzzk.howmeet.domain.temporary.auth.util.PasswordEncoder;
+import org.chzzk.howmeet.domain.temporary.guest.util.PasswordEncoder;
 
 @EqualsAndHashCode
 @Getter
