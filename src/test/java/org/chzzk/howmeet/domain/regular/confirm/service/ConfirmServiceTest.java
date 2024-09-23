@@ -71,7 +71,7 @@ public class ConfirmServiceTest{
     @Test
     @DisplayName("일정 확정 입력 성공 테스트")
     public void postConfirmSchedule() throws Exception {
-        ConfirmSchedule confirmSchedule = request.toEntity(ms);
+        ConfirmSchedule confirmSchedule = request.toEntity(1L);
 
         when(msRepository.findById(ms.getId())).thenReturn(Optional.of(ms));
         when(roomMemberRepository.findByRoomId(anyLong())).thenReturn(List.of(leader));
@@ -97,27 +97,29 @@ public class ConfirmServiceTest{
 
     @Test
     @DisplayName("일정 확정 조회 성공 테스트")
-    public void getConfirmSchedule_Success() {
-        ConfirmSchedule confirmSchedule = request.toEntity(ms);
+    public void getConfirmScheduleSuccess() {
+        ConfirmSchedule confirmSchedule = request.toEntity(1L);
 
-        when(confirmRepository.findByMsId(1L)).thenReturn(Optional.of(confirmSchedule));
+        when(confirmRepository.findByMemberScheduleId(1L)).thenReturn(Optional.of(confirmSchedule));
         when(msRecordRepository.findByMemberScheduleId(1L)).thenReturn(Collections.emptyList());
+        when(msRepository.findById(1L)).thenReturn(Optional.of(ms));
         ConfirmScheduleResponse response = confirmService.getConfirmSchedule(1L, 1L);
 
         assertThat(response).isNotNull();
-        verify(confirmRepository).findByMsId(1L);
+        verify(confirmRepository).findByMemberScheduleId(1L);
         verify(msRecordRepository).findByMemberScheduleId(1L);
     }
 
     @Test
     @DisplayName("일정 확정 조회 실패 테스트")
     public void getConfirmSchedule_NotFound() {
-        when(confirmRepository.findByMsId(1999L)).thenReturn(Optional.empty());
+        when(confirmRepository.findByMemberScheduleId(1999L)).thenReturn(Optional.empty());
 
         assertThrows(IllegalArgumentException.class, () -> {
             confirmService.getConfirmSchedule(1L, 1999L);
         });
 
-        verify(confirmRepository).findByMsId(1999L);
+
+        verify(confirmRepository).findByMemberScheduleId(1999L);
     }
 }

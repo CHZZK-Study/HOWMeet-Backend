@@ -3,18 +3,16 @@ package org.chzzk.howmeet.domain.regular.confirm.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 
 @Entity
 @Getter
@@ -29,20 +27,21 @@ public class ConfirmSchedule {
     @Column(name = "name")
     private List<String> participantName;
 
-    @ElementCollection
-    @Column(name = "time", nullable = false)
+    @ElementCollection(fetch = FetchType.LAZY)
+    @Column(name = "times", nullable = false)
     private List<LocalDateTime> times;
 
-    @OneToOne
-    @JoinColumn(name = "member_schedule_id", nullable = false)
-    private MemberSchedule ms;
-    private ConfirmSchedule(final List<LocalDateTime> times, final List<String> participantNames, final MemberSchedule ms) {
+    @Column(name = "member_schedule_id", nullable = false)
+    private Long memberScheduleId;
+
+
+    private ConfirmSchedule(final List<LocalDateTime> times, final List<String> participantNames, final Long memberScheduleId) {
         this.times = times;
         this.participantName = participantNames;
-        this.ms = ms;
+        this.memberScheduleId = memberScheduleId;
     }
 
-    public static ConfirmSchedule of(final List<LocalDateTime> time, final List<String> participantNames, final MemberSchedule ms){
-        return new ConfirmSchedule(time, participantNames, ms);
+    public static ConfirmSchedule of(final List<LocalDateTime> time, final List<String> participantNames, final Long memberScheduleId){
+        return new ConfirmSchedule(time, participantNames, memberScheduleId);
     }
 }

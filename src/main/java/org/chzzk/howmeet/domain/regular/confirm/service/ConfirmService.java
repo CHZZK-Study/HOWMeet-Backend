@@ -53,7 +53,7 @@ public class ConfirmService {
         if(ms.isComplete()) throw new ConfirmException(SCHEDULE_ALREADY_CONFIRMED);
         ms.complete();
 
-        ConfirmSchedule confirmSchedule = confirmSchedulePostRequest.toEntity(ms);
+        ConfirmSchedule confirmSchedule = confirmSchedulePostRequest.toEntity(msId);
         confirmRepository.save(confirmSchedule);
 
         List<RoomMember> members = ms.getRoom().getMembers();
@@ -76,7 +76,7 @@ public class ConfirmService {
 
     public ConfirmScheduleResponse getConfirmSchedule(final Long roomId, final Long msId){
         ConfirmSchedule confirmSchedule = findConfirmScheduleByMsId(msId);
-
+        MemberSchedule ms = findMSByMSId(msId);
         List<Member> members = findMemberByRoomId(roomId);
         Map<Long, Nickname> nickNameMap = members.stream()
                 .collect(Collectors.toMap(Member::getId, Member::getNickname));
@@ -86,7 +86,7 @@ public class ConfirmService {
         List<SelectionDetail> selectedInfoList = MSRecordSelectionDetail.convertMapToSelectionDetail(msRecords,
                 nickNameMap);
 
-        return ConfirmScheduleResponse.of(confirmSchedule, allNickname, selectedInfoList);
+        return ConfirmScheduleResponse.of(confirmSchedule, ms, allNickname, selectedInfoList);
     }
 
     private List<Member> findMemberByRoomId(final Long roomId) {
