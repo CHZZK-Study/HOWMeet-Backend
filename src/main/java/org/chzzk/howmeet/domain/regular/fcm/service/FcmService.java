@@ -13,7 +13,6 @@ import org.chzzk.howmeet.domain.regular.fcm.entity.FcmToken;
 import org.chzzk.howmeet.domain.regular.fcm.repository.FcmTokenRepository;
 import org.chzzk.howmeet.domain.regular.notice.entity.Notice;
 import org.chzzk.howmeet.domain.regular.notice.model.NoticeMessageTemplate;
-import org.chzzk.howmeet.domain.regular.notice.model.NoticeStatus;
 import org.chzzk.howmeet.domain.regular.notice.repository.NoticeRepository;
 import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
@@ -49,7 +48,7 @@ public class FcmService {
             return;
         }
 
-        final Notice notice = Notice.of(fcmToken, ms, NoticeStatus.SENDING, NoticeMessageTemplate.ALL_MEMBERS_COMPLETED);
+        final Notice notice = Notice.of(fcmToken, ms, NoticeMessageTemplate.ALL_MEMBERS_COMPLETED);
 
         send(fcmToken, notice);
         noticeRepository.save(notice);
@@ -62,7 +61,7 @@ public class FcmService {
             .map(member -> findFcmTokenById(member.getMemberId()))
             .filter(Objects::nonNull)
             .forEach(fcmToken -> {
-                Notice notice = Notice.of(fcmToken, ms, NoticeStatus.SENDING, NoticeMessageTemplate.ALL_MEMBERS_COMPLETED);
+                Notice notice = Notice.of(fcmToken, ms, NoticeMessageTemplate.ALL_MEMBERS_COMPLETED);
                 send(fcmToken, notice);
                 noticeRepository.save(notice);
             });

@@ -1,7 +1,7 @@
 package org.chzzk.howmeet.domain.regular.confirm.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -66,7 +66,7 @@ public class ConfirmServiceTest{
             LocalDateTime.of(2023, 1, 1, 11, 30)
     );
     List<String> names = Arrays.asList("김민우", "김수현", "이채림");
-    ConfirmScheduleRequest request = new ConfirmScheduleRequest(ms.getId(), selectTimes, names);
+    ConfirmScheduleRequest request = new ConfirmScheduleRequest(selectTimes, names);
 
     @Test
     @DisplayName("일정 확정 입력 성공 테스트")
@@ -85,7 +85,7 @@ public class ConfirmServiceTest{
             return savedSchedule;
         });
 
-        Long confirmScheduleId = confirmService.postConfirmSchedule(request, authPrincipal);
+        Long confirmScheduleId = confirmService.postConfirmSchedule(1L, request, authPrincipal);
 
         verify(confirmRepository).save(any(ConfirmSchedule.class));
         verify(fcmService).sendToRoomMember(anyList(), eq(ms));
