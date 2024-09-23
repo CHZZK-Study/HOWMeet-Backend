@@ -38,8 +38,9 @@ public class FcmToken {
     }
 
     public void updateValue(final String value) {
-        if (!isNullOrEmpty()) {
-            this.value = value;
+        if (isNullOrEmpty()) {
+            throw new IllegalArgumentException("유효하지 않은 토큰 값입니다.");
         }
+        this.value = value;
     }
 }
