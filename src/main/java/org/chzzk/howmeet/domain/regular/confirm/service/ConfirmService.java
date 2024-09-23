@@ -5,9 +5,12 @@ import static org.chzzk.howmeet.domain.regular.schedule.exception.MSErrorCode.SC
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
+import org.chzzk.howmeet.domain.common.model.Nickname;
+import org.chzzk.howmeet.domain.common.model.Nicknames;
 import org.chzzk.howmeet.domain.common.model.SelectionDetail;
 import org.chzzk.howmeet.domain.regular.confirm.dto.SelectTimeCount;
 import org.chzzk.howmeet.domain.regular.fcm.service.FcmService;
@@ -15,7 +18,11 @@ import org.chzzk.howmeet.domain.regular.confirm.dto.ConfirmScheduleResponse;
 import org.chzzk.howmeet.domain.regular.confirm.dto.ConfirmScheduleRequest;
 import org.chzzk.howmeet.domain.regular.confirm.entity.ConfirmSchedule;
 import org.chzzk.howmeet.domain.regular.confirm.repository.ConfirmRepository;
+import org.chzzk.howmeet.domain.regular.member.entity.Member;
+import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
 import org.chzzk.howmeet.domain.regular.record.entity.MemberScheduleRecord;
+import org.chzzk.howmeet.domain.regular.record.model.MSRecordNicknames;
+import org.chzzk.howmeet.domain.regular.record.model.MSRecordSelectionDetail;
 import org.chzzk.howmeet.domain.regular.record.repository.MSRecordRepository;
 import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
 import org.chzzk.howmeet.domain.regular.room.exception.RoomException;
@@ -36,6 +43,7 @@ public class ConfirmService {
     private final RoomMemberRepository roomMemberRepository;
     private final ConfirmRepository confirmRepository;
     private final MSRecordRepository msRecordRepository;
+    private final MemberRepository memberRepository;
     private final FcmService fcmService;
 
     @Transactional
@@ -69,17 +77,28 @@ public class ConfirmService {
 
     public ConfirmScheduleResponse getConfirmSchedule(final Long roomId, final Long msId){
         ConfirmSchedule confirmSchedule = findConfirmScheduleByMsId(msId);
+
+        List<Member> members = findMemberByRoomId(roomId);
+        Map<Long, Nickname> nickNameMap = members.stream()
+                .collect(Collectors.toMap(Member::getId, Member::getNickname));
         List<MemberScheduleRecord> msRecords = findMSRecordByMSId(msId);
 
-        Integer roomMemberCount = findRoomMembersize(roomId);
-        List<SelectTimeCount> timeCountList = SelectionDetail.convertToSelectionTimeCount(msRecords);
+        Nicknames allNickname = MSRecordNicknames.convertNicknameProvidersList(members);
+        List<SelectionDetail> selectedInfoList = MSRecordSelectionDetail.convertMapToSelectionDetail(msRecords,
+                nickNameMap);
 
-
-        return ConfirmScheduleResponse.of(confirmSchedule, roomMemberCount, timeCountList);
+        return ConfirmScheduleResponse.of(confirmSchedule, allNickname, selectedInfoList);
     }
 
-    private Integer findRoomMembersize(final Long roomId){
-        return Optional.ofNullable(roomMemberRepository.findByRoomId(roomId)).orElse(Collections.emptyList()).size();
+    private List<Member> findMemberByRoomId(final Long roomId) {
+        List<RoomMember> roomMembers = roomMemberRepository.findByRoomId(roomId);
+        if (roomMembers == null) {
+            return Collections.emptyList();
+        }
+
+        return roomMembers.stream().map(roomMember -> memberRepository.findById(roomMember.getMemberId())
+                        .orElseThrow(() -> new RoomException(ROOM_MEMBER_NOT_FOUND)))
+                .collect(Collectors.toList());
     }
 
     private List<MemberScheduleRecord> findMSRecordByMSId(final Long msId){
