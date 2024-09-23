@@ -31,13 +31,13 @@ public class ConfirmSchedule {
 
     @ElementCollection
     @Column(name = "time", nullable = false)
-    private List<LocalDateTime> time;
+    private List<LocalDateTime> times;
 
     @OneToOne
     @JoinColumn(name = "member_schedule_id", nullable = false)
     private MemberSchedule ms;
-    private ConfirmSchedule(final List<LocalDateTime> time, final List<String> participantNames, final MemberSchedule ms) {
-        this.time = time;
+    private ConfirmSchedule(final List<LocalDateTime> times, final List<String> participantNames, final MemberSchedule ms) {
+        this.times = times;
         this.participantName = participantNames;
         this.ms = ms;
     }

@@ -13,7 +13,7 @@ public record ConfirmScheduleResponse(RoomName roomName, String msName, List<Loc
         return new ConfirmScheduleResponse(
                 confirmSchedule.getMs().getRoom().getName(),
                 confirmSchedule.getMs().getName().getValue(),
-                confirmSchedule.getTime(),
+                confirmSchedule.getTimes(),
                 confirmSchedule.getParticipantName(),
                 totalRoomMembers,
                 allSelectTime
