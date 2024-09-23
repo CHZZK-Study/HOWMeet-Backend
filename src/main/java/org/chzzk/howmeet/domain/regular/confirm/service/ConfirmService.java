@@ -28,7 +28,6 @@ import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
 import org.chzzk.howmeet.domain.regular.room.exception.RoomException;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomMemberRepository;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
-import org.chzzk.howmeet.domain.regular.schedule.entity.ScheduleStatus;
 import org.chzzk.howmeet.domain.regular.schedule.exception.MSException;
 import org.chzzk.howmeet.domain.regular.schedule.repository.MSRepository;
 import org.springframework.stereotype.Service;
@@ -51,7 +50,7 @@ public class ConfirmService {
         MemberSchedule ms = findMSByMSId(msId);
         checkLeaderAuthority(authPrincipal.id(), ms.getRoom().getId());
 
-        if(ms.getStatus() == ScheduleStatus.COMPLETE) throw new IllegalArgumentException("이미 확정된 일정입니다.");
+        if(ms.isComplete()) throw new ConfirmException(SCHEDULE_ALREADY_CONFIRMED);
         ms.complete();
 
         ConfirmSchedule confirmSchedule = confirmSchedulePostRequest.toEntity(ms);
