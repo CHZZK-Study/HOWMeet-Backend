@@ -16,7 +16,7 @@ public enum NoticeMessageTemplate {
     }
 
     public String formatTitle(final String msName){
-        return msName + title;
+        return String.format("%s %s", msName, title);
     }
 
     public String formatBody(final String roomName, final String msName){
