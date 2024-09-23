@@ -47,8 +47,8 @@ public class ConfirmService {
     private final FcmService fcmService;
 
     @Transactional
-    public Long postConfirmSchedule(final ConfirmScheduleRequest confirmSchedulePostRequest, final AuthPrincipal authPrincipal) {
-        MemberSchedule ms = findMSByMSId(confirmSchedulePostRequest.msId());
+    public Long postConfirmSchedule(final Long msId, final ConfirmScheduleRequest confirmSchedulePostRequest, final AuthPrincipal authPrincipal) {
+        MemberSchedule ms = findMSByMSId(msId);
         checkLeaderAuthority(authPrincipal.id(), ms.getRoom().getId());
 
         if(ms.getStatus() == ScheduleStatus.COMPLETE) throw new IllegalArgumentException("이미 확정된 일정입니다.");

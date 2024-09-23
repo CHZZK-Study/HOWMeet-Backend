@@ -21,11 +21,11 @@ public class ConfirmController {
 
     private final ConfirmService confirmService;
 
-    @PostMapping()
-    public ResponseEntity<?> postConfirmRecord(@RequestBody final ConfirmScheduleRequest confirmScheduleRequest,
-            @Authenticated final AuthPrincipal authPrincipal) throws Exception {
+    @PostMapping("/{msId}")
+    public ResponseEntity<?> postConfirmRecord(@PathVariable final Long msId, @RequestBody final ConfirmScheduleRequest confirmScheduleRequest,
+            @Authenticated final AuthPrincipal authPrincipal) {
 
-        Long confirmScheduleId = confirmService.postConfirmSchedule(confirmScheduleRequest, authPrincipal);
+        Long confirmScheduleId = confirmService.postConfirmSchedule(msId, confirmScheduleRequest, authPrincipal);
         return ResponseEntity.created(URI.create("/confirm/" + confirmScheduleId)).build();
     }
 
