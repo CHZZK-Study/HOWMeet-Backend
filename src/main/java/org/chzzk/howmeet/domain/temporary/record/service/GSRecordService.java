@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.common.model.Nickname;
 import org.chzzk.howmeet.domain.common.model.Nicknames;
-import org.chzzk.howmeet.domain.common.model.SelectedDateTimes;
 import org.chzzk.howmeet.domain.common.model.SelectionDetail;
 import org.chzzk.howmeet.domain.temporary.guest.entity.Guest;
 import org.chzzk.howmeet.domain.temporary.guest.exception.GuestException;
@@ -63,8 +62,6 @@ public class GSRecordService {
         List<String> dates = gs.getDates();
         LocalTime startTime = gs.getTime().getStartTime();
         LocalTime endTime = gs.getTime().getEndTime();
-
-        SelectedDateTimes times = SelectedDateTimes.from(selectTimes);
 
         final List<GuestScheduleRecord> gsRecords = selectTimes.stream().map(selectTime -> {
             validateSelectTime(selectTime, dates, startTime, endTime);
