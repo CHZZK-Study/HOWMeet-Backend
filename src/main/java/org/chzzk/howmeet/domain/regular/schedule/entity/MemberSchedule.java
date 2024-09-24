@@ -63,6 +63,10 @@ public class MemberSchedule extends BaseEntity {
         this.status = COMPLETE;
     }
 
+    public boolean isComplete(){
+        return this.status.equals(COMPLETE);
+    }
+
     public void updateRoom(final Room room) {
         if (room != null) {
             this.room = room;

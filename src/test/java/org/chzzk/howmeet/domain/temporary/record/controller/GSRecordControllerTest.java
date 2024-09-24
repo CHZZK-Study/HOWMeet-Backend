@@ -2,7 +2,7 @@ package org.chzzk.howmeet.domain.temporary.record.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
-import org.chzzk.howmeet.domain.temporary.auth.entity.Guest;
+import org.chzzk.howmeet.domain.temporary.guest.entity.Guest;
 import org.chzzk.howmeet.domain.temporary.record.dto.get.response.GSRecordGetResponse;
 import org.chzzk.howmeet.domain.temporary.record.dto.post.request.GSRecordPostRequest;
 import org.chzzk.howmeet.domain.temporary.record.service.GSRecordService;
