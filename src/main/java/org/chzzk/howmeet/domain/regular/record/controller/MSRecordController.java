@@ -33,6 +33,7 @@ public class MSRecordController {
     }
 
     @GetMapping("/{roomId}/{msId}")
+    @RegularUser
     public ResponseEntity<?> getMSRecord(@PathVariable(value = "roomId") final Long roomId,
                                          @PathVariable(value = "msId") final Long msId ) {
         return ResponseEntity.ok(msRecordService.getMSRecord(roomId, msId));
