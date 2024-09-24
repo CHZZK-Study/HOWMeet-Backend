@@ -226,7 +226,7 @@ public class MSRecordServiceTest {
         when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
         when(msRecordRepository.findByMemberScheduleId(msId)).thenReturn(msRecords);
 
-        MSRecordGetResponse msRecordGetResponse = msRecordService.getMSRecord(roomId, msId, authPrincipal);
+        MSRecordGetResponse msRecordGetResponse = msRecordService.getMSRecord(roomId, msId);
 
         assertEquals(msId, msRecordGetResponse.msId(), "MS ID가 일치하지 않습니다.");
         assertEquals(room.getName(), msRecordGetResponse.roomName(), "방 이름이 일치하지 않습니다.");

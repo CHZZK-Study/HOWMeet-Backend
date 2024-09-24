@@ -115,7 +115,7 @@ public class MSReordControllerTest {
         MSRecordGetResponse msRecordGetResponse = MSRecordFixture.createMSRecordGetResponseA();
         AuthPrincipal authPrincipal = new AuthPrincipal(1L, member.getNickname().getValue(), member.getRole());
 
-        given(msRecordService.getMSRecord(eq(roomId), eq(msId), any(AuthPrincipal.class)))
+        given(msRecordService.getMSRecord(eq(roomId), eq(msId)))
                 .willReturn(msRecordGetResponse);
 
         // when

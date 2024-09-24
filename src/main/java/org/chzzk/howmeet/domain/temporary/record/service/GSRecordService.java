@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.common.model.Nickname;
 import org.chzzk.howmeet.domain.common.model.Nicknames;
+import org.chzzk.howmeet.domain.common.model.SelectedDateTimes;
 import org.chzzk.howmeet.domain.common.model.SelectionDetail;
 import org.chzzk.howmeet.domain.temporary.guest.entity.Guest;
 import org.chzzk.howmeet.domain.temporary.guest.exception.GuestException;
@@ -63,6 +64,8 @@ public class GSRecordService {
         LocalTime startTime = gs.getTime().getStartTime();
         LocalTime endTime = gs.getTime().getEndTime();
 
+        SelectedDateTimes times = SelectedDateTimes.from(selectTimes);
+
         final List<GuestScheduleRecord> gsRecords = selectTimes.stream().map(selectTime -> {
             validateSelectTime(selectTime, dates, startTime, endTime);
             return GuestScheduleRecord.of(guest, gs, selectTime);
@@ -73,14 +76,23 @@ public class GSRecordService {
     private void validateSelectTime(final LocalDateTime selectTime, final List<String> dates, final LocalTime startTime,
             final LocalTime endTime) {
 
+        LocalDate startDate = LocalDate.parse(dates.get(0));
+        LocalDate endDate = LocalDate.parse(dates.get(1));
+
         LocalDate selectDate = selectTime.toLocalDate();
         LocalTime selectHour = selectTime.toLocalTime();
 
-        if (!dates.contains(selectDate.toString())) {
+        if (selectDate.isBefore(startDate) || selectDate.isAfter(endDate)) {
             throw new GSRecordException(DATE_INVALID_SELECT);
         }
-        if (selectHour.isBefore(startTime) || selectHour.isAfter(
-                endTime.minusMinutes(30))) {
+
+        if (startTime.isBefore(endTime)) { // 같은 날 처리
+            if (selectHour.isBefore(startTime) || selectHour.isAfter(endTime.minusMinutes(30))) {
+                throw new GSRecordException(TIME_INVALID_SELECT);
+            }
+        } else {
+            if(selectHour.isAfter(startTime.minusMinutes(30))) {return;}
+            if(selectHour.equals(LocalTime.MIDNIGHT) || (selectHour.isAfter(LocalTime.MIDNIGHT) && selectHour.isBefore(endTime))) {return;}
             throw new GSRecordException(TIME_INVALID_SELECT);
         }
     }
