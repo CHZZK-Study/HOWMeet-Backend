@@ -26,14 +26,14 @@ public class MSController {
 
     @GetMapping("/{msId}")
     @RegularUser
-    public ResponseEntity<?> getMemberSchedule(@PathVariable Long roomId, @PathVariable Long msId) {
+    public ResponseEntity<?> getMemberSchedule(@PathVariable(name = "roomId") Long roomId, @PathVariable(name = "msId") Long msId) {
         final MSResponse msResponse = msService.getMemberSchedule(roomId, msId);
         return ResponseEntity.ok(msResponse);
     }
 
     @DeleteMapping("/{msId}")
     @RegularUser
-    public ResponseEntity<?> deleteGuestSchedule(@PathVariable Long roomId, @PathVariable Long msId) {
+    public ResponseEntity<?> deleteGuestSchedule(@PathVariable(name = "roomId") Long roomId, @PathVariable(name = "msId") Long msId) {
         msService.deleteMemberSchedule(roomId, msId);
         return ResponseEntity.ok("Member schedule successfully deleted");
     }

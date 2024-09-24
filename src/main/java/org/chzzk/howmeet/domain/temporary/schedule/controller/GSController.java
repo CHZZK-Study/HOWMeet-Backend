@@ -25,7 +25,6 @@ public class GSController {
     }
 
     @GetMapping("/{guestScheduleId}")
-    @TemporaryUser
     public ResponseEntity<?> getGuestSchedule(@PathVariable Long guestScheduleId) {
         final GSResponse gsResponse = gsService.getGuestSchedule(guestScheduleId);
         return ResponseEntity.ok(gsResponse);
