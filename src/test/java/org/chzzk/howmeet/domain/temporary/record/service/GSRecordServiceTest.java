@@ -1,5 +1,23 @@
 package org.chzzk.howmeet.domain.temporary.record.service;
 
+import static org.chzzk.howmeet.domain.temporary.guest.exception.GuestErrorCode.GUEST_NOT_FOUND;
+import static org.chzzk.howmeet.domain.temporary.record.exception.GSRecordErrorCode.DATE_INVALID_SELECT;
+import static org.chzzk.howmeet.domain.temporary.record.exception.GSRecordErrorCode.TIME_INVALID_SELECT;
+import static org.chzzk.howmeet.domain.temporary.schedule.exception.GSErrorCode.SCHEDULE_NOT_FOUND;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.util.AssertionErrors.assertFalse;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.temporary.guest.entity.Guest;
 import org.chzzk.howmeet.domain.temporary.guest.exception.GuestException;
@@ -21,25 +39,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import static org.chzzk.howmeet.domain.temporary.guest.exception.GuestErrorCode.GUEST_NOT_FOUND;
-import static org.chzzk.howmeet.domain.temporary.record.exception.GSRecordErrorCode.DATE_INVALID_SELECT;
-import static org.chzzk.howmeet.domain.temporary.record.exception.GSRecordErrorCode.TIME_INVALID_SELECT;
-import static org.chzzk.howmeet.domain.temporary.schedule.exception.GSErrorCode.SCHEDULE_NOT_FOUND;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.util.AssertionErrors.assertFalse;
-import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 public class GSRecordServiceTest {
