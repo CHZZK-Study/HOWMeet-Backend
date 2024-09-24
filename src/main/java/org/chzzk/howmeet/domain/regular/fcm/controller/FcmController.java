@@ -3,6 +3,7 @@ package org.chzzk.howmeet.domain.regular.fcm.controller;
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.auth.annotation.Authenticated;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
+import org.chzzk.howmeet.domain.regular.auth.annotation.RegularUser;
 import org.chzzk.howmeet.domain.regular.fcm.dto.FcmTokenRequest;
 import org.chzzk.howmeet.domain.regular.fcm.dto.VapidResponse;
 import org.chzzk.howmeet.domain.regular.fcm.service.FcmService;
@@ -29,6 +30,7 @@ public class FcmController {
     }
 
     @PostMapping("/fcm-token")
+    @RegularUser
     public ResponseEntity<?> saveFcmToken(@RequestBody final FcmTokenRequest fcmTokenPostRequest, @Authenticated final AuthPrincipal authPrincipal){
         fcmService.saveFcmToken(fcmTokenPostRequest, authPrincipal);
         return ResponseEntity.ok().build();

@@ -1,7 +1,7 @@
 package org.chzzk.howmeet.domain.regular.confirm.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -19,6 +19,7 @@ import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.regular.confirm.dto.ConfirmScheduleRequest;
 import org.chzzk.howmeet.domain.regular.confirm.dto.ConfirmScheduleResponse;
 import org.chzzk.howmeet.domain.regular.confirm.entity.ConfirmSchedule;
+import org.chzzk.howmeet.domain.regular.confirm.exception.ConfirmException;
 import org.chzzk.howmeet.domain.regular.confirm.repository.ConfirmRepository;
 import org.chzzk.howmeet.domain.regular.fcm.service.FcmService;
 import org.chzzk.howmeet.domain.regular.member.entity.Member;
@@ -115,7 +116,7 @@ public class ConfirmServiceTest{
     public void getConfirmSchedule_NotFound() {
         when(confirmRepository.findByMemberScheduleId(1999L)).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(ConfirmException.class, () -> {
             confirmService.getConfirmSchedule(1L, 1999L);
         });
 
