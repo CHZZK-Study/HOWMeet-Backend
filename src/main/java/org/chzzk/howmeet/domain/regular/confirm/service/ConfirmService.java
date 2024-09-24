@@ -50,7 +50,7 @@ public class ConfirmService {
         MemberSchedule ms = findMSByMSId(msId);
         checkLeaderAuthority(authPrincipal.id(), ms.getRoom().getId());
 
-        if(ms.isComplete()) throw new ConfirmException(SCHEDULE_ALREADY_CONFIRMED);
+        if(ms.isComplete()) throw new IllegalArgumentException("이미 확정된 일정입니다.");
         ms.complete();
 
         ConfirmSchedule confirmSchedule = confirmSchedulePostRequest.toEntity(msId);
