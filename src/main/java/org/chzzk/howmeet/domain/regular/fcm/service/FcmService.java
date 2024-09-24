@@ -42,7 +42,13 @@ public class FcmService {
     }
 
     public void sendToLeader(final List<RoomMember> members, final MemberSchedule ms) {
-        final RoomMember leader = members.stream().filter(RoomMember::getIsLeader).findFirst().orElseThrow(() -> new IllegalArgumentException("방장이 없습니다."));
+        final RoomMember leader = members.stream()
+                                        .filter(RoomMember::getIsLeader)
+                                        .findFirst()
+                                        .orElse(null);
+        if(leader == null) {
+            return;
+        }
         final FcmToken fcmToken = findFcmTokenById(leader.getMemberId());
         if(fcmToken == null) {
             return;

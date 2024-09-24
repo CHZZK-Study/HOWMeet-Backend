@@ -9,6 +9,8 @@ public enum NoticeMessageTemplate {
 
     private final String title;
     private final String body;
+    private static final String TITLE_FORMAT = "%s %s";
+    private static final String BODY_FORMAT = "%s 방의 %s%s";
 
     NoticeMessageTemplate(final String title, final String body){
         this.title = title;
@@ -16,10 +18,8 @@ public enum NoticeMessageTemplate {
     }
 
     public String formatTitle(final String msName){
-        return String.format("%s %s", msName, title);
+        return String.format(TITLE_FORMAT, msName, title);
     }
 
-    public String formatBody(final String roomName, final String msName){
-        return roomName + "방의 " + msName + body;
-    }
+    public String formatBody(final String roomName, final String msName){return String.format(BODY_FORMAT, roomName, msName, title);}
 }
