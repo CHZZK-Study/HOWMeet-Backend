@@ -109,6 +109,6 @@ public class ConfirmService {
     }
 
     private ConfirmSchedule findConfirmScheduleByMsId(final Long msId){
-        return confirmRepository.findByMsId(msId).orElseThrow(() -> new IllegalArgumentException("일치하는 일정 결과를 찾을 수 없습니다."));
+        return confirmRepository.findByMemberScheduleId(msId).orElseThrow(() -> new IllegalArgumentException("일치하는 일정 결과를 찾을 수 없습니다."));
     }
 }
