@@ -26,6 +26,10 @@ public class ScheduleTime {
         return new ScheduleTime(startTime, endTime);
     }
 
+    public boolean isContainsMidnight() {
+        return startTime.isAfter(endTime);
+    }
+
     private void validateTimeRange(final LocalTime startTime, final LocalTime endTime) {
         if (startTime.isAfter(endTime)) {
             throw new IllegalArgumentException("start time must be before end time");

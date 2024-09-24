@@ -106,6 +106,7 @@ public class GSControllerTest {
                         fieldWithPath("dates").type(ARRAY).description("비회원 일정 날짜 목록"),
                         fieldWithPath("time.startTime").type(STRING).description("비회원 일정 시작 시간"),
                         fieldWithPath("time.endTime").type(STRING).description("비회원 일정 종료 시간"),
+                        fieldWithPath("time.containsMidnight").type(BOOLEAN).description("비회원 일정 시간 자정 넘어감 여부"),
                         fieldWithPath("status").type(STRING).description("비회원 일정 상태")
                 )
         ));
