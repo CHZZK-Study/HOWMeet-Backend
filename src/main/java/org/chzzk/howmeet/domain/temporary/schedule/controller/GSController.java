@@ -1,6 +1,7 @@
 package org.chzzk.howmeet.domain.temporary.schedule.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.chzzk.howmeet.domain.temporary.auth.annotation.TemporaryUser;
 import org.chzzk.howmeet.domain.temporary.schedule.dto.GSRequest;
 import org.chzzk.howmeet.domain.temporary.schedule.dto.GSResponse;
 import org.chzzk.howmeet.domain.temporary.schedule.service.GSService;
@@ -16,6 +17,7 @@ public class GSController {
     private final GSService gsService;
 
     @PostMapping
+    @TemporaryUser
     public ResponseEntity<?> createGuestSchedule(@RequestBody final GSRequest gsRequest) {
         final GSResponse gsResponse = gsService.createGuestSchedule(gsRequest);
         return ResponseEntity.created(URI.create("/guest-schedule/" + gsResponse.id()))
@@ -23,6 +25,7 @@ public class GSController {
     }
 
     @GetMapping("/{guestScheduleId}")
+    @TemporaryUser
     public ResponseEntity<?> getGuestSchedule(@PathVariable Long guestScheduleId) {
         final GSResponse gsResponse = gsService.getGuestSchedule(guestScheduleId);
         return ResponseEntity.ok(gsResponse);
