@@ -118,8 +118,7 @@ public class MSRecordService {
         return msRepository.findById(msId).orElseThrow(() -> new MSException(SCHEDULE_NOT_FOUND));
     }
 
-    public MSRecordGetResponse getMSRecord(final Long roomId, final Long msId,
-            final AuthPrincipal authPrincipal) {
+    public MSRecordGetResponse getMSRecord(final Long roomId, final Long msId) {
 
         List<Member> memberList = findMemberByRoomId(roomId);
         Room room = findRoomByRoomId(roomId);
