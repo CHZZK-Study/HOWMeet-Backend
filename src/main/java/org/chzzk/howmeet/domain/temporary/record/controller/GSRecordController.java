@@ -4,6 +4,7 @@ import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.auth.annotation.Authenticated;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
+import org.chzzk.howmeet.domain.temporary.auth.annotation.TemporaryUser;
 import org.chzzk.howmeet.domain.temporary.record.dto.post.request.GSRecordPostRequest;
 import org.chzzk.howmeet.domain.temporary.record.service.GSRecordService;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ public class GSRecordController {
     }
 
     @PostMapping
+    @TemporaryUser
     public ResponseEntity<?> postGSRecord(@RequestBody final GSRecordPostRequest gsRecordPostRequest,
             @Authenticated final AuthPrincipal authPrincipal) {
         gsRecordService.postGSRecord(gsRecordPostRequest, authPrincipal);
