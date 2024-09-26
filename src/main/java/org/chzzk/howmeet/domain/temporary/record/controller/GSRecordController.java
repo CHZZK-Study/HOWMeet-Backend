@@ -1,6 +1,5 @@
 package org.chzzk.howmeet.domain.temporary.record.controller;
 
-import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.auth.annotation.Authenticated;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
@@ -15,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
+
 @RequiredArgsConstructor
 @RequestMapping("/gs-record")
 @RestController
@@ -23,6 +24,7 @@ public class GSRecordController {
     private final GSRecordService gsRecordService;
 
     @GetMapping("/{gsId}")
+    @TemporaryUser
     public ResponseEntity<?> getGSRecord(@PathVariable(value = "gsId") final Long gsId) {
         return ResponseEntity.ok(gsRecordService.getGSRecord(gsId));
     }

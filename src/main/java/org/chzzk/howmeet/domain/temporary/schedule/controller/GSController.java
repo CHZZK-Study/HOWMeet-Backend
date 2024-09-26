@@ -2,6 +2,7 @@ package org.chzzk.howmeet.domain.temporary.schedule.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.temporary.schedule.dto.GSCreateResponse;
+import org.chzzk.howmeet.domain.temporary.auth.annotation.TemporaryUser;
 import org.chzzk.howmeet.domain.temporary.schedule.dto.GSRequest;
 import org.chzzk.howmeet.domain.temporary.schedule.dto.GSResponse;
 import org.chzzk.howmeet.domain.temporary.schedule.service.GSService;
