@@ -17,7 +17,6 @@ public class GSController {
     private final GSService gsService;
 
     @PostMapping
-    @TemporaryUser
     public ResponseEntity<?> createGuestSchedule(@RequestBody final GSRequest gsRequest) {
         final GSResponse gsResponse = gsService.createGuestSchedule(gsRequest);
         return ResponseEntity.created(URI.create("/guest-schedule/" + gsResponse.id()))
