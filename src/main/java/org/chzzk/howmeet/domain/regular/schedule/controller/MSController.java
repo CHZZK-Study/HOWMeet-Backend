@@ -3,6 +3,7 @@ package org.chzzk.howmeet.domain.regular.schedule.controller;
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.regular.schedule.dto.MSRequest;
 import org.chzzk.howmeet.domain.regular.schedule.dto.MSResponse;
+import org.chzzk.howmeet.domain.regular.schedule.dto.ProgressedMSResponse;
 import org.chzzk.howmeet.domain.regular.schedule.service.MSService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +17,9 @@ public class MSController {
     private final MSService msService;
 
     @PostMapping
-    public ResponseEntity<MSResponse> createMemberSchedule(@PathVariable Long roomId, @RequestBody final MSRequest msRequest) {
-        final MSResponse msResponse = msService.createMemberSchedule(roomId, msRequest);
-        return ResponseEntity.created(URI.create("/member-schedule/" + msResponse.id()))
+    public ResponseEntity<ProgressedMSResponse> createMemberSchedule(@PathVariable Long roomId, @RequestBody final MSRequest msRequest) {
+        final ProgressedMSResponse progressedMsResponse = msService.createMemberSchedule(roomId, msRequest);
+        return ResponseEntity.created(URI.create("/member-schedule/" + progressedMsResponse.id()))
                 .build();
     }
 
