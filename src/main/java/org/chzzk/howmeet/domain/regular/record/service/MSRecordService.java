@@ -37,6 +37,8 @@ import org.chzzk.howmeet.domain.regular.room.repository.RoomRepository;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 import org.chzzk.howmeet.domain.regular.schedule.exception.MSException;
 import org.chzzk.howmeet.domain.regular.schedule.repository.MSRepository;
+import org.chzzk.howmeet.domain.temporary.record.exception.GSRecordErrorCode;
+import org.chzzk.howmeet.domain.temporary.record.exception.GSRecordException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -88,16 +90,24 @@ public class MSRecordService {
     private void validateSelectTime(final LocalDateTime selectTime, final List<String> dates, final LocalTime startTime,
             final LocalTime endTime) {
 
+        LocalDate startDate = LocalDate.parse(dates.get(0));
+        LocalDate endDate = LocalDate.parse(dates.get(1));
+
         final LocalDate selectDate = selectTime.toLocalDate();
         final LocalTime selectHour = selectTime.toLocalTime();
 
-        if (!dates.contains(selectDate.toString())) {
-            throw new MSRecordException(DATE_INVALID_SELECT);
+        if (selectDate.isBefore(startDate) || selectDate.isAfter(endDate)) {
+            throw new GSRecordException(GSRecordErrorCode.DATE_INVALID_SELECT);
         }
 
-        if (selectHour.isBefore(startTime) || selectHour.isAfter(
-                endTime.minusMinutes(30))) {
-            throw new MSRecordException(TIME_INVALID_SELECT);
+        if (startTime.isBefore(endTime)) { // 같은 날 처리
+            if (selectHour.isBefore(startTime) || selectHour.isAfter(endTime.minusMinutes(30))) {
+                throw new GSRecordException(GSRecordErrorCode.TIME_INVALID_SELECT);
+            }
+        } else {
+            if(selectHour.isAfter(startTime.minusMinutes(30))) {return;}
+            if(selectHour.equals(LocalTime.MIDNIGHT) || (selectHour.isAfter(LocalTime.MIDNIGHT) && selectHour.isBefore(endTime))) {return;}
+            throw new GSRecordException(GSRecordErrorCode.TIME_INVALID_SELECT);
         }
     }
 
@@ -118,8 +128,7 @@ public class MSRecordService {
         return msRepository.findById(msId).orElseThrow(() -> new MSException(SCHEDULE_NOT_FOUND));
     }
 
-    public MSRecordGetResponse getMSRecord(final Long roomId, final Long msId,
-            final AuthPrincipal authPrincipal) {
+    public MSRecordGetResponse getMSRecord(final Long roomId, final Long msId) {
 
         List<Member> memberList = findMemberByRoomId(roomId);
         Room room = findRoomByRoomId(roomId);
