@@ -6,14 +6,12 @@ import org.chzzk.howmeet.domain.regular.confirm.entity.ConfirmSchedule;
 import org.chzzk.howmeet.domain.regular.confirm.repository.ConfirmRepository;
 import org.chzzk.howmeet.domain.regular.room.entity.Room;
 import org.chzzk.howmeet.domain.regular.room.repository.RoomRepository;
-import org.chzzk.howmeet.domain.regular.schedule.dto.CompletedMSResponse;
-import org.chzzk.howmeet.domain.regular.schedule.dto.MSRequest;
-import org.chzzk.howmeet.domain.regular.schedule.dto.MSResponse;
-import org.chzzk.howmeet.domain.regular.schedule.dto.ProgressedMSResponse;
+import org.chzzk.howmeet.domain.regular.schedule.dto.*;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 import org.chzzk.howmeet.domain.regular.schedule.entity.ScheduleStatus;
 import org.chzzk.howmeet.domain.regular.schedule.exception.MSException;
 import org.chzzk.howmeet.domain.regular.schedule.repository.MSRepository;
+import org.chzzk.howmeet.domain.temporary.schedule.dto.GSCreateResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,14 +33,14 @@ public class MSService {
     private final ConfirmRepository confirmRepository;
 
     @Transactional
-    public ProgressedMSResponse createMemberSchedule(final Long roomId, final MSRequest msRequest) {
+    public MSCreateResponse createMemberSchedule(final Long roomId, final MSRequest msRequest) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new MSException(ROOM_NOT_FOUND));
 
         MemberSchedule memberSchedule = msRequest.toEntity(room);
         MemberSchedule savedSchedule = msRepository.save(memberSchedule);
 
-        return ProgressedMSResponse.from(savedSchedule);
+        return MSCreateResponse.from(savedSchedule);
     }
 
     public MSResponse getMemberSchedule(final Long roomId, final Long msId) {
