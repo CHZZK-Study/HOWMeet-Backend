@@ -40,7 +40,7 @@ public class MSService {
         MemberSchedule memberSchedule = msRequest.toEntity(room);
         MemberSchedule savedSchedule = msRepository.save(memberSchedule);
 
-        return MSCreateResponse.from(savedSchedule);
+        return MSCreateResponse.from(room);
     }
 
     public MSResponse getMemberSchedule(final Long roomId, final Long msId) {
