@@ -1,11 +1,11 @@
 package org.chzzk.howmeet.domain.regular.schedule.dto;
 
-import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
+import org.chzzk.howmeet.domain.regular.room.entity.Room;
 
-public record MSCreateResponse(Long msId) {
-    public static MSCreateResponse from(final MemberSchedule memberSchedule) {
+public record MSCreateResponse(Long roomId) {
+    public static MSCreateResponse from(final Room room) {
         return new MSCreateResponse(
-                memberSchedule.getId()
+                room.getId()
         );
     }
 }
