@@ -7,6 +7,7 @@ import org.chzzk.howmeet.domain.regular.confirm.entity.ConfirmSchedule;
 import org.chzzk.howmeet.domain.regular.confirm.repository.ConfirmRepository;
 import org.chzzk.howmeet.domain.regular.member.dto.nickname.dto.MemberNicknameDto;
 import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
+import org.chzzk.howmeet.domain.regular.record.repository.MSRecordRepository;
 import org.chzzk.howmeet.domain.regular.room.dto.*;
 import org.chzzk.howmeet.domain.regular.room.entity.Room;
 import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
@@ -41,6 +42,7 @@ public class RoomService {
     private final RoomMemberRepository roomMemberRepository;
     private final MemberRepository memberRepository;
     private final ConfirmRepository confirmRepository;
+    private final MSRecordRepository msRecordRepository;
 
     @Transactional
     public RoomCreateResponse createRoom(final RoomRequest roomRequest) {
@@ -129,7 +131,7 @@ public class RoomService {
                         .orElse(null))
                 .orElse(null);
 
-        return RoomListMapper.toRoomListResponse(room, memberSchedules, leaderNickname, this::findConfirmScheduleByMSId);
+        return RoomListMapper.toRoomListResponse(room, memberSchedules, leaderNickname, this::findConfirmScheduleByMSId, msId -> msRecordRepository.existsByMemberScheduleIdAndMemberId(msId, roomMember.getMemberId()));
     }
 
     private ConfirmSchedule findConfirmScheduleByMSId(Long memberScheduleId) {
