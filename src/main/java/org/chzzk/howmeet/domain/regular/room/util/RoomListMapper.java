@@ -67,7 +67,6 @@ public class RoomListMapper {
         boolean isMemberParticipant(Long memberScheduleId, Long memberId);
     }
 
-
     private static List<String> extractDatesFromConfirmTimes(List<LocalDateTime> confirmTimes) {
         String date = confirmTimes.get(0).toLocalDate().toString();
         return List.of(date);
