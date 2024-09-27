@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 public class RoomListMapper {
 
-    public static RoomListResponse toRoomListResponse(final Room room, final List<MemberSchedule> memberSchedules, String leaderNickname, ConfirmScheduleFinder confirmScheduleFinder, MemberParticipationChecker participationChecker) {
+    public static RoomListResponse toRoomListResponse(final Room room, final List<MemberSchedule> memberSchedules, String leaderNickname, Long memberId, ConfirmScheduleFinder confirmScheduleFinder, MemberParticipationChecker participationChecker) {
         int totalMembers = room.getMembers().size();
 
         String memberSummary = String.format("%s 외 %d명", leaderNickname, totalMembers - 1);
@@ -29,7 +29,7 @@ public class RoomListMapper {
         List<MSResponse> schedules = memberSchedules.stream()
                 .sorted(Comparator.comparing(BaseEntity::getCreatedAt))
                 .map(memberSchedule -> {
-                    boolean isParticipant = participationChecker.isMemberParticipant(memberSchedule.getId());
+                    boolean isParticipant = participationChecker.isMemberParticipant(memberSchedule.getId(), memberId);
                     if (memberSchedule.getStatus() == ScheduleStatus.COMPLETE) {
                         ConfirmSchedule confirmSchedule = confirmScheduleFinder.findConfirmScheduleByMSId(memberSchedule.getId());
                         List<LocalDateTime> confirmTimes = confirmSchedule.getTimes();
@@ -42,11 +42,20 @@ public class RoomListMapper {
                 })
                 .collect(Collectors.toList());
 
+        boolean hasNonParticipant = schedules.stream()
+                .anyMatch(schedule -> {
+                    if (schedule instanceof ProgressedMSWithParticipationResponse progressedMS) {
+                        return !progressedMS.isParticipant();
+                    }
+                    return false;
+                });
+
         return new RoomListResponse(
                 room.getId(),
                 room.getName().getValue(),
                 memberSummary,
-                schedules
+                schedules,
+                hasNonParticipant
         );
     }
 
@@ -55,7 +64,7 @@ public class RoomListMapper {
     }
 
     public interface MemberParticipationChecker {
-        boolean isMemberParticipant(Long memberScheduleId);
+        boolean isMemberParticipant(Long memberScheduleId, Long memberId);
     }
 
 
