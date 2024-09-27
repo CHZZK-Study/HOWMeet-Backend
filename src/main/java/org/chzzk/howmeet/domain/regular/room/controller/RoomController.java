@@ -1,6 +1,8 @@
 package org.chzzk.howmeet.domain.regular.room.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.chzzk.howmeet.domain.common.auth.annotation.Authenticated;
+import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.regular.auth.annotation.RegularUser;
 import org.chzzk.howmeet.domain.regular.room.dto.PageResponse;
 import org.chzzk.howmeet.domain.regular.room.dto.RoomCreateResponse;
@@ -43,13 +45,12 @@ public class RoomController {
 
     @GetMapping("/{roomId}")
     @RegularUser
-    public ResponseEntity<?> getRoom(@PathVariable Long roomId) {
-        final RoomResponse roomResponse = roomService.getRoom(roomId);
+    public ResponseEntity<?> getRoom(@PathVariable Long roomId, @Authenticated final AuthPrincipal authPrincipal) {
+        final RoomResponse roomResponse = roomService.getRoom(roomId, authPrincipal);
         return ResponseEntity.ok(roomResponse);
     }
 
     @GetMapping("/joined/{memberId}")
-    @RegularUser
     public ResponseEntity<?> getJoinedRooms(
             @PathVariable Long memberId,
             @PageableDefault(size = 6) Pageable pageable) {

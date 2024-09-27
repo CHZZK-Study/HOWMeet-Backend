@@ -1,12 +1,14 @@
 package org.chzzk.howmeet.domain.regular.room.service;
 
 import lombok.RequiredArgsConstructor;
+import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.common.embedded.date.impl.ScheduleTime;
 import org.chzzk.howmeet.domain.common.entity.BaseEntity;
 import org.chzzk.howmeet.domain.regular.confirm.entity.ConfirmSchedule;
 import org.chzzk.howmeet.domain.regular.confirm.repository.ConfirmRepository;
 import org.chzzk.howmeet.domain.regular.member.dto.nickname.dto.MemberNicknameDto;
 import org.chzzk.howmeet.domain.regular.member.repository.MemberRepository;
+import org.chzzk.howmeet.domain.regular.record.repository.MSRecordRepository;
 import org.chzzk.howmeet.domain.regular.room.dto.*;
 import org.chzzk.howmeet.domain.regular.room.entity.Room;
 import org.chzzk.howmeet.domain.regular.room.entity.RoomMember;
@@ -17,6 +19,7 @@ import org.chzzk.howmeet.domain.regular.room.util.RoomListMapper;
 import org.chzzk.howmeet.domain.regular.schedule.dto.CompletedMSResponse;
 import org.chzzk.howmeet.domain.regular.schedule.dto.MSResponse;
 import org.chzzk.howmeet.domain.regular.schedule.dto.ProgressedMSResponse;
+import org.chzzk.howmeet.domain.regular.schedule.dto.ProgressedMSWithParticipationResponse;
 import org.chzzk.howmeet.domain.regular.schedule.entity.MemberSchedule;
 import org.chzzk.howmeet.domain.regular.schedule.entity.ScheduleStatus;
 import org.springframework.data.domain.Page;
@@ -41,6 +44,7 @@ public class RoomService {
     private final RoomMemberRepository roomMemberRepository;
     private final MemberRepository memberRepository;
     private final ConfirmRepository confirmRepository;
+    private final MSRecordRepository msRecordRepository;
 
     @Transactional
     public RoomCreateResponse createRoom(final RoomRequest roomRequest) {
@@ -51,7 +55,7 @@ public class RoomService {
         return RoomCreateResponse.from(room);
     }
 
-    public RoomResponse getRoom(final Long roomId) {
+    public RoomResponse getRoom(final Long roomId, final AuthPrincipal authPrincipal) {
         Room room = roomRepository.findRoomWithMembersAndNicknames(roomId)
                 .orElseThrow(() -> new RoomException(ROOM_NOT_FOUND));
 
@@ -74,6 +78,8 @@ public class RoomService {
         List<MSResponse> schedules = room.getSchedules().stream()
                 .sorted(Comparator.comparing(BaseEntity::getCreatedAt))
                 .map(memberSchedule -> {
+                    boolean isParticipant = msRecordRepository.existsByMemberScheduleIdAndMemberId(memberSchedule.getId(), authPrincipal.id());
+
                     if (memberSchedule.getStatus() == ScheduleStatus.COMPLETE) {
                         ConfirmSchedule confirmSchedule = findConfirmScheduleByMSId(memberSchedule.getId());
                         List<LocalDateTime> confirmTimes = confirmSchedule.getTimes();
@@ -81,7 +87,7 @@ public class RoomService {
                         ScheduleTime scheduleTime = extractScheduleTimeFromConfirmTimes(confirmTimes);
                         return CompletedMSResponse.of(memberSchedule, dates, scheduleTime);
                     } else {
-                        return ProgressedMSResponse.from(memberSchedule);
+                        return ProgressedMSWithParticipationResponse.of(memberSchedule, isParticipant);
                     }
                 })
                 .collect(Collectors.toList());
@@ -129,7 +135,8 @@ public class RoomService {
                         .orElse(null))
                 .orElse(null);
 
-        return RoomListMapper.toRoomListResponse(room, memberSchedules, leaderNickname, this::findConfirmScheduleByMSId);
+        return RoomListMapper.toRoomListResponse(room, memberSchedules, leaderNickname, roomMember.getMemberId(),
+                this::findConfirmScheduleByMSId, (msId, memId) -> msRecordRepository.existsByMemberScheduleIdAndMemberId(msId, roomMember.getMemberId()));
     }
 
     private ConfirmSchedule findConfirmScheduleByMSId(Long memberScheduleId) {
