@@ -1,5 +1,8 @@
 package org.chzzk.howmeet.domain.regular.confirm.service;
 
+import static org.chzzk.howmeet.domain.regular.confirm.exception.ConfirmErrorCode.CONFIRM_SCHEDULE_NOT_FOUND;
+import static org.chzzk.howmeet.domain.regular.confirm.exception.ConfirmErrorCode.ROOM_LEADER_UNAUTHORIZED;
+import static org.chzzk.howmeet.domain.regular.confirm.exception.ConfirmErrorCode.SCHEDULE_ALREADY_CONFIRMED;
 import static org.chzzk.howmeet.domain.regular.room.exception.RoomErrorCode.ROOM_MEMBER_NOT_FOUND;
 import static org.chzzk.howmeet.domain.regular.schedule.exception.MSErrorCode.SCHEDULE_NOT_FOUND;
 
@@ -13,6 +16,7 @@ import org.chzzk.howmeet.domain.common.model.Nickname;
 import org.chzzk.howmeet.domain.common.model.Nicknames;
 import org.chzzk.howmeet.domain.common.model.SelectionDetail;
 import org.chzzk.howmeet.domain.regular.confirm.dto.SelectTimeCount;
+import org.chzzk.howmeet.domain.regular.confirm.exception.ConfirmException;
 import org.chzzk.howmeet.domain.regular.fcm.service.FcmService;
 import org.chzzk.howmeet.domain.regular.confirm.dto.ConfirmScheduleResponse;
 import org.chzzk.howmeet.domain.regular.confirm.dto.ConfirmScheduleRequest;
@@ -50,7 +54,7 @@ public class ConfirmService {
         MemberSchedule ms = findMSByMSId(msId);
         checkLeaderAuthority(authPrincipal.id(), ms.getRoom().getId());
 
-        if(ms.isComplete()) throw new IllegalArgumentException("이미 확정된 일정입니다.");
+        if(ms.isComplete()) throw new ConfirmException(SCHEDULE_ALREADY_CONFIRMED);
         ms.complete();
 
         ConfirmSchedule confirmSchedule = confirmSchedulePostRequest.toEntity(msId);
@@ -67,7 +71,7 @@ public class ConfirmService {
                 .findFirst().orElseThrow(() -> new RoomException(ROOM_MEMBER_NOT_FOUND));
 
         if (!loginMember.getIsLeader()) {
-            throw new IllegalArgumentException("방장이 아니므로 일정을 확정할 수 없습니다.");
+            throw new ConfirmException(ROOM_LEADER_UNAUTHORIZED);
         }
     }
     private MemberSchedule findMSByMSId(final Long msId) {
@@ -109,6 +113,6 @@ public class ConfirmService {
     }
 
     private ConfirmSchedule findConfirmScheduleByMsId(final Long msId){
-        return confirmRepository.findByMemberScheduleId(msId).orElseThrow(() -> new IllegalArgumentException("일치하는 일정 결과를 찾을 수 없습니다."));
+        return confirmRepository.findByMemberScheduleId(msId).orElseThrow(() -> new ConfirmException(CONFIRM_SCHEDULE_NOT_FOUND));
     }
 }
