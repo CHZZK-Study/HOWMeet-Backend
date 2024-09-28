@@ -51,6 +51,7 @@ public class RoomController {
     }
 
     @GetMapping("/joined/{memberId}")
+    @RegularUser
     public ResponseEntity<?> getJoinedRooms(
             @PathVariable Long memberId,
             @PageableDefault(size = 6) Pageable pageable) {
