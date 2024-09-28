@@ -102,7 +102,10 @@ public class RoomService {
                 .map(this::mapToRoomListResponse)
                 .collect(Collectors.toList());
 
+        int totalRoomCount = roomListResponses.size();
+
         return PageResponse.of(
+                totalRoomCount,
                 roomListResponses,
                 pageable.getPageNumber(),
                 roomMembersPage.getTotalPages(),
