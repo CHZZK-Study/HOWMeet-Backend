@@ -79,6 +79,14 @@ dependencies {
 
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    //fcm
+    implementation 'com.google.firebase:firebase-admin:9.1.1'
+    implementation 'com.google.guava:guava:32.1.2-jre'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
 }
 
 

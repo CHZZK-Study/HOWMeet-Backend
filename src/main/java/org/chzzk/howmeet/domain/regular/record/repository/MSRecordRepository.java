@@ -12,4 +12,7 @@ public interface MSRecordRepository extends JpaRepository<MemberScheduleRecord, 
 
     List<MemberScheduleRecord> findByMemberScheduleId(@Param("memberScheduleId") final Long msId);
 
+    boolean existsByMemberScheduleIdAndMemberId(@Param("memberScheduleId") final Long msId,
+                                                @Param("memberId") final Long memberId);
+
 }

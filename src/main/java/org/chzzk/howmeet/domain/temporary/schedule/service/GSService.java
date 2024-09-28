@@ -2,6 +2,7 @@ package org.chzzk.howmeet.domain.temporary.schedule.service;
 
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.regular.schedule.entity.ScheduleStatus;
+import org.chzzk.howmeet.domain.temporary.schedule.dto.GSCreateResponse;
 import org.chzzk.howmeet.domain.temporary.schedule.dto.GSRequest;
 import org.chzzk.howmeet.domain.temporary.schedule.dto.GSResponse;
 import org.chzzk.howmeet.domain.temporary.schedule.entity.GuestSchedule;
@@ -23,10 +24,10 @@ public class GSService {
     private final GSRepository gsRepository;
 
     @Transactional
-    public GSResponse createGuestSchedule(final GSRequest gsRequest) {
+    public GSCreateResponse createGuestSchedule(final GSRequest gsRequest) {
         GuestSchedule guestSchedule = GuestSchedule.of(gsRequest.dates(), gsRequest.time(), gsRequest.name());
         GuestSchedule savedSchedule = gsRepository.save(guestSchedule);
-        return GSResponse.of(savedSchedule);
+        return GSCreateResponse.from(savedSchedule);
     }
 
     public GSResponse getGuestSchedule(final Long guestScheduleId) {

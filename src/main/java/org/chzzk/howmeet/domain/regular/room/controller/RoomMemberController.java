@@ -35,6 +35,7 @@ public class RoomMemberController {
     }
 
     @DeleteMapping("/{roomMemberId}")
+    @RegularUser
     public ResponseEntity<?> deleteRoomMember(@PathVariable(name = "roomId") Long roomId,
                                               @PathVariable(name = "roomMemberId") Long roomMemberId) {
         roomMemberService.deleteRoomMember(roomId, roomMemberId);
@@ -42,6 +43,7 @@ public class RoomMemberController {
     }
 
     @PatchMapping
+    @RegularUser
     public ResponseEntity<List<RoomMemberResponse>> updateRoomMembers(
             @PathVariable(name = "roomId") Long roomId,
             @Valid @RequestBody final List<RoomMemberRequest> roomMemberRequests) {

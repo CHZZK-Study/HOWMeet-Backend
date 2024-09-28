@@ -1,5 +1,17 @@
 package org.chzzk.howmeet.domain.temporary.record.service;
 
+import static org.chzzk.howmeet.domain.temporary.guest.exception.GuestErrorCode.GUEST_NOT_FOUND;
+import static org.chzzk.howmeet.domain.temporary.record.exception.GSRecordErrorCode.DATE_INVALID_SELECT;
+import static org.chzzk.howmeet.domain.temporary.record.exception.GSRecordErrorCode.TIME_INVALID_SELECT;
+import static org.chzzk.howmeet.domain.temporary.schedule.exception.GSErrorCode.SCHEDULE_NOT_FOUND;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
 import org.chzzk.howmeet.domain.common.model.Nickname;
@@ -21,19 +33,6 @@ import org.chzzk.howmeet.domain.temporary.schedule.exception.GSException;
 import org.chzzk.howmeet.domain.temporary.schedule.repository.GSRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static org.chzzk.howmeet.domain.temporary.guest.exception.GuestErrorCode.GUEST_NOT_FOUND;
-import static org.chzzk.howmeet.domain.temporary.record.exception.GSRecordErrorCode.DATE_INVALID_SELECT;
-import static org.chzzk.howmeet.domain.temporary.record.exception.GSRecordErrorCode.TIME_INVALID_SELECT;
-import static org.chzzk.howmeet.domain.temporary.schedule.exception.GSErrorCode.SCHEDULE_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
@@ -74,14 +73,23 @@ public class GSRecordService {
     private void validateSelectTime(final LocalDateTime selectTime, final List<String> dates, final LocalTime startTime,
             final LocalTime endTime) {
 
+        LocalDate startDate = LocalDate.parse(dates.get(0));
+        LocalDate endDate = LocalDate.parse(dates.get(1));
+
         LocalDate selectDate = selectTime.toLocalDate();
         LocalTime selectHour = selectTime.toLocalTime();
 
-        if (!dates.contains(selectDate.toString())) {
+        if (selectDate.isBefore(startDate) || selectDate.isAfter(endDate)) {
             throw new GSRecordException(DATE_INVALID_SELECT);
         }
-        if (selectHour.isBefore(startTime) || selectHour.isAfter(
-                endTime.minusMinutes(30))) {
+
+        if (startTime.isBefore(endTime)) { // 같은 날 처리
+            if (selectHour.isBefore(startTime) || selectHour.isAfter(endTime.minusMinutes(30))) {
+                throw new GSRecordException(TIME_INVALID_SELECT);
+            }
+        } else {
+            if(selectHour.isAfter(startTime.minusMinutes(30))) {return;}
+            if(selectHour.equals(LocalTime.MIDNIGHT) || (selectHour.isAfter(LocalTime.MIDNIGHT) && selectHour.isBefore(endTime))) {return;}
             throw new GSRecordException(TIME_INVALID_SELECT);
         }
     }
