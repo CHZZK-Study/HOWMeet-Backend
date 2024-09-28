@@ -54,7 +54,7 @@ public class RegularAuthController {
     @PostMapping("/logout")
     @RegularUser
     public ResponseEntity<?> logout(@Authenticated final AuthPrincipal authPrincipal,
-                                    @CookieValue(name = REFRESH_TOKEN) final String refreshTokenValue) {
+                                    @CookieValue(name = REFRESH_TOKEN, required = false) final String refreshTokenValue) {
         validateRefreshToken(refreshTokenValue);
         regularAuthService.logout(authPrincipal, refreshTokenValue);
         return ResponseEntity.noContent()
@@ -65,7 +65,7 @@ public class RegularAuthController {
     @PostMapping("/reissue")
     @RegularUser
     public ResponseEntity<?> reissue(@Authenticated final AuthPrincipal authPrincipal,
-                                     @CookieValue(name = REFRESH_TOKEN) final String refreshTokenValue) {
+                                     @CookieValue(name = REFRESH_TOKEN, required = false) final String refreshTokenValue) {
         validateRefreshToken(refreshTokenValue);
         final MemberReissueResult memberReissueResult = regularAuthService.reissue(authPrincipal, refreshTokenValue);
         final ResponseCookie cookie = refreshTokenCookieProvider.createCookie(memberReissueResult.refreshToken());
@@ -75,7 +75,7 @@ public class RegularAuthController {
     }
 
     private void validateRefreshToken(final String value) {
-        if (StringUtils.isNullOrEmpty(value)) {
+        if (value == null || value.isBlank()) {
             throw new RefreshTokenException(RefreshTokenErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
     }
