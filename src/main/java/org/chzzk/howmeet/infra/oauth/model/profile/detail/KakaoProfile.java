@@ -11,8 +11,7 @@ public class KakaoProfile extends OAuthProfile {
 
     @Override
     public String getNickname() {
-        System.out.println("attributes = " + attributes);
-        return String.valueOf(getProfile().get("nickname"));
+        return String.valueOf(getAccount().get("name"));
     }
 
     @Override
