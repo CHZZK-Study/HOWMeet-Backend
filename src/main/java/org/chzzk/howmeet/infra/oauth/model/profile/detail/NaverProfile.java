@@ -16,7 +16,7 @@ public class NaverProfile extends OAuthProfile {
 
     @Override
     public String getNickname() {
-        return (String) getResponse().get("nickname");
+        return (String) getResponse().get("name");
     }
 
     @Override
