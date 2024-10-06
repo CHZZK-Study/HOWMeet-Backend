@@ -1,5 +1,8 @@
 package org.chzzk.howmeet.domain.regular.fcm.entity;
 
+import static org.chzzk.howmeet.domain.regular.fcm.exception.FcmErrorCode.FCMTOKEN_INVALID_VALUE;
+import static org.chzzk.howmeet.domain.regular.fcm.exception.FcmErrorCode.MEMBER_UNAUTHORIZED;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -7,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
+import org.chzzk.howmeet.domain.regular.fcm.exception.FcmErrorException;
 
 @Getter
 @Entity
@@ -31,7 +35,7 @@ public class FcmToken {
     }
     public static FcmToken of(final AuthPrincipal authPrincipal, final String value) {
         if (!authPrincipal.isMember()) {
-            throw new IllegalArgumentException("회원이 아니므로 fcm토큰을 저장하실 수 없습니다.");
+            throw new FcmErrorException(MEMBER_UNAUTHORIZED);
         }
 
         return new FcmToken(authPrincipal.id(), value);
@@ -39,7 +43,7 @@ public class FcmToken {
 
     public void updateValue(final String value) {
         if (isNullOrEmpty()) {
-            throw new IllegalArgumentException("유효하지 않은 토큰 값입니다.");
+            throw new FcmErrorException(FCMTOKEN_INVALID_VALUE);
         }
         this.value = value;
     }
