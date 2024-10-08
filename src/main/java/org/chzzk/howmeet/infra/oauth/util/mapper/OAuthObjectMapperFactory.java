@@ -6,10 +6,10 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.chzzk.howmeet.infra.oauth.exception.UnsupportedProviderException;
 import org.chzzk.howmeet.infra.oauth.util.serilaizer.ListToCommaSeparatedStringSerializer;
 import org.chzzk.howmeet.infra.oauth.util.serilaizer.ListToSpaceSeparatedStringSerializer;
 
-import java.nio.file.ProviderNotFoundException;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +39,7 @@ public final class OAuthObjectMapperFactory {
 
     public static ObjectMapper getFrom(final String providerName) {
         if (!MAPPER_MAP.containsKey(providerName)) {
-            throw new ProviderNotFoundException(providerName);
+            throw new UnsupportedProviderException(providerName);
         }
 
         return MAPPER_MAP.get(providerName);
