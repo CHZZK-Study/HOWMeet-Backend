@@ -34,11 +34,11 @@ public class MSService {
 
     @Transactional
     public MSCreateResponse createMemberSchedule(final Long roomId, final MSRequest msRequest) {
+        // Todo repository
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new MSException(ROOM_NOT_FOUND));
 
         MemberSchedule memberSchedule = msRequest.toEntity(room);
-        MemberSchedule savedSchedule = msRepository.save(memberSchedule);
 
         return MSCreateResponse.from(room);
     }
@@ -61,16 +61,20 @@ public class MSService {
 
     @Transactional
     public void deleteMemberSchedule(final Long roomId, final Long msId) {
-        MemberSchedule memberSchedule = findMemberScheduleByRoomIdAndMsId(roomId, msId);
-        memberSchedule.deactivate();
-        msRepository.save(memberSchedule);
+        if (!msRepository.existsByIdAndRoomId(msId, roomId)) {
+            // 예외 수정 필요
+            throw new MSException(SCHEDULE_NOT_FOUND);
+        }
+        msRepository.deactivateMemberSchedule(msId, roomId);
     }
 
+    // Todo repository
     private MemberSchedule findMemberScheduleByRoomIdAndMsId(Long roomId, Long msId) {
         return msRepository.findByIdAndRoomId(msId, roomId)
                 .orElseThrow(() -> new MSException(SCHEDULE_NOT_FOUND));
     }
 
+    // Todo repository
     private ConfirmSchedule findConfirmScheduleByMSId(Long memberScheduleId) {
         return confirmRepository.findByMemberScheduleId(memberScheduleId)
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 일정 결과를 찾을 수 없습니다."));
