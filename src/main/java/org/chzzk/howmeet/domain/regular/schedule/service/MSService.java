@@ -36,11 +36,8 @@ public class MSService {
     public MSCreateResponse createMemberSchedule(final Long roomId, final MSRequest msRequest) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new MSException(ROOM_NOT_FOUND));
-
-        MemberSchedule memberSchedule = msRequest.toEntity(room);
-        MemberSchedule savedSchedule = msRepository.save(memberSchedule);
-
-        return MSCreateResponse.from(room);
+        MemberSchedule memberSchedule = msRepository.save(msRequest.toEntity(room));
+        return MSCreateResponse.from(memberSchedule);
     }
 
     public MSResponse getMemberSchedule(final Long roomId, final Long msId) {
