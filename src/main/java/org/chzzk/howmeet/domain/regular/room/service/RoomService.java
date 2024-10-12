@@ -122,8 +122,11 @@ public class RoomService {
 
     @Transactional
     public void deleteRoom(final Long roomId) {
-        Room room = getRoomById(roomId);
-        roomRepository.delete(room);
+        if (!roomRepository.existsByIdAndDisableFalse(roomId)) {
+            throw new RoomException(ROOM_NOT_FOUND);
+        }
+
+        roomRepository.disableRoomById(roomId);
     }
 
     private RoomListResponse mapToRoomListResponse(RoomMember roomMember) {
