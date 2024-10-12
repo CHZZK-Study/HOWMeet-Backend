@@ -29,8 +29,8 @@ public class RoomMemberService {
     private final RoomRepository roomRepository;
 
     public RoomMemberGetResponse getRoomMember(final AuthPrincipal authPrincipal, final Long roomId) {
-        final RoomMember roomMember = findRoomMemberByAuthAndRoomId(authPrincipal, roomId);
-        return RoomMemberGetResponse.from(roomMember);
+        return roomMemberRepository.findRoomMemberGetResponseByRoomIdAndMemberId(roomId, authPrincipal.id())
+                .orElseThrow(() -> new RoomMemberException(ROOM_NOT_FOUND));
     }
 
     @Transactional
