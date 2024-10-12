@@ -2,14 +2,11 @@ package org.chzzk.howmeet.domain.temporary.schedule.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.temporary.schedule.dto.GSCreateResponse;
-import org.chzzk.howmeet.domain.temporary.auth.annotation.TemporaryUser;
 import org.chzzk.howmeet.domain.temporary.schedule.dto.GSRequest;
 import org.chzzk.howmeet.domain.temporary.schedule.dto.GSResponse;
 import org.chzzk.howmeet.domain.temporary.schedule.service.GSService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
 
 @RequiredArgsConstructor
 @RequestMapping("/guest-schedule")
@@ -24,7 +21,7 @@ public class GSController {
     }
 
     @GetMapping("/{guestScheduleId}")
-    public ResponseEntity<?> getGuestSchedule(@PathVariable Long guestScheduleId) {
+    public ResponseEntity<?> getGuestSchedule(@PathVariable(name = "guestScheduleId") Long guestScheduleId) {
         final GSResponse gsResponse = gsService.getGuestSchedule(guestScheduleId);
         return ResponseEntity.ok(gsResponse);
     }

@@ -45,7 +45,7 @@ public class RoomController {
 
     @GetMapping("/{roomId}")
     @RegularUser
-    public ResponseEntity<?> getRoom(@PathVariable Long roomId, @Authenticated final AuthPrincipal authPrincipal) {
+    public ResponseEntity<?> getRoom(@PathVariable(name = "roomId") Long roomId, @Authenticated final AuthPrincipal authPrincipal) {
         final RoomResponse roomResponse = roomService.getRoom(roomId, authPrincipal);
         return ResponseEntity.ok(roomResponse);
     }
@@ -53,7 +53,7 @@ public class RoomController {
     @GetMapping("/joined/{memberId}")
     @RegularUser
     public ResponseEntity<?> getJoinedRooms(
-            @PathVariable Long memberId,
+            @PathVariable(name = "memberId") Long memberId,
             @PageableDefault(size = 6) Pageable pageable) {
 
         PageResponse response = roomService.getJoinedRooms(memberId, pageable);
