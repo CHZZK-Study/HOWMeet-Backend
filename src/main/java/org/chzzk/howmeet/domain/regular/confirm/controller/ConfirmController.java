@@ -4,6 +4,7 @@ import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.chzzk.howmeet.domain.common.auth.annotation.Authenticated;
 import org.chzzk.howmeet.domain.common.auth.model.AuthPrincipal;
+import org.chzzk.howmeet.domain.regular.auth.annotation.RegularUser;
 import org.chzzk.howmeet.domain.regular.confirm.dto.ConfirmScheduleRequest;
 import org.chzzk.howmeet.domain.regular.confirm.service.ConfirmService;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ public class ConfirmController {
     private final ConfirmService confirmService;
 
     @PostMapping("/{msId}")
+    @RegularUser
     public ResponseEntity<?> postConfirmRecord(@PathVariable final Long msId, @RequestBody final ConfirmScheduleRequest confirmScheduleRequest,
             @Authenticated final AuthPrincipal authPrincipal) {
 
