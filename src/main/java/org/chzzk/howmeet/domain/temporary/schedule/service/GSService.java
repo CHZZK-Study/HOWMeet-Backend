@@ -31,9 +31,8 @@ public class GSService {
     }
 
     public GSResponse getGuestSchedule(final Long guestScheduleId) {
-        GuestSchedule guestSchedule = gsRepository.findById(guestScheduleId)
+        return gsRepository.findGuestScheduleDtoById(guestScheduleId)
                 .orElseThrow(() -> new GSException(SCHEDULE_NOT_FOUND));
-        return GSResponse.of(guestSchedule);
     }
 
     @Scheduled(cron = "0 0 0 * * ?")
@@ -41,14 +40,16 @@ public class GSService {
     public void disableOldGuestSchedules() {
         LocalDateTime now = LocalDateTime.now();
         // PROGRESS 상태인 스케줄 삭제
-        List<GuestSchedule> progressSchedules = gsRepository.findByStatusAndCreatedAtBefore(ScheduleStatus.PROGRESS, now.minusDays(10));
-        for (GuestSchedule schedule : progressSchedules) {
+        List<Long> progressScheduleIds = gsRepository.findIdsByStatusAndCreatedAtBefore(ScheduleStatus.PROGRESS, now.minusDays(10));
+        for (Long scheduleId : progressScheduleIds) {
+            GuestSchedule schedule = gsRepository.findById(scheduleId).orElseThrow();
             schedule.deactivate();
         }
 
         // COMPLETE 상태인 스케줄 삭제
-        List<GuestSchedule> completeSchedules = gsRepository.findByStatusAndUpdatedAtBefore(ScheduleStatus.COMPLETE, now.minusDays(10));
-        for (GuestSchedule schedule : completeSchedules) {
+        List<Long> completeScheduleIds = gsRepository.findIdsByStatusAndUpdatedAtBefore(ScheduleStatus.COMPLETE, now.minusDays(10));
+        for (Long scheduleId : completeScheduleIds) {
+            GuestSchedule schedule = gsRepository.findById(scheduleId).orElseThrow();
             schedule.deactivate();
         }
     }

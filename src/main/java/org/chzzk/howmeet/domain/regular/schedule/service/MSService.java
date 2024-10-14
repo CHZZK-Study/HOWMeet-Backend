@@ -38,22 +38,25 @@ public class MSService {
                 .orElseThrow(() -> new MSException(ROOM_NOT_FOUND));
 
         MemberSchedule memberSchedule = msRequest.toEntity(room);
-        MemberSchedule savedSchedule = msRepository.save(memberSchedule);
 
         return MSCreateResponse.from(room);
     }
 
     public MSResponse getMemberSchedule(final Long roomId, final Long msId) {
-        MemberSchedule memberSchedule = findMemberScheduleByRoomIdAndMsId(roomId, msId);
+        ScheduleStatus status = msRepository.findStatusByIdAndRoomId(msId, roomId)
+                .orElseThrow(() -> new MSException(SCHEDULE_NOT_FOUND));
 
-        if (memberSchedule.getStatus() == ScheduleStatus.COMPLETE) {
+        // Todo complete 경우에는 후처리가 필요한데 dto를 하나더 만들어서 가져와서 변환하는게 맞는지
+        if (status == ScheduleStatus.COMPLETE) {
+            MemberSchedule memberSchedule = findMemberScheduleByRoomIdAndMsId(roomId, msId);
             ConfirmSchedule confirmSchedule = findConfirmScheduleByMSId(msId);
             List<LocalDateTime> confirmTimes = confirmSchedule.getTimes();
             List<String> dates = extractDatesFromConfirmTimes(confirmTimes);
             ScheduleTime scheduleTime = extractScheduleTimeFromConfirmTimes(confirmTimes);
             return CompletedMSResponse.of(memberSchedule, dates, scheduleTime);
-        } else if (memberSchedule.getStatus() == ScheduleStatus.PROGRESS) {
-            return ProgressedMSResponse.from(memberSchedule);
+        } else if (status == ScheduleStatus.PROGRESS) {
+            return msRepository.findProgressScheduleDto(msId, roomId)
+                    .orElseThrow(() -> new MSException(SCHEDULE_NOT_FOUND));
         }
 
         throw new IllegalStateException("알 수 없는 상태입니다.");
@@ -61,16 +64,20 @@ public class MSService {
 
     @Transactional
     public void deleteMemberSchedule(final Long roomId, final Long msId) {
-        MemberSchedule memberSchedule = findMemberScheduleByRoomIdAndMsId(roomId, msId);
-        memberSchedule.deactivate();
-        msRepository.save(memberSchedule);
+        if (!msRepository.existsByIdAndRoomId(msId, roomId)) {
+            // 예외 수정 필요
+            throw new MSException(SCHEDULE_NOT_FOUND);
+        }
+        msRepository.deactivateMemberSchedule(msId, roomId);
     }
 
+    // Todo repository
     private MemberSchedule findMemberScheduleByRoomIdAndMsId(Long roomId, Long msId) {
         return msRepository.findByIdAndRoomId(msId, roomId)
                 .orElseThrow(() -> new MSException(SCHEDULE_NOT_FOUND));
     }
 
+    // Todo repository
     private ConfirmSchedule findConfirmScheduleByMSId(Long memberScheduleId) {
         return confirmRepository.findByMemberScheduleId(memberScheduleId)
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 일정 결과를 찾을 수 없습니다."));
