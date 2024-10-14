@@ -37,7 +37,7 @@ public class RoomController {
     @PatchMapping("/{roomId}")
     @RegularUser
     public ResponseEntity<?> updateRoom(
-            @PathVariable Long roomId,
+            @PathVariable (name = "roomId") Long roomId,
             @RequestBody final RoomRequest roomRequest) {
         roomService.updateRoom(roomId, roomRequest);
         return ResponseEntity.ok().build();
@@ -45,7 +45,7 @@ public class RoomController {
 
     @GetMapping("/{roomId}")
     @RegularUser
-    public ResponseEntity<?> getRoom(@PathVariable Long roomId, @Authenticated final AuthPrincipal authPrincipal) {
+    public ResponseEntity<?> getRoom(@PathVariable (name = "roomId") Long roomId, @Authenticated final AuthPrincipal authPrincipal) {
         final RoomResponse roomResponse = roomService.getRoom(roomId, authPrincipal);
         return ResponseEntity.ok(roomResponse);
     }
@@ -53,7 +53,7 @@ public class RoomController {
     @GetMapping("/joined/{memberId}")
     @RegularUser
     public ResponseEntity<?> getJoinedRooms(
-            @PathVariable Long memberId,
+            @PathVariable (name = "memberId") Long memberId,
             @PageableDefault(size = 6) Pageable pageable) {
 
         PageResponse response = roomService.getJoinedRooms(memberId, pageable);
@@ -62,7 +62,7 @@ public class RoomController {
 
     @DeleteMapping("/{roomId}")
     @RegularUser
-    public ResponseEntity<?> deleteRoom(@PathVariable Long roomId) {
+    public ResponseEntity<?> deleteRoom(@PathVariable (name = "roomId") Long roomId) {
         roomService.deleteRoom(roomId);
         return ResponseEntity.ok("Room successfully deleted");
     }

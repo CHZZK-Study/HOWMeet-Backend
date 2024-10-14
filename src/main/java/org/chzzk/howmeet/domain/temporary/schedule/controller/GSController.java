@@ -24,7 +24,7 @@ public class GSController {
     }
 
     @GetMapping("/{guestScheduleId}")
-    public ResponseEntity<?> getGuestSchedule(@PathVariable Long guestScheduleId) {
+    public ResponseEntity<?> getGuestSchedule(@PathVariable (name = "guestScheduleId") Long guestScheduleId) {
         final GSResponse gsResponse = gsService.getGuestSchedule(guestScheduleId);
         return ResponseEntity.ok(gsResponse);
     }

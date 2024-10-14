@@ -20,7 +20,7 @@ public class MSController {
 
     @PostMapping
     @RegularUser
-    public ResponseEntity<?> createMemberSchedule(@PathVariable Long roomId, @RequestBody final MSRequest msRequest) {
+    public ResponseEntity<?> createMemberSchedule(@PathVariable (name = "roomId") Long roomId, @RequestBody final MSRequest msRequest) {
         final MSCreateResponse msCreateResponse = msService.createMemberSchedule(roomId, msRequest);
         return ResponseEntity.ok(msCreateResponse);
     }
