@@ -4,13 +4,14 @@ spring:
   config:
     import:
       - classpath:/yaml/application-auth.yml
+      - classpath:/yaml/application-actuator.yml
       - classpath:/yaml/application-db.yml
       - classpath:/yaml/application-oauth.yml
       - classpath:/yaml/application-redis.yml
       - classpath:/yaml/application-vapid.yml
   profiles:
     group:
-      develop: auth, db, oauth, redis, vapid
+      develop: auth, actuator, db, oauth, redis, vapid
     active: develop
 springdoc:
   swagger-ui:

@@ -68,6 +68,10 @@ dependencies {
     // BadWordFilter (비속어 필터링 라이브러리)
     implementation 'io.github.vaneproject:badwordfiltering:1.0.0'
 
+
+    // Spring Actuator
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
     // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
