@@ -93,7 +93,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
     // Google Cloud SQL
-    implementation 'com.google.cloud.sql:mysql-socket-factory'
+    implementation 'com.google.cloud.sql:mysql-socket-factory:1.8.0'
 
 }
 
