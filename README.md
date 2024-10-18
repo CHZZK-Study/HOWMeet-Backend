@@ -30,7 +30,7 @@
 | --- | --- | --- | --- |
 | 이름 | 김민우 | 김수현 | 이채림 |
 | 역할 | BE-Lead | BE | BE |
-| 기능 | 회원/비회원 기능, Jenkins 기반 CI/CD  | 방 기능, 회원/비회원 일정 기능 | 회원/ 비회원 일정 기능, 알림 기능 |
+| 기능 | 회원/비회원 기능, Jenkins 기반 CI/CD, AWS 기반 CI/CD 및 WAS 서버 구축  | 방 기능, 회원/비회원 일정 기능 | 회원/ 비회원 일정 기능, 알림 기능 |
 | GitHub | https://github.com/kmw2378 | https://github.com/SSUHYUNKIM | https://github.com/chech2 |
 
 
